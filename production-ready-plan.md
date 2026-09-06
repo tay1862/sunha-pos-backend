@@ -57,6 +57,7 @@
 - 2026-09-06: รัน `pnpm --filter @sunha/pos build` สำเร็จด้วย Expo Android export; routes ของ catalog/modifier/tax/employee bundle ได้จริง (ยังต้องทดสอบบนอุปกรณ์ Android/เครื่องพิมพ์จริง)
 - 2026-09-06: เพิ่ม Catalog item edit/soft-delete, category delete และ unit editor สำหรับชื่อ/ราคา/conversion/SKU/barcode; typecheck, lint และ Android export ผ่าน
 - 2026-09-06: เพิ่มตัวแปร Resend ใน production compose โดยอ้างอิงจาก environment เท่านั้น และกำหนด temporary `APP_BASE_URL` default เป็น `http://kanghan.site` กับ test sender `onboarding@resend.dev`; ยังไม่ใส่ secret/deploy เพราะต้องตรวจ sender/domain ของ Resend ก่อน
+- 2026-09-06: ตั้งค่า Resend บน VPS สำเร็จและ deploy API ด้วย project `sunha-pos-prod`; migration ไม่มีรายการค้าง, readiness/database ผ่าน และส่ง test email ไปยัง Resend account owner สำเร็จ (custom recipient ยังถูกปฏิเสธจนกว่า `kanghan.site` จะ verified)
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง
