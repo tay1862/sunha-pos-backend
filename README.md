@@ -56,7 +56,7 @@ pnpm --filter @sunha/api exec prisma migrate dev --name phase2_auth_sessions
 
 Phase 2 endpoints are `POST /v1/auth/signup`, `POST /v1/auth/login`, `POST /v1/auth/refresh`, plus authenticated `GET/PATCH /v1/setup/store`. Set a long random `JWT_SECRET` in deployment. Email verification and password reset need an email provider and are intentionally queued for the next infrastructure slice.
 
-For a VPS test deployment, copy `.env.example` to a private server env file, set strong `POSTGRES_PASSWORD` and `JWT_SECRET`, then run `docker compose -f docker-compose.prod.yml up -d --build`. Because this repository currently has no checked-in Prisma migration history, use `docker compose -f docker-compose.prod.yml run --rm api pnpm --filter @sunha/api exec prisma db push` for the initial beta database only; replace this with reviewed `prisma migrate deploy` migrations before production data is accepted.
+For a VPS test deployment, copy `.env.example` to a private server env file, set strong `POSTGRES_PASSWORD` and `JWT_SECRET`, then run `docker compose -f docker-compose.prod.yml up -d --build`. The current VPS database was initialized with Prisma 7 `db push` because migration history did not exist; do not accept production data until a reviewed baseline migration is checked in. For future deploys use `prisma migrate deploy` against the checked-in migration directory, never an unattended schema reset.
 
 The API does not connect to PostgreSQL during boot by default, which keeps local health checks usable before infrastructure is started. Set `DATABASE_CONNECT_ON_BOOT=true` when the deployment should fail fast if the database is unavailable.
 

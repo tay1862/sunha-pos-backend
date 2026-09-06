@@ -24,11 +24,23 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-sunha}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-sunha}
       DATABASE_CONNECT_ON_BOOT: 'true'
       JWT_SECRET: ${JWT_SECRET:?set a long random JWT secret}
+      NODE_ENV: production
+      BODY_LIMIT_BYTES: ${BODY_LIMIT_BYTES:-1048576}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-120}
+      RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-1 minute}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
+      LOG_LEVEL: ${LOG_LEVEL:-info}
     depends_on:
       postgres:
         condition: service_healthy
     ports:
       - '127.0.0.1:3301:3001'
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '--quiet', 'http://127.0.0.1:3001/v1/health/ready']
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
 
 volumes:
   sunha_prod_postgres:

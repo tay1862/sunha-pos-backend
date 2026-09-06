@@ -13,10 +13,11 @@ export type AuthResult = {
   expiresIn: number;
   user: AuthUser;
   store: AuthStore;
+  ownerEmployeeId?: string;
 };
 export type AuthClaims = AuthUser & { sub: string };
 
-type StoredUser = AuthUser & { passwordHash: string; store: AuthStore };
+type StoredUser = AuthUser & { passwordHash: string; store: AuthStore; ownerEmployeeId?: string };
 type StoredSession = {
   id: string;
   userId: string;
@@ -50,17 +51,29 @@ export class PrismaAuthRepository implements AuthRepository {
   async findUserByEmail(email: string): Promise<StoredUser | null> {
     const user = await this.prisma.user.findUnique({
       where: { email },
-      include: { tenant: { include: { store: true } } },
+      include: {
+        tenant: {
+          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true } } },
+        },
+      },
     });
-    return user?.tenant.store ? this.mapUser(user, user.tenant.store) : null;
+    return user?.tenant.store
+      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id)
+      : null;
   }
 
   async findUserById(id: string): Promise<StoredUser | null> {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      include: { tenant: { include: { store: true } } },
+      include: {
+        tenant: {
+          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true } } },
+        },
+      },
     });
-    return user?.tenant.store ? this.mapUser(user, user.tenant.store) : null;
+    return user?.tenant.store
+      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id)
+      : null;
   }
 
   async createSignup(input: {
@@ -80,7 +93,16 @@ export class PrismaAuthRepository implements AuthRepository {
       const user = await tx.user.create({
         data: { tenantId: tenant.id, email: input.email, passwordHash: input.passwordHash },
       });
-      return this.mapUser(user, store);
+      const owner = await tx.employee.create({
+        data: {
+          tenantId: tenant.id,
+          storeId: store.id,
+          name: 'Owner',
+          role: 'OWNER',
+          pinHash: await argon2.hash(randomBytes(32).toString('hex'), { type: argon2.argon2id }),
+        },
+      });
+      return this.mapUser(user, store, owner.id);
     });
   }
 
@@ -111,12 +133,14 @@ export class PrismaAuthRepository implements AuthRepository {
       timezone: string;
       language: string;
     },
+    ownerEmployeeId?: string,
   ): StoredUser {
     return {
       id: user.id,
       email: user.email,
       tenantId: user.tenantId,
       passwordHash: user.passwordHash,
+      ownerEmployeeId,
       store: {
         id: store.id,
         tenantId: store.tenantId,
@@ -190,6 +214,7 @@ export class AuthService {
       expiresIn: accessTokenSeconds,
       user: { id: user.id, email: user.email, tenantId: user.tenantId },
       store: user.store,
+      ownerEmployeeId: user.ownerEmployeeId,
     };
   }
 }

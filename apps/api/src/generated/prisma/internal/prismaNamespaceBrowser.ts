@@ -57,6 +57,7 @@ export const ModelName = {
   Store: 'Store',
   Employee: 'Employee',
   Device: 'Device',
+  DeviceEnrollmentToken: 'DeviceEnrollmentToken',
   DeviceEmployee: 'DeviceEmployee',
   Category: 'Category',
   Item: 'Item',
@@ -176,6 +177,20 @@ export const DeviceScalarFieldEnum = {
 } as const
 
 export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
+
+
+export const DeviceEnrollmentTokenScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  storeId: 'storeId',
+  tokenHash: 'tokenHash',
+  deviceName: 'deviceName',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DeviceEnrollmentTokenScalarFieldEnum = (typeof DeviceEnrollmentTokenScalarFieldEnum)[keyof typeof DeviceEnrollmentTokenScalarFieldEnum]
 
 
 export const DeviceEmployeeScalarFieldEnum = {

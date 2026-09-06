@@ -48,6 +48,11 @@ export type Employee = Prisma.EmployeeModel
  */
 export type Device = Prisma.DeviceModel
 /**
+ * Model DeviceEnrollmentToken
+ * 
+ */
+export type DeviceEnrollmentToken = Prisma.DeviceEnrollmentTokenModel
+/**
  * Model DeviceEmployee
  * 
  */

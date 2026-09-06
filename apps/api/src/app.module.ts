@@ -11,6 +11,7 @@ import { RefundModule } from './refunds/refund.module.js';
 import { SyncModule } from './sync/sync.module.js';
 import { DeviceModule } from './devices/device.module.js';
 import { ReportModule } from './reports/report.module.js';
+import { EmployeeModule } from './employees/employee.module.js';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ReportModule } from './reports/report.module.js';
     SyncModule,
     DeviceModule,
     ReportModule,
+    EmployeeModule,
   ],
   controllers: [HealthController],
 })

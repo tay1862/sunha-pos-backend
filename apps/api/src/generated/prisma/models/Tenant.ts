@@ -186,6 +186,7 @@ export type TenantWhereInput = {
   store?: Prisma.XOR<Prisma.StoreNullableScalarRelationFilter, Prisma.StoreWhereInput> | null
   auditEvents?: Prisma.AuditEventListRelationFilter
   devices?: Prisma.DeviceListRelationFilter
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   syncOps?: Prisma.SyncOperationListRelationFilter
@@ -201,6 +202,7 @@ export type TenantOrderByWithRelationInput = {
   store?: Prisma.StoreOrderByWithRelationInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
   devices?: Prisma.DeviceOrderByRelationAggregateInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenOrderByRelationAggregateInput
   employees?: Prisma.EmployeeOrderByRelationAggregateInput
   orders?: Prisma.OrderOrderByRelationAggregateInput
   syncOps?: Prisma.SyncOperationOrderByRelationAggregateInput
@@ -219,6 +221,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   store?: Prisma.XOR<Prisma.StoreNullableScalarRelationFilter, Prisma.StoreWhereInput> | null
   auditEvents?: Prisma.AuditEventListRelationFilter
   devices?: Prisma.DeviceListRelationFilter
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
   orders?: Prisma.OrderListRelationFilter
   syncOps?: Prisma.SyncOperationListRelationFilter
@@ -256,6 +259,7 @@ export type TenantCreateInput = {
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
@@ -271,6 +275,7 @@ export type TenantUncheckedCreateInput = {
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
@@ -286,6 +291,7 @@ export type TenantUpdateInput = {
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
@@ -301,6 +307,7 @@ export type TenantUncheckedUpdateInput = {
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
@@ -423,6 +430,20 @@ export type TenantUpdateOneRequiredWithoutDevicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutDevicesInput, Prisma.TenantUpdateWithoutDevicesInput>, Prisma.TenantUncheckedUpdateWithoutDevicesInput>
 }
 
+export type TenantCreateNestedOneWithoutEnrollmentTokensInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutEnrollmentTokensInput, Prisma.TenantUncheckedCreateWithoutEnrollmentTokensInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutEnrollmentTokensInput
+  connect?: Prisma.TenantWhereUniqueInput
+}
+
+export type TenantUpdateOneRequiredWithoutEnrollmentTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.TenantCreateWithoutEnrollmentTokensInput, Prisma.TenantUncheckedCreateWithoutEnrollmentTokensInput>
+  connectOrCreate?: Prisma.TenantCreateOrConnectWithoutEnrollmentTokensInput
+  upsert?: Prisma.TenantUpsertWithoutEnrollmentTokensInput
+  connect?: Prisma.TenantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.TenantUpdateToOneWithWhereWithoutEnrollmentTokensInput, Prisma.TenantUpdateWithoutEnrollmentTokensInput>, Prisma.TenantUncheckedUpdateWithoutEnrollmentTokensInput>
+}
+
 export type TenantCreateNestedOneWithoutOrdersInput = {
   create?: Prisma.XOR<Prisma.TenantCreateWithoutOrdersInput, Prisma.TenantUncheckedCreateWithoutOrdersInput>
   connectOrCreate?: Prisma.TenantCreateOrConnectWithoutOrdersInput
@@ -474,6 +495,7 @@ export type TenantCreateWithoutOwnerInput = {
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
@@ -488,6 +510,7 @@ export type TenantUncheckedCreateWithoutOwnerInput = {
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
@@ -518,6 +541,7 @@ export type TenantUpdateWithoutOwnerInput = {
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
@@ -532,6 +556,7 @@ export type TenantUncheckedUpdateWithoutOwnerInput = {
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
@@ -546,6 +571,7 @@ export type TenantCreateWithoutStoreInput = {
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
@@ -560,6 +586,7 @@ export type TenantUncheckedCreateWithoutStoreInput = {
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
@@ -590,6 +617,7 @@ export type TenantUpdateWithoutStoreInput = {
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
@@ -604,6 +632,7 @@ export type TenantUncheckedUpdateWithoutStoreInput = {
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
@@ -619,6 +648,7 @@ export type TenantCreateWithoutEmployeesInput = {
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
 }
@@ -633,6 +663,7 @@ export type TenantUncheckedCreateWithoutEmployeesInput = {
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -663,6 +694,7 @@ export type TenantUpdateWithoutEmployeesInput = {
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
 }
@@ -677,6 +709,7 @@ export type TenantUncheckedUpdateWithoutEmployeesInput = {
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -690,6 +723,7 @@ export type TenantCreateWithoutDevicesInput = {
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
@@ -704,6 +738,7 @@ export type TenantUncheckedCreateWithoutDevicesInput = {
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
@@ -734,6 +769,7 @@ export type TenantUpdateWithoutDevicesInput = {
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
@@ -748,6 +784,83 @@ export type TenantUncheckedUpdateWithoutDevicesInput = {
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
+  syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantCreateWithoutEnrollmentTokensInput = {
+  id?: string
+  businessName: string
+  country?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserCreateNestedOneWithoutTenantInput
+  store?: Prisma.StoreCreateNestedOneWithoutTenantInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
+  devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
+  orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
+  syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
+}
+
+export type TenantUncheckedCreateWithoutEnrollmentTokensInput = {
+  id?: string
+  businessName: string
+  country?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
+  store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
+  devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
+  syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
+}
+
+export type TenantCreateOrConnectWithoutEnrollmentTokensInput = {
+  where: Prisma.TenantWhereUniqueInput
+  create: Prisma.XOR<Prisma.TenantCreateWithoutEnrollmentTokensInput, Prisma.TenantUncheckedCreateWithoutEnrollmentTokensInput>
+}
+
+export type TenantUpsertWithoutEnrollmentTokensInput = {
+  update: Prisma.XOR<Prisma.TenantUpdateWithoutEnrollmentTokensInput, Prisma.TenantUncheckedUpdateWithoutEnrollmentTokensInput>
+  create: Prisma.XOR<Prisma.TenantCreateWithoutEnrollmentTokensInput, Prisma.TenantUncheckedCreateWithoutEnrollmentTokensInput>
+  where?: Prisma.TenantWhereInput
+}
+
+export type TenantUpdateToOneWithWhereWithoutEnrollmentTokensInput = {
+  where?: Prisma.TenantWhereInput
+  data: Prisma.XOR<Prisma.TenantUpdateWithoutEnrollmentTokensInput, Prisma.TenantUncheckedUpdateWithoutEnrollmentTokensInput>
+}
+
+export type TenantUpdateWithoutEnrollmentTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessName?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
+  store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
+  devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
+  syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
+}
+
+export type TenantUncheckedUpdateWithoutEnrollmentTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  businessName?: Prisma.StringFieldUpdateOperationsInput | string
+  country?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
+  store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
+  devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
@@ -763,6 +876,7 @@ export type TenantCreateWithoutOrdersInput = {
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
 }
@@ -777,6 +891,7 @@ export type TenantUncheckedCreateWithoutOrdersInput = {
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -807,6 +922,7 @@ export type TenantUpdateWithoutOrdersInput = {
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
 }
@@ -821,6 +937,7 @@ export type TenantUncheckedUpdateWithoutOrdersInput = {
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -835,6 +952,7 @@ export type TenantCreateWithoutSyncOpsInput = {
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
 }
@@ -849,6 +967,7 @@ export type TenantUncheckedCreateWithoutSyncOpsInput = {
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
 }
@@ -879,6 +998,7 @@ export type TenantUpdateWithoutSyncOpsInput = {
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
 }
@@ -893,6 +1013,7 @@ export type TenantUncheckedUpdateWithoutSyncOpsInput = {
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
 }
@@ -906,6 +1027,7 @@ export type TenantCreateWithoutAuditEventsInput = {
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutTenantInput
@@ -920,6 +1042,7 @@ export type TenantUncheckedCreateWithoutAuditEventsInput = {
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutTenantInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutTenantInput
   orders?: Prisma.OrderUncheckedCreateNestedManyWithoutTenantInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutTenantInput
@@ -950,6 +1073,7 @@ export type TenantUpdateWithoutAuditEventsInput = {
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutTenantNestedInput
@@ -964,6 +1088,7 @@ export type TenantUncheckedUpdateWithoutAuditEventsInput = {
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutTenantNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutTenantNestedInput
   orders?: Prisma.OrderUncheckedUpdateManyWithoutTenantNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutTenantNestedInput
@@ -977,6 +1102,7 @@ export type TenantUncheckedUpdateWithoutAuditEventsInput = {
 export type TenantCountOutputType = {
   auditEvents: number
   devices: number
+  enrollmentTokens: number
   employees: number
   orders: number
   syncOps: number
@@ -985,6 +1111,7 @@ export type TenantCountOutputType = {
 export type TenantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   auditEvents?: boolean | TenantCountOutputTypeCountAuditEventsArgs
   devices?: boolean | TenantCountOutputTypeCountDevicesArgs
+  enrollmentTokens?: boolean | TenantCountOutputTypeCountEnrollmentTokensArgs
   employees?: boolean | TenantCountOutputTypeCountEmployeesArgs
   orders?: boolean | TenantCountOutputTypeCountOrdersArgs
   syncOps?: boolean | TenantCountOutputTypeCountSyncOpsArgs
@@ -1012,6 +1139,13 @@ export type TenantCountOutputTypeCountAuditEventsArgs<ExtArgs extends runtime.Ty
  */
 export type TenantCountOutputTypeCountDevicesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DeviceWhereInput
+}
+
+/**
+ * TenantCountOutputType without action
+ */
+export type TenantCountOutputTypeCountEnrollmentTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DeviceEnrollmentTokenWhereInput
 }
 
 /**
@@ -1046,6 +1180,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   store?: boolean | Prisma.Tenant$storeArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Tenant$auditEventsArgs<ExtArgs>
   devices?: boolean | Prisma.Tenant$devicesArgs<ExtArgs>
+  enrollmentTokens?: boolean | Prisma.Tenant$enrollmentTokensArgs<ExtArgs>
   employees?: boolean | Prisma.Tenant$employeesArgs<ExtArgs>
   orders?: boolean | Prisma.Tenant$ordersArgs<ExtArgs>
   syncOps?: boolean | Prisma.Tenant$syncOpsArgs<ExtArgs>
@@ -1082,6 +1217,7 @@ export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   store?: boolean | Prisma.Tenant$storeArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Tenant$auditEventsArgs<ExtArgs>
   devices?: boolean | Prisma.Tenant$devicesArgs<ExtArgs>
+  enrollmentTokens?: boolean | Prisma.Tenant$enrollmentTokensArgs<ExtArgs>
   employees?: boolean | Prisma.Tenant$employeesArgs<ExtArgs>
   orders?: boolean | Prisma.Tenant$ordersArgs<ExtArgs>
   syncOps?: boolean | Prisma.Tenant$syncOpsArgs<ExtArgs>
@@ -1097,6 +1233,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     store: Prisma.$StorePayload<ExtArgs> | null
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
     devices: Prisma.$DevicePayload<ExtArgs>[]
+    enrollmentTokens: Prisma.$DeviceEnrollmentTokenPayload<ExtArgs>[]
     employees: Prisma.$EmployeePayload<ExtArgs>[]
     orders: Prisma.$OrderPayload<ExtArgs>[]
     syncOps: Prisma.$SyncOperationPayload<ExtArgs>[]
@@ -1505,6 +1642,7 @@ export interface Prisma__TenantClient<T, Null = never, ExtArgs extends runtime.T
   store<T extends Prisma.Tenant$storeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$storeArgs<ExtArgs>>): Prisma.Prisma__StoreClient<runtime.Types.Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   auditEvents<T extends Prisma.Tenant$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   devices<T extends Prisma.Tenant$devicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$devicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  enrollmentTokens<T extends Prisma.Tenant$enrollmentTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$enrollmentTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeviceEnrollmentTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employees<T extends Prisma.Tenant$employeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   orders<T extends Prisma.Tenant$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   syncOps<T extends Prisma.Tenant$syncOpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Tenant$syncOpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SyncOperationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2018,6 +2156,30 @@ export type Tenant$devicesArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   distinct?: Prisma.DeviceScalarFieldEnum | Prisma.DeviceScalarFieldEnum[]
+}
+
+/**
+ * Tenant.enrollmentTokens
+ */
+export type Tenant$enrollmentTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DeviceEnrollmentToken
+   */
+  select?: Prisma.DeviceEnrollmentTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DeviceEnrollmentToken
+   */
+  omit?: Prisma.DeviceEnrollmentTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeviceEnrollmentTokenInclude<ExtArgs> | null
+  where?: Prisma.DeviceEnrollmentTokenWhereInput
+  orderBy?: Prisma.DeviceEnrollmentTokenOrderByWithRelationInput | Prisma.DeviceEnrollmentTokenOrderByWithRelationInput[]
+  cursor?: Prisma.DeviceEnrollmentTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DeviceEnrollmentTokenScalarFieldEnum | Prisma.DeviceEnrollmentTokenScalarFieldEnum[]
 }
 
 /**

@@ -235,6 +235,7 @@ export type StoreWhereInput = {
   items?: Prisma.ItemListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
   devices?: Prisma.DeviceListRelationFilter
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
   modifierGroups?: Prisma.ModifierGroupListRelationFilter
   taxes?: Prisma.TaxListRelationFilter
@@ -257,6 +258,7 @@ export type StoreOrderByWithRelationInput = {
   items?: Prisma.ItemOrderByRelationAggregateInput
   employees?: Prisma.EmployeeOrderByRelationAggregateInput
   devices?: Prisma.DeviceOrderByRelationAggregateInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenOrderByRelationAggregateInput
   shifts?: Prisma.ShiftOrderByRelationAggregateInput
   modifierGroups?: Prisma.ModifierGroupOrderByRelationAggregateInput
   taxes?: Prisma.TaxOrderByRelationAggregateInput
@@ -282,6 +284,7 @@ export type StoreWhereUniqueInput = Prisma.AtLeast<{
   items?: Prisma.ItemListRelationFilter
   employees?: Prisma.EmployeeListRelationFilter
   devices?: Prisma.DeviceListRelationFilter
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenListRelationFilter
   shifts?: Prisma.ShiftListRelationFilter
   modifierGroups?: Prisma.ModifierGroupListRelationFilter
   taxes?: Prisma.TaxListRelationFilter
@@ -337,6 +340,7 @@ export type StoreCreateInput = {
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
@@ -358,6 +362,7 @@ export type StoreUncheckedCreateInput = {
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
@@ -379,6 +384,7 @@ export type StoreUpdateInput = {
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
@@ -400,6 +406,7 @@ export type StoreUncheckedUpdateInput = {
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
@@ -558,6 +565,20 @@ export type StoreUpdateOneRequiredWithoutDevicesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.StoreUpdateToOneWithWhereWithoutDevicesInput, Prisma.StoreUpdateWithoutDevicesInput>, Prisma.StoreUncheckedUpdateWithoutDevicesInput>
 }
 
+export type StoreCreateNestedOneWithoutEnrollmentTokensInput = {
+  create?: Prisma.XOR<Prisma.StoreCreateWithoutEnrollmentTokensInput, Prisma.StoreUncheckedCreateWithoutEnrollmentTokensInput>
+  connectOrCreate?: Prisma.StoreCreateOrConnectWithoutEnrollmentTokensInput
+  connect?: Prisma.StoreWhereUniqueInput
+}
+
+export type StoreUpdateOneRequiredWithoutEnrollmentTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.StoreCreateWithoutEnrollmentTokensInput, Prisma.StoreUncheckedCreateWithoutEnrollmentTokensInput>
+  connectOrCreate?: Prisma.StoreCreateOrConnectWithoutEnrollmentTokensInput
+  upsert?: Prisma.StoreUpsertWithoutEnrollmentTokensInput
+  connect?: Prisma.StoreWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.StoreUpdateToOneWithWhereWithoutEnrollmentTokensInput, Prisma.StoreUpdateWithoutEnrollmentTokensInput>, Prisma.StoreUncheckedUpdateWithoutEnrollmentTokensInput>
+}
+
 export type StoreCreateNestedOneWithoutCategoriesInput = {
   create?: Prisma.XOR<Prisma.StoreCreateWithoutCategoriesInput, Prisma.StoreUncheckedCreateWithoutCategoriesInput>
   connectOrCreate?: Prisma.StoreCreateOrConnectWithoutCategoriesInput
@@ -643,6 +664,7 @@ export type StoreCreateWithoutTenantInput = {
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
@@ -663,6 +685,7 @@ export type StoreUncheckedCreateWithoutTenantInput = {
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
@@ -699,6 +722,7 @@ export type StoreUpdateWithoutTenantInput = {
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
@@ -719,6 +743,7 @@ export type StoreUncheckedUpdateWithoutTenantInput = {
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
@@ -739,6 +764,7 @@ export type StoreCreateWithoutEmployeesInput = {
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
@@ -759,6 +785,7 @@ export type StoreUncheckedCreateWithoutEmployeesInput = {
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
@@ -795,6 +822,7 @@ export type StoreUpdateWithoutEmployeesInput = {
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
@@ -815,6 +843,7 @@ export type StoreUncheckedUpdateWithoutEmployeesInput = {
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
@@ -835,6 +864,7 @@ export type StoreCreateWithoutDevicesInput = {
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
@@ -855,6 +885,7 @@ export type StoreUncheckedCreateWithoutDevicesInput = {
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
@@ -891,6 +922,7 @@ export type StoreUpdateWithoutDevicesInput = {
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
@@ -911,6 +943,107 @@ export type StoreUncheckedUpdateWithoutDevicesInput = {
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
+  shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
+  modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
+  taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
+}
+
+export type StoreCreateWithoutEnrollmentTokensInput = {
+  id?: string
+  name: string
+  address?: string
+  phone?: string
+  taxNumber?: string
+  currency?: string
+  timezone?: string
+  language?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
+  categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
+  items?: Prisma.ItemCreateNestedManyWithoutStoreInput
+  employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
+  devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
+  modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
+  taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
+}
+
+export type StoreUncheckedCreateWithoutEnrollmentTokensInput = {
+  id?: string
+  tenantId: string
+  name: string
+  address?: string
+  phone?: string
+  taxNumber?: string
+  currency?: string
+  timezone?: string
+  language?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
+  items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
+  employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
+  devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
+  modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
+  taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
+}
+
+export type StoreCreateOrConnectWithoutEnrollmentTokensInput = {
+  where: Prisma.StoreWhereUniqueInput
+  create: Prisma.XOR<Prisma.StoreCreateWithoutEnrollmentTokensInput, Prisma.StoreUncheckedCreateWithoutEnrollmentTokensInput>
+}
+
+export type StoreUpsertWithoutEnrollmentTokensInput = {
+  update: Prisma.XOR<Prisma.StoreUpdateWithoutEnrollmentTokensInput, Prisma.StoreUncheckedUpdateWithoutEnrollmentTokensInput>
+  create: Prisma.XOR<Prisma.StoreCreateWithoutEnrollmentTokensInput, Prisma.StoreUncheckedCreateWithoutEnrollmentTokensInput>
+  where?: Prisma.StoreWhereInput
+}
+
+export type StoreUpdateToOneWithWhereWithoutEnrollmentTokensInput = {
+  where?: Prisma.StoreWhereInput
+  data: Prisma.XOR<Prisma.StoreUpdateWithoutEnrollmentTokensInput, Prisma.StoreUncheckedUpdateWithoutEnrollmentTokensInput>
+}
+
+export type StoreUpdateWithoutEnrollmentTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  taxNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
+  categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
+  items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
+  employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
+  devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
+  modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
+  taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
+}
+
+export type StoreUncheckedUpdateWithoutEnrollmentTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  address?: Prisma.StringFieldUpdateOperationsInput | string
+  phone?: Prisma.StringFieldUpdateOperationsInput | string
+  taxNumber?: Prisma.StringFieldUpdateOperationsInput | string
+  currency?: Prisma.StringFieldUpdateOperationsInput | string
+  timezone?: Prisma.StringFieldUpdateOperationsInput | string
+  language?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
+  items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
+  employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
+  devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
@@ -931,6 +1064,7 @@ export type StoreCreateWithoutCategoriesInput = {
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
@@ -951,6 +1085,7 @@ export type StoreUncheckedCreateWithoutCategoriesInput = {
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
@@ -987,6 +1122,7 @@ export type StoreUpdateWithoutCategoriesInput = {
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
@@ -1007,6 +1143,7 @@ export type StoreUncheckedUpdateWithoutCategoriesInput = {
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
@@ -1027,6 +1164,7 @@ export type StoreCreateWithoutItemsInput = {
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
@@ -1047,6 +1185,7 @@ export type StoreUncheckedCreateWithoutItemsInput = {
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
@@ -1083,6 +1222,7 @@ export type StoreUpdateWithoutItemsInput = {
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
@@ -1103,6 +1243,7 @@ export type StoreUncheckedUpdateWithoutItemsInput = {
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
@@ -1124,6 +1265,7 @@ export type StoreCreateWithoutModifierGroupsInput = {
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
 }
@@ -1144,6 +1286,7 @@ export type StoreUncheckedCreateWithoutModifierGroupsInput = {
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
 }
@@ -1180,6 +1323,7 @@ export type StoreUpdateWithoutModifierGroupsInput = {
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
 }
@@ -1200,6 +1344,7 @@ export type StoreUncheckedUpdateWithoutModifierGroupsInput = {
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
 }
@@ -1220,6 +1365,7 @@ export type StoreCreateWithoutTaxesInput = {
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
 }
@@ -1240,6 +1386,7 @@ export type StoreUncheckedCreateWithoutTaxesInput = {
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   shifts?: Prisma.ShiftUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
 }
@@ -1276,6 +1423,7 @@ export type StoreUpdateWithoutTaxesInput = {
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
 }
@@ -1296,6 +1444,7 @@ export type StoreUncheckedUpdateWithoutTaxesInput = {
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   shifts?: Prisma.ShiftUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
 }
@@ -1316,6 +1465,7 @@ export type StoreCreateWithoutShiftsInput = {
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxCreateNestedManyWithoutStoreInput
 }
@@ -1336,6 +1486,7 @@ export type StoreUncheckedCreateWithoutShiftsInput = {
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedCreateNestedManyWithoutStoreInput
   modifierGroups?: Prisma.ModifierGroupUncheckedCreateNestedManyWithoutStoreInput
   taxes?: Prisma.TaxUncheckedCreateNestedManyWithoutStoreInput
 }
@@ -1372,6 +1523,7 @@ export type StoreUpdateWithoutShiftsInput = {
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUpdateManyWithoutStoreNestedInput
 }
@@ -1392,6 +1544,7 @@ export type StoreUncheckedUpdateWithoutShiftsInput = {
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
+  enrollmentTokens?: Prisma.DeviceEnrollmentTokenUncheckedUpdateManyWithoutStoreNestedInput
   modifierGroups?: Prisma.ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput
   taxes?: Prisma.TaxUncheckedUpdateManyWithoutStoreNestedInput
 }
@@ -1406,6 +1559,7 @@ export type StoreCountOutputType = {
   items: number
   employees: number
   devices: number
+  enrollmentTokens: number
   shifts: number
   modifierGroups: number
   taxes: number
@@ -1416,6 +1570,7 @@ export type StoreCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.
   items?: boolean | StoreCountOutputTypeCountItemsArgs
   employees?: boolean | StoreCountOutputTypeCountEmployeesArgs
   devices?: boolean | StoreCountOutputTypeCountDevicesArgs
+  enrollmentTokens?: boolean | StoreCountOutputTypeCountEnrollmentTokensArgs
   shifts?: boolean | StoreCountOutputTypeCountShiftsArgs
   modifierGroups?: boolean | StoreCountOutputTypeCountModifierGroupsArgs
   taxes?: boolean | StoreCountOutputTypeCountTaxesArgs
@@ -1462,6 +1617,13 @@ export type StoreCountOutputTypeCountDevicesArgs<ExtArgs extends runtime.Types.E
 /**
  * StoreCountOutputType without action
  */
+export type StoreCountOutputTypeCountEnrollmentTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.DeviceEnrollmentTokenWhereInput
+}
+
+/**
+ * StoreCountOutputType without action
+ */
 export type StoreCountOutputTypeCountShiftsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.ShiftWhereInput
 }
@@ -1498,6 +1660,7 @@ export type StoreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   items?: boolean | Prisma.Store$itemsArgs<ExtArgs>
   employees?: boolean | Prisma.Store$employeesArgs<ExtArgs>
   devices?: boolean | Prisma.Store$devicesArgs<ExtArgs>
+  enrollmentTokens?: boolean | Prisma.Store$enrollmentTokensArgs<ExtArgs>
   shifts?: boolean | Prisma.Store$shiftsArgs<ExtArgs>
   modifierGroups?: boolean | Prisma.Store$modifierGroupsArgs<ExtArgs>
   taxes?: boolean | Prisma.Store$taxesArgs<ExtArgs>
@@ -1555,6 +1718,7 @@ export type StoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   items?: boolean | Prisma.Store$itemsArgs<ExtArgs>
   employees?: boolean | Prisma.Store$employeesArgs<ExtArgs>
   devices?: boolean | Prisma.Store$devicesArgs<ExtArgs>
+  enrollmentTokens?: boolean | Prisma.Store$enrollmentTokensArgs<ExtArgs>
   shifts?: boolean | Prisma.Store$shiftsArgs<ExtArgs>
   modifierGroups?: boolean | Prisma.Store$modifierGroupsArgs<ExtArgs>
   taxes?: boolean | Prisma.Store$taxesArgs<ExtArgs>
@@ -1575,6 +1739,7 @@ export type $StorePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     items: Prisma.$ItemPayload<ExtArgs>[]
     employees: Prisma.$EmployeePayload<ExtArgs>[]
     devices: Prisma.$DevicePayload<ExtArgs>[]
+    enrollmentTokens: Prisma.$DeviceEnrollmentTokenPayload<ExtArgs>[]
     shifts: Prisma.$ShiftPayload<ExtArgs>[]
     modifierGroups: Prisma.$ModifierGroupPayload<ExtArgs>[]
     taxes: Prisma.$TaxPayload<ExtArgs>[]
@@ -1990,6 +2155,7 @@ export interface Prisma__StoreClient<T, Null = never, ExtArgs extends runtime.Ty
   items<T extends Prisma.Store$itemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Store$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   employees<T extends Prisma.Store$employeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Store$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   devices<T extends Prisma.Store$devicesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Store$devicesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DevicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  enrollmentTokens<T extends Prisma.Store$enrollmentTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Store$enrollmentTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeviceEnrollmentTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   shifts<T extends Prisma.Store$shiftsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Store$shiftsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   modifierGroups<T extends Prisma.Store$modifierGroupsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Store$modifierGroupsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ModifierGroupPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   taxes<T extends Prisma.Store$taxesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Store$taxesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$TaxPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2527,6 +2693,30 @@ export type Store$devicesArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.DeviceScalarFieldEnum | Prisma.DeviceScalarFieldEnum[]
+}
+
+/**
+ * Store.enrollmentTokens
+ */
+export type Store$enrollmentTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DeviceEnrollmentToken
+   */
+  select?: Prisma.DeviceEnrollmentTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DeviceEnrollmentToken
+   */
+  omit?: Prisma.DeviceEnrollmentTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeviceEnrollmentTokenInclude<ExtArgs> | null
+  where?: Prisma.DeviceEnrollmentTokenWhereInput
+  orderBy?: Prisma.DeviceEnrollmentTokenOrderByWithRelationInput | Prisma.DeviceEnrollmentTokenOrderByWithRelationInput[]
+  cursor?: Prisma.DeviceEnrollmentTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.DeviceEnrollmentTokenScalarFieldEnum | Prisma.DeviceEnrollmentTokenScalarFieldEnum[]
 }
 
 /**

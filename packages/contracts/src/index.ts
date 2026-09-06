@@ -89,6 +89,27 @@ export const createEmployeeSchema = z.object({
   role: employeeRoleSchema.exclude(['OWNER']),
   pin: z.string().regex(/^\d{6}$/, 'PIN must contain exactly 6 digits'),
 });
+export const updateEmployeeSchema = z.object({
+  name: z.string().trim().min(1).max(120).optional(),
+  role: employeeRoleSchema.exclude(['OWNER']).optional(),
+  pin: z
+    .string()
+    .regex(/^\d{6}$/)
+    .optional(),
+  active: z.boolean().optional(),
+});
+export const verifyEmployeePinSchema = z.object({
+  employeeId: idSchema,
+  pin: z.string().regex(/^\d{6}$/),
+});
+export const createDeviceInvitationSchema = z.object({
+  deviceName: z.string().trim().min(1).max(120),
+});
+export const enrollDeviceSchema = z.object({
+  token: z.string().min(20).max(512),
+  deviceName: z.string().trim().min(1).max(120).optional(),
+  publicKey: z.string().max(4096).optional(),
+});
 
 export const itemUnitInputSchema = z.object({
   name: z.string().trim().min(1).max(40),
@@ -208,6 +229,10 @@ export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>;
 export type StoreSettings = z.infer<typeof storeSettingsSchema>;
 export type UpdateStoreSettingsInput = z.infer<typeof updateStoreSettingsSchema>;
 export type CreateEmployeeInput = z.infer<typeof createEmployeeSchema>;
+export type UpdateEmployeeInput = z.infer<typeof updateEmployeeSchema>;
+export type VerifyEmployeePinInput = z.infer<typeof verifyEmployeePinSchema>;
+export type CreateDeviceInvitationInput = z.infer<typeof createDeviceInvitationSchema>;
+export type EnrollDeviceInput = z.infer<typeof enrollDeviceSchema>;
 export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type CreateItemInput = z.infer<typeof createItemSchema>;
 export type UpdateItemInput = z.infer<typeof updateItemSchema>;

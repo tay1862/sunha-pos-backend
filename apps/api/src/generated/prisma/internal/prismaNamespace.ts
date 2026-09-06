@@ -403,6 +403,7 @@ export const ModelName = {
   Store: 'Store',
   Employee: 'Employee',
   Device: 'Device',
+  DeviceEnrollmentToken: 'DeviceEnrollmentToken',
   DeviceEmployee: 'DeviceEmployee',
   Category: 'Category',
   Item: 'Item',
@@ -437,7 +438,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "user" | "authSession" | "store" | "employee" | "device" | "deviceEmployee" | "category" | "item" | "modifierGroup" | "tax" | "modifierOption" | "itemModifierGroup" | "itemUnit" | "inventoryLevel" | "inventoryMovement" | "order" | "orderLine" | "payment" | "receipt" | "refund" | "shift" | "cashMovement" | "syncOperation" | "auditEvent"
+    modelProps: "tenant" | "user" | "authSession" | "store" | "employee" | "device" | "deviceEnrollmentToken" | "deviceEmployee" | "category" | "item" | "modifierGroup" | "tax" | "modifierOption" | "itemModifierGroup" | "itemUnit" | "inventoryLevel" | "inventoryMovement" | "order" | "orderLine" | "payment" | "receipt" | "refund" | "shift" | "cashMovement" | "syncOperation" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -882,6 +883,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.DeviceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.DeviceCountAggregateOutputType> | number
+        }
+      }
+    }
+    DeviceEnrollmentToken: {
+      payload: Prisma.$DeviceEnrollmentTokenPayload<ExtArgs>
+      fields: Prisma.DeviceEnrollmentTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.DeviceEnrollmentTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.DeviceEnrollmentTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.DeviceEnrollmentTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.DeviceEnrollmentTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>
+        }
+        findMany: {
+          args: Prisma.DeviceEnrollmentTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>[]
+        }
+        create: {
+          args: Prisma.DeviceEnrollmentTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>
+        }
+        createMany: {
+          args: Prisma.DeviceEnrollmentTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.DeviceEnrollmentTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.DeviceEnrollmentTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>
+        }
+        update: {
+          args: Prisma.DeviceEnrollmentTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.DeviceEnrollmentTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.DeviceEnrollmentTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.DeviceEnrollmentTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.DeviceEnrollmentTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$DeviceEnrollmentTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.DeviceEnrollmentTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateDeviceEnrollmentToken>
+        }
+        groupBy: {
+          args: Prisma.DeviceEnrollmentTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DeviceEnrollmentTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.DeviceEnrollmentTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.DeviceEnrollmentTokenCountAggregateOutputType> | number
         }
       }
     }
@@ -2414,6 +2489,20 @@ export const DeviceScalarFieldEnum = {
 export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
 
 
+export const DeviceEnrollmentTokenScalarFieldEnum = {
+  id: 'id',
+  tenantId: 'tenantId',
+  storeId: 'storeId',
+  tokenHash: 'tokenHash',
+  deviceName: 'deviceName',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type DeviceEnrollmentTokenScalarFieldEnum = (typeof DeviceEnrollmentTokenScalarFieldEnum)[keyof typeof DeviceEnrollmentTokenScalarFieldEnum]
+
+
 export const DeviceEmployeeScalarFieldEnum = {
   deviceId: 'deviceId',
   employeeId: 'employeeId',
@@ -3043,6 +3132,7 @@ export type GlobalOmitConfig = {
   store?: Prisma.StoreOmit
   employee?: Prisma.EmployeeOmit
   device?: Prisma.DeviceOmit
+  deviceEnrollmentToken?: Prisma.DeviceEnrollmentTokenOmit
   deviceEmployee?: Prisma.DeviceEmployeeOmit
   category?: Prisma.CategoryOmit
   item?: Prisma.ItemOmit
