@@ -74,12 +74,12 @@ export class PrismaAuthRepository implements AuthRepository {
       where: { email },
       include: {
         tenant: {
-          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true } } },
+          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true, devices: { select: { deviceId: true }, take: 1 } } } },
         },
       },
     });
     return user?.tenant.store
-      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id)
+      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id, user.tenant.employees[0]?.devices[0]?.deviceId)
       : null;
   }
 
@@ -88,12 +88,12 @@ export class PrismaAuthRepository implements AuthRepository {
       where: { id },
       include: {
         tenant: {
-          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true } } },
+          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true, devices: { select: { deviceId: true }, take: 1 } } } },
         },
       },
     });
     return user?.tenant.store
-      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id)
+      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id, user.tenant.employees[0]?.devices[0]?.deviceId)
       : null;
   }
 

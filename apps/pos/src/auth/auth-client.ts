@@ -1,6 +1,6 @@
-import type { LoginInput, SignUpInput, UpdateStoreSettingsInput } from '@sunha/contracts';
+import type { CreateCategoryInput, CreateItemInput, LoginInput, SignUpInput, UpdateStoreSettingsInput } from '@sunha/contracts';
 import { apiRequest } from '../api/client';
-import { getAccessToken, saveTokens } from './token-storage';
+import { getAccessToken, saveSessionContext, saveTokens } from './token-storage';
 import { readCatalogSnapshot, saveCatalogSnapshot } from '../offline/catalog-cache';
 
 type AuthResponse = {
@@ -9,18 +9,22 @@ type AuthResponse = {
     refreshToken: string;
     user: { id: string; email: string; tenantId: string };
     store: { id: string; tenantId: string; name: string };
+    ownerEmployeeId?: string;
+    ownerDeviceId?: string;
   };
 };
 
 export async function signUp(input: SignUpInput): Promise<AuthResponse['data']> {
   const result = await apiRequest<AuthResponse>('/auth/signup', { method: 'POST', body: input });
   await saveTokens(result.data.accessToken, result.data.refreshToken);
+  await saveSessionContext(result.data.ownerEmployeeId, result.data.ownerDeviceId);
   return result.data;
 }
 
 export async function login(input: LoginInput): Promise<AuthResponse['data']> {
   const result = await apiRequest<AuthResponse>('/auth/login', { method: 'POST', body: input });
   await saveTokens(result.data.accessToken, result.data.refreshToken);
+  await saveSessionContext(result.data.ownerEmployeeId, result.data.ownerDeviceId);
   return result.data;
 }
 
@@ -43,6 +47,21 @@ export async function listCatalogItems(): Promise<
 > {
   const token = await getAccessToken();
   return apiRequest('/catalog/items', { accessToken: token ?? undefined });
+}
+
+export async function listCatalogCategories() {
+  const token = await getAccessToken();
+  return apiRequest<Array<{ id: string; name: string; color: string }>>('/catalog/categories', { accessToken: token ?? undefined });
+}
+
+export async function createCatalogCategory(input: CreateCategoryInput) {
+  const token = await getAccessToken();
+  return apiRequest('/catalog/categories', { method: 'POST', body: input, accessToken: token ?? undefined });
+}
+
+export async function createCatalogItem(input: CreateItemInput) {
+  const token = await getAccessToken();
+  return apiRequest('/catalog/items', { method: 'POST', body: input, accessToken: token ?? undefined });
 }
 
 export async function getCatalogSnapshot() {

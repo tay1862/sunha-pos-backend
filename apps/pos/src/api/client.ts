@@ -1,3 +1,4 @@
+import { getSessionContext } from '../auth/token-storage';
 const configuredBase = process.env.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2:3001';
 export const API_BASE_URL = configuredBase.replace(/\/$/, '').endsWith('/v1')
   ? configuredBase.replace(/\/$/, '')
@@ -16,12 +17,15 @@ export async function apiRequest<T>(
   path: string,
   options: { method?: string; body?: unknown; accessToken?: string } = {},
 ): Promise<T> {
+  const context = await getSessionContext();
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: options.method ?? 'GET',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       ...(options.accessToken ? { Authorization: `Bearer ${options.accessToken}` } : {}),
+      ...(context.employeeId ? { 'x-employee-id': context.employeeId } : {}),
+      ...(context.deviceId ? { 'x-device-id': context.deviceId } : {}),
     },
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
   });
