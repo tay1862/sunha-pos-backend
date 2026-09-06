@@ -65,11 +65,13 @@
 
 ## Phase 3 — Online sale และเงินจริง
 
-- [ ] เชื่อม cart/modifier/discount/tax กับ `POST /orders/checkout` จริง → Verify: ไม่มี mock product/cart เหลือใน production flow
-- [ ] Server คำนวณราคาและ tax จากข้อมูลร้าน ไม่เชื่อยอดจาก client → Verify: แก้ราคา/discount/tax ใน request แล้ว server ปฏิเสธหรือคำนวณใหม่
-- [ ] ทำ payment cash/change/manual QR/transfer/card พร้อม reference และ `UNVERIFIED` → Verify: ยอดรวม/เงินทอนตรงทุก boundary case
-- [ ] ทำ immutable receipt number, receipt history, reprint และ copy receipt → Verify: retry ทุกแบบได้ receipt เดิม ไม่สร้างซ้ำ
-- [ ] ทำ full refund online ด้วย manager approval, reason, stock/cash reversal และ audit → Verify: cashier refund เองไม่ได้และ refund ซ้ำไม่ได้
+- [x] เชื่อม cart/modifier/discount/tax กับ `POST /orders/checkout` จริง → Verify: POS โหลด catalog จริง, cart ส่ง item/unit/modifier/discount เข้า API และไม่มี mock cart ใน production flow
+- [x] Server คำนวณราคาและ tax จากข้อมูลร้าน ไม่เชื่อยอดจาก client → Verify: checkout resolve ราคา/ตัวเลือก/ภาษีจาก tenant ใน transaction และคำนวณ cash change ใหม่บน server
+- [x] ทำ payment cash/change/manual QR/transfer/card พร้อม reference และ `UNVERIFIED` → Verify: payment types ถูกบันทึกพร้อม reference, manual QR เป็น `UNVERIFIED`, insufficient cash ถูกปฏิเสธ และ change ใช้ integer LAK
+- [x] ทำ immutable receipt number, receipt history, reprint และ copy receipt → Verify: receipt API/UI อ่านประวัติ, reprint/copy ใช้ receipt เดิม และ retry ด้วย `clientOrderId` ไม่สร้าง receipt ซ้ำ (การส่งเข้าเครื่องพิมพ์จริงอยู่ Phase 6)
+- [x] ทำ full refund online ด้วย manager approval, reason, stock/cash reversal และ audit → Verify: API/UI บังคับ Manager PIN + reason, refund ซ้ำ/cashier refund ถูกปฏิเสธ, stock/payment reversal และ audit ถูกสร้างใน transaction
+
+> สถานะ 2026-09-06: Phase 3 implementation อยู่ใน commit `b8994bb` และ deploy production แล้ว. Local typecheck/lint ผ่าน, unit tests 9 ผ่าน, Android export ผ่าน; PostgreSQL 17 integration suite บน VPS ผ่าน 5 test files / 11 tests รวม concurrent checkout, manual QR reconciliation, immutable receipt และ full refund. Printer hardware, Android device E2E และ offline sale ยังไม่ถือว่าผ่านจนกว่าจะตรวจใน Phase 5–6
 
 ## Phase 4 — Shift และ fraud controls
 
