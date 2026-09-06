@@ -41,7 +41,10 @@ import { darkColors, lightColors, type SunhaColors } from '../src/design/tokens'
 import { SunhaButton } from '../src/ui/sunha-button';
 import type { CheckoutOrderInput } from '@sunha/contracts';
 import { checkoutOrder, getCatalogSnapshot, getSellingPolicy } from '../src/auth/auth-client';
+import { ApiError } from '../src/api/client';
+import { getSessionContext } from '../src/auth/token-storage';
 import { enqueueOperation, canChargeOffline } from '../src/offline/outbox';
+import { syncPending } from '../src/offline/sync-client';
 import { readLocalCart, saveLocalCart } from '../src/offline/local-db';
 
 type Product = {
@@ -410,6 +413,17 @@ export default function SaleScreen() {
       .catch(() => Alert.alert('ໂຫຼດສິນຄ້າບໍ່ສຳເລັດ', 'ກວດສອບອິນເຕີເນັດ ແລ້ວລອງໃໝ່'));
   }, []);
 
+  useEffect(() => {
+    let active = true;
+    const sync = async () => {
+      const context = await getSessionContext();
+      if (active && context.deviceId && context.employeeId) await syncPending(context.deviceId, context.employeeId);
+    };
+    void sync();
+    const timer = setInterval(() => void sync(), 30_000);
+    return () => { active = false; clearInterval(timer); };
+  }, []);
+
   useEffect(() => { if (cartHydrated) saveLocalCart(cart).catch(() => undefined); }, [cart, cartHydrated]);
 
   const visibleProducts = useMemo(() => {
@@ -469,7 +483,7 @@ export default function SaleScreen() {
       setPaymentReference('');
       Alert.alert('ຮັບຊຳລະສຳເລັດ', `ເລກໃບເສັດ: ${result.receipts?.[0]?.number ?? 'ສຳເລັດ'}`);
     } catch (error) {
-      if (canChargeOffline(offlinePolicy.sellingDeviceCount, offlinePolicy.leaseExpiresAt)) {
+      if (!(error instanceof ApiError) && canChargeOffline(offlinePolicy.sellingDeviceCount, offlinePolicy.leaseExpiresAt)) {
         await enqueueOperation({ operationId: input.clientOrderId, type: 'CHECKOUT_ORDER', payload: { ...input, offline: true }, occurredAtDevice: new Date().toISOString() });
         setCart({}); setPaymentVisible(false); setCartVisible(false); setTendered(''); setPaymentReference('');
         Alert.alert('ບັນທຶກການຂາຍອອບລາຍແລ້ວ', 'ລະບົບຈະ sync ໃຫ້ອັດຕະໂນມັດເມື່ອອອນລາຍ');

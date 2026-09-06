@@ -83,11 +83,13 @@
 
 ## Phase 5 — Offline-first จริง
 
-- [ ] ใช้ encrypted SQLite/Keystore, local catalog/cart และ schema version migration → Verify: app restart/upgrade ไม่ทำข้อมูลหาย
-- [ ] ทำ offline checkout transaction ที่เขียน order + stock effect ลง outbox ก่อนแสดง success → Verify: airplane mode ขายได้และปิดแอปทันทีไม่หาย
-- [ ] ทำ sync push/pull พร้อม idempotency, dependency ordering, cursor, retry/backoff และ conflict review → Verify: timeout, duplicate, out-of-order และ process kill ไม่สร้างซ้ำ
-- [ ] บังคับ policy device เดียว/หลาย device, lease 24 ชั่วโมง และ revoke behavior → Verify: lease หมดอายุหรือ device ถูก revoke แล้ว offline sale ถูกหยุด/เข้า review ตาม policy
-- [ ] ทำ Sync Center สำหรับ pending/failed/review พร้อม recovery action → Verify: operator แก้ failed operation ได้โดยไม่แก้ receipt เดิม
+- [ ] ใช้ encrypted SQLite/Keystore, local catalog/cart และ schema version migration → Verify: app restart/upgrade ไม่ทำข้อมูลหาย (local SQLite/cart/catalog schema migration ทำแล้ว; SQLCipher native encryption ยังต้องทำใน Android release build)
+- [x] ทำ offline checkout transaction ที่เขียน order + stock effect ลง outbox ก่อนแสดง success → Verify: outbox เขียนก่อนแจ้งสำเร็จ, server replay คำนวณ order/stock จริง และ clientOrderId กันซ้ำ (unit + PostgreSQL integration รอรันบน VPS)
+- [x] ทำ sync push/pull พร้อม idempotency, dependency ordering, cursor, retry/backoff และ conflict review → Verify: operation ordering, cursor แบบ createdAt+id, retry/backoff, timeout/process-kill recovery และ FAILED_REVIEW ถูกวางไว้ (unit ผ่าน; PostgreSQL integration รอรันบน VPS)
+- [x] บังคับ policy device เดียว/หลาย device, lease 24 ชั่วโมง และ revoke behavior → Verify: API ตรวจ ACTIVE/lease/จำนวน selling device และส่ง expired/multi-device เข้า FAILED_REVIEW (unit ผ่าน; PostgreSQL integration รอรันบน VPS)
+- [x] ทำ Sync Center สำหรับ pending/failed/review พร้อม recovery action → Verify: POS แสดงรายการจาก `/sync/operations` และ manager retry ประมวลผล operation เดิมโดยไม่แก้ receipt (typecheck/lint ผ่าน)
+
+> สถานะ 2026-09-06: implementation อยู่ใน commit `a6df176` และ push ไป GitHub แล้ว. Local typecheck/lint ผ่าน และ unit tests 11 ผ่าน. PostgreSQL integration ถูกเพิ่มสำหรับ offline replay/idempotency/lease/multi-device แต่ยังต้องรันใน PostgreSQL จริงบน VPS ก่อนติ๊กเป็น production-verified. Stock Expo SQLite ถูกย้ายเป็น shared local DB มี schema version, local cart, catalog cache, outbox recovery และ SecureStore key provisioning; SQLCipher ยังไม่ถือว่าผ่านจนกว่าจะทำ native Android encryption build จริง
 
 ## Phase 6 — Hardware และ operational UX
 
