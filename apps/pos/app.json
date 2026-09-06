@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Sunha POS",
+    "slug": "sunha-pos",
+    "scheme": "sunhapos",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "plugins": ["expo-router", "expo-localization"],
+    "android": {
+      "package": "com.sunha.pos",
+      "adaptiveIcon": { "backgroundColor": "#087F8C" }
+    },
+    "extra": { "router": {} },
+    "experiments": { "typedRoutes": true }
+  }
+}

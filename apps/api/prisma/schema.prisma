@@ -1,0 +1,420 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum EmployeeRole {
+  OWNER
+  MANAGER
+  CASHIER
+}
+
+enum DeviceStatus {
+  PENDING
+  ACTIVE
+  REVOKED
+}
+
+enum OrderStatus {
+  HELD
+  COMPLETED
+  VOIDED
+  REFUNDED
+}
+
+enum PaymentType {
+  CASH
+  MANUAL_QR
+  BANK_TRANSFER
+  CARD_MANUAL
+  OTHER
+}
+
+enum SyncOperationStatus {
+  PENDING
+  ACKED
+  FAILED_REVIEW
+}
+
+model Tenant {
+  id           String        @id @default(uuid()) @db.Uuid
+  businessName String        @db.VarChar(120)
+  country      String        @default("LA") @db.Char(2)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  owner        User?
+  store        Store?
+  auditEvents  AuditEvent[]
+  devices      Device[]
+  employees    Employee[]
+  orders       Order[]
+  syncOps      SyncOperation[]
+
+  @@index([createdAt])
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  tenantId     String   @unique @db.Uuid
+  email        String   @unique @db.VarChar(320)
+  passwordHash String
+  emailVerifiedAt DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  tenant       Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  sessions     AuthSession[]
+}
+
+model AuthSession {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @db.Uuid
+  tokenHash String   @unique @db.VarChar(128)
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+  @@index([expiresAt])
+}
+
+model Store {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @unique @db.Uuid
+  name        String   @db.VarChar(120)
+  address     String   @default("") @db.VarChar(500)
+  phone       String   @default("") @db.VarChar(40)
+  taxNumber   String   @default("") @db.VarChar(80)
+  currency    String   @default("LAK") @db.Char(3)
+  timezone    String   @default("Asia/Vientiane") @db.VarChar(64)
+  language    String   @default("lo") @db.VarChar(5)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  categories  Category[]
+  items       Item[]
+  employees   Employee[]
+  devices     Device[]
+  shifts      Shift[]
+  modifierGroups ModifierGroup[]
+  taxes       Tax[]
+
+  @@index([name])
+}
+
+model Employee {
+  id          String       @id @default(uuid()) @db.Uuid
+  tenantId    String       @db.Uuid
+  storeId     String       @db.Uuid
+  name        String       @db.VarChar(120)
+  role        EmployeeRole
+  pinHash     String
+  active      Boolean      @default(true)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  tenant      Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  store       Store        @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  orders      Order[]
+  shifts      Shift[]
+  auditEvents AuditEvent[]
+  syncOps     SyncOperation[]
+  devices     DeviceEmployee[]
+  refunds     Refund[]
+
+  @@index([tenantId, active])
+  @@index([storeId, role])
+}
+
+model Device {
+  id          String          @id @default(uuid()) @db.Uuid
+  tenantId    String          @db.Uuid
+  storeId     String          @db.Uuid
+  name        String          @db.VarChar(120)
+  publicKey   String?
+  status      DeviceStatus    @default(PENDING)
+  offlineLeaseExpiresAt DateTime?
+  lastSeenAt  DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  tenant      Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  store       Store           @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  employees   DeviceEmployee[]
+  syncOps     SyncOperation[]
+
+  @@index([storeId, status])
+}
+
+model DeviceEmployee {
+  deviceId   String   @db.Uuid
+  employeeId String   @db.Uuid
+  createdAt  DateTime @default(now())
+  device     Device   @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+  employee   Employee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+
+  @@id([deviceId, employeeId])
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  storeId   String   @db.Uuid
+  name      String   @db.VarChar(80)
+  color     String   @default("#0284C7") @db.Char(7)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  store     Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  items     Item[]
+
+  @@unique([storeId, name])
+}
+
+model Item {
+  id          String      @id @default(uuid()) @db.Uuid
+  storeId     String      @db.Uuid
+  categoryId  String?     @db.Uuid
+  name        String      @db.VarChar(120)
+  imageUrl    String?     @db.VarChar(500)
+  costAmount  BigInt?
+  trackStock  Boolean     @default(false)
+  active      Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  store       Store       @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  category    Category?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  units       ItemUnit[]
+  inventory   InventoryLevel?
+  orderLines  OrderLine[]
+  modifierGroups ItemModifierGroup[]
+
+  @@index([storeId, active])
+  @@index([categoryId])
+}
+
+model ModifierGroup {
+  id        String @id @default(uuid()) @db.Uuid
+  storeId   String @db.Uuid
+  name      String @db.VarChar(80)
+  required  Boolean @default(false)
+  minSelections Int @default(0)
+  maxSelections Int @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  store     Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  options   ModifierOption[]
+  items     ItemModifierGroup[]
+}
+
+model Tax {
+  id String @id @default(uuid()) @db.Uuid
+  storeId String @db.Uuid
+  name String @db.VarChar(80)
+  rateBasisPoints Int
+  mode String @db.VarChar(12)
+  active Boolean @default(true)
+  store Store @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  @@index([storeId, active])
+}
+
+model ModifierOption {
+  id        String @id @default(uuid()) @db.Uuid
+  groupId   String @db.Uuid
+  name      String @db.VarChar(80)
+  priceDeltaAmount BigInt
+  group     ModifierGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+}
+
+model ItemModifierGroup {
+  itemId  String @db.Uuid
+  groupId String @db.Uuid
+  item    Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  group   ModifierGroup @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  @@id([itemId, groupId])
+}
+
+model ItemUnit {
+  id                String   @id @default(uuid()) @db.Uuid
+  itemId            String   @db.Uuid
+  name              String   @db.VarChar(40)
+  multiplierToBase  Decimal  @db.Decimal(18, 3)
+  priceAmount       BigInt
+  sku               String?  @db.VarChar(80)
+  barcode           String?  @db.VarChar(80)
+  active            Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  item              Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  orderLines        OrderLine[]
+
+  @@unique([itemId, name])
+  @@unique([barcode])
+  @@index([sku])
+}
+
+model InventoryLevel {
+  itemId       String   @id @db.Uuid
+  quantityBase Decimal  @default(0) @db.Decimal(18, 3)
+  lowStockAt   Decimal? @db.Decimal(18, 3)
+  updatedAt    DateTime @updatedAt
+  item         Item     @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  movements    InventoryMovement[]
+}
+
+model InventoryMovement {
+  id          String   @id @default(uuid()) @db.Uuid
+  itemId      String   @db.Uuid
+  quantityBase Decimal @db.Decimal(18, 3)
+  reason      String   @db.VarChar(40)
+  referenceId String?  @db.Uuid
+  createdAt   DateTime @default(now())
+  item        InventoryLevel @relation(fields: [itemId], references: [itemId], onDelete: Cascade)
+
+  @@index([itemId, createdAt])
+}
+
+model Order {
+  id              String      @id @default(uuid()) @db.Uuid
+  clientOrderId   String      @unique @db.Uuid
+  tenantId        String      @db.Uuid
+  storeId         String      @db.Uuid
+  employeeId      String      @db.Uuid
+  deviceId        String?     @db.Uuid
+  status          OrderStatus @default(HELD)
+  subtotalAmount  BigInt
+  discountAmount  BigInt       @default(0)
+  taxAmount       BigInt       @default(0)
+  totalAmount     BigInt
+  currency        String       @default("LAK") @db.Char(3)
+  offline         Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  completedAt     DateTime?
+  tenant          Tenant       @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee        Employee     @relation(fields: [employeeId], references: [id])
+  lines           OrderLine[]
+  payments        Payment[]
+  receipts        Receipt[]
+  refunds         Refund[]
+
+  @@index([tenantId, createdAt])
+  @@index([storeId, status, createdAt])
+}
+
+model OrderLine {
+  id              String   @id @default(uuid()) @db.Uuid
+  orderId         String   @db.Uuid
+  itemId          String   @db.Uuid
+  unitId          String   @db.Uuid
+  itemNameSnapshot String  @db.VarChar(120)
+  unitNameSnapshot String  @db.VarChar(40)
+  quantity        Decimal  @db.Decimal(18, 3)
+  multiplierSnapshot Decimal @db.Decimal(18, 3)
+  unitPriceAmount BigInt
+  lineTotalAmount BigInt
+  note            String   @default("") @db.VarChar(300)
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  item            Item     @relation(fields: [itemId], references: [id])
+  unit            ItemUnit @relation(fields: [unitId], references: [id])
+
+  @@index([orderId])
+}
+
+model Payment {
+  id              String      @id @default(uuid()) @db.Uuid
+  orderId         String      @db.Uuid
+  type            PaymentType
+  amount          BigInt
+  tenderedAmount  BigInt?
+  changeAmount    BigInt?
+  reference       String?     @db.VarChar(160)
+  unverified      Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+  order           Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Receipt {
+  id          String   @id @default(uuid()) @db.Uuid
+  orderId     String   @db.Uuid
+  number      String   @unique @db.VarChar(80)
+  createdAt   DateTime @default(now())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Refund {
+  id                String   @id @default(uuid()) @db.Uuid
+  orderId           String   @db.Uuid
+  managerEmployeeId String   @db.Uuid
+  amount            BigInt
+  reason            String   @db.VarChar(300)
+  createdAt         DateTime @default(now())
+  order             Order    @relation(fields: [orderId], references: [id])
+  manager           Employee @relation(fields: [managerEmployeeId], references: [id])
+  @@unique([orderId])
+  @@index([managerEmployeeId, createdAt])
+}
+
+model Shift {
+  id              String   @id @default(uuid()) @db.Uuid
+  storeId         String   @db.Uuid
+  employeeId      String   @db.Uuid
+  openingAmount   BigInt
+  closingAmount   BigInt?
+  openedAt        DateTime @default(now())
+  closedAt        DateTime?
+  isOpen          Boolean  @default(true)
+  store           Store    @relation(fields: [storeId], references: [id], onDelete: Cascade)
+  employee        Employee @relation(fields: [employeeId], references: [id])
+  cashMovements   CashMovement[]
+  @@unique([storeId, isOpen])
+
+  @@index([storeId, openedAt])
+}
+
+model CashMovement {
+  id        String   @id @default(uuid()) @db.Uuid
+  shiftId   String   @db.Uuid
+  amount    BigInt
+  type      String   @db.VarChar(30)
+  reason    String   @db.VarChar(300)
+  employeeId String? @db.Uuid
+  createdAt DateTime @default(now())
+  shift     Shift    @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+}
+
+model SyncOperation {
+  id             String              @id @default(uuid()) @db.Uuid
+  operationId    String              @unique @db.Uuid
+  tenantId       String              @db.Uuid
+  deviceId       String              @db.Uuid
+  employeeId     String              @db.Uuid
+  type           String              @db.VarChar(40)
+  payload        Json
+  occurredAtDevice DateTime
+  status         SyncOperationStatus @default(PENDING)
+  createdAt      DateTime            @default(now())
+  tenant         Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  device         Device              @relation(fields: [deviceId], references: [id])
+  employee       Employee            @relation(fields: [employeeId], references: [id])
+
+  @@index([tenantId, status, createdAt])
+}
+
+model AuditEvent {
+  id          String   @id @default(uuid()) @db.Uuid
+  tenantId    String   @db.Uuid
+  employeeId  String?  @db.Uuid
+  action      String   @db.VarChar(80)
+  entityType  String   @db.VarChar(50)
+  entityId    String?  @db.Uuid
+  metadata    Json
+  occurredAt  DateTime @default(now())
+  tenant      Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  employee    Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+
+  @@index([tenantId, occurredAt])
+  @@index([entityType, entityId])
+}

@@ -1,0 +1,47 @@
+{
+  "name": "@sunha/pos",
+  "version": "0.1.0",
+  "private": true,
+  "main": "expo-router/entry",
+  "scripts": {
+    "dev": "expo start",
+    "android": "expo run:android",
+    "prebuild": "expo prebuild --platform android",
+    "build": "expo export --platform android",
+    "lint": "eslint app src",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run --passWithNoTests"
+  },
+  "dependencies": {
+    "@expo-google-fonts/noto-sans-lao": "0.4.2",
+    "@shopify/flash-list": "^2.0.2",
+    "@sunha/contracts": "workspace:*",
+    "@tamagui/config": "^2.7.7",
+    "expo": "57.0.20",
+    "expo-camera": "~17.0.10",
+    "expo-font": "57.0.3",
+    "expo-localization": "57.0.1",
+    "expo-router": "57.0.19",
+    "expo-secure-store": "^57.0.3",
+    "expo-sqlite": "16.0.8",
+    "expo-status-bar": "57.0.1",
+    "expo-system-ui": "57.0.3",
+    "i18next": "26.4.2",
+    "lucide-react-native": "^1.41.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "react-i18next": "17.0.13",
+    "react-native": "0.86.3",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-svg": "^15.15.4",
+    "react-native-web": "^0.21.2",
+    "react-native-worklets": "0.10.1",
+    "tamagui": "^2.7.7"
+  },
+  "devDependencies": {
+    "@react-native/metro-config": "0.86.3",
+    "@types/react": "19.2.18"
+  }
+}

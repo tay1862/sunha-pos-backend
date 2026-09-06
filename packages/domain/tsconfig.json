@@ -1,0 +1,5 @@
+{
+  "extends": "../config/typescript/library.json",
+  "compilerOptions": { "outDir": "dist", "rootDir": ".", "types": ["vitest/globals"] },
+  "include": ["src/**/*.ts", "test/**/*.ts"]
+}
