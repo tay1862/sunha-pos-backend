@@ -4,6 +4,7 @@ import argon2 from 'argon2';
 import { SignJWT, jwtVerify } from 'jose';
 import type { LoginInput, SignUpInput, StoreSettings } from '@sunha/contracts';
 import { PrismaService } from '../database/prisma.service.js';
+import type { EmailDelivery } from './email.service.js';
 
 export type AuthUser = { id: string; email: string; tenantId: string };
 export type AuthStore = StoreSettings & { id: string; tenantId: string };
@@ -237,7 +238,7 @@ export class PrismaAuthRepository implements AuthRepository {
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly repository: AuthRepository) {}
+  constructor(private readonly repository: AuthRepository, private readonly email?: EmailDelivery) {}
 
   async signup(input: SignUpInput): Promise<AuthResult> {
     const email = input.email.trim().toLowerCase();
@@ -256,6 +257,7 @@ export class AuthService {
       tokenHash: hashToken(verificationToken),
       expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
     });
+    await this.email?.sendVerification(email, verificationToken);
     return this.issue(
       user,
       process.env.AUTH_TOKEN_OUTPUT === 'true' ? verificationToken : undefined,
@@ -300,6 +302,7 @@ export class AuthService {
       tokenHash: hashToken(token),
       expiresAt: new Date(Date.now() + 30 * 60 * 1000),
     });
+    await this.email?.sendPasswordReset(user.email, token);
     return process.env.AUTH_TOKEN_OUTPUT === 'true' ? { resetToken: token } : {};
   }
 

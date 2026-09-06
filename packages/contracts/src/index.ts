@@ -152,6 +152,8 @@ export const inventoryAdjustmentSchema = z.object({
   itemId: idSchema,
   quantityBase: z.string().regex(/^-?\d+(?:\.\d{1,3})?$/),
   reason: z.string().trim().min(1).max(300),
+  managerEmployeeId: idSchema,
+  managerPin: z.string().regex(/^\d{6}$/),
 });
 
 export const modifierOptionSchema = z.object({

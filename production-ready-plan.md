@@ -26,7 +26,7 @@
 - [x] ทำ authorization guard กลาง ตรวจ tenant + store + role/permission + actor/device ทุก mutation → Verify: IDOR, cashier escalation และ forged headers ผ่านไม่ได้
 - [x] เพิ่ม email verification, password reset, session revoke และ PIN lockout → Verify: token/session ที่ revoke ใช้ไม่ได้ (ยังเหลือ email delivery provider จริง)
 
-> สถานะล่าสุด: signup สร้าง owner employee และ owner device ที่ active พร้อมผูกสิทธิ์และ offline lease แล้ว; เพิ่ม email verification/password-reset token แบบใช้ครั้งเดียว, logout/revoke session, PIN lockout แบบสะสมความผิดพลาด และบังคับ `x-device-id` ที่ active และอยู่ร้านเดียวกันใน protected business routes แล้ว เหลือ email delivery provider จริงก่อนเปิดใช้งานเชิงพาณิชย์
+> สถานะล่าสุด: signup สร้าง owner employee และ owner device ที่ active พร้อมผูกสิทธิ์และ offline lease แล้ว; เพิ่ม email verification/password-reset token แบบใช้ครั้งเดียว, Resend email delivery adapter, logout/revoke session, PIN lockout แบบสะสมความผิดพลาด และบังคับ `x-device-id` ที่ active และอยู่ร้านเดียวกันใน protected business routes แล้ว เหลือการตั้งค่า Resend production secret/domain และทดสอบส่งจริงก่อนเปิดใช้งานเชิงพาณิชย์
 
 ## Phase 2 — Catalog, pricing และ inventory correctness
 
@@ -45,6 +45,7 @@
 - 2026-09-06: เพิ่ม migration `0002_identity_modifiers`, email/password recovery foundation, PIN lockout, active-device context, modifier assignment/snapshot และ negative-stock policy; local typecheck/test/lint ผ่าน (API 7 tests)
 - 2026-09-06: build image ใหม่และ deploy VPS ด้วย `prisma migrate deploy` สำเร็จ; migration `0002_identity_modifiers` ถูก apply, API/PostgreSQL healthy และ readiness check ผ่าน
 - 2026-09-06: เพิ่ม owner-device bootstrap ใน signup transaction และตรวจ typecheck/test/lint ซ้ำผ่าน (API 7 tests)
+- 2026-09-06: เพิ่ม Resend email adapter, catalog snapshot + SQLite local cache และบังคับ Manager PIN/audit สำหรับ stock adjustment; local typecheck/test/lint ผ่าน (API 7 tests)
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง

@@ -1,6 +1,7 @@
 import type { LoginInput, SignUpInput, UpdateStoreSettingsInput } from '@sunha/contracts';
 import { apiRequest } from '../api/client';
 import { getAccessToken, saveTokens } from './token-storage';
+import { readCatalogSnapshot, saveCatalogSnapshot } from '../offline/catalog-cache';
 
 type AuthResponse = {
   data: {
@@ -42,6 +43,20 @@ export async function listCatalogItems(): Promise<
 > {
   const token = await getAccessToken();
   return apiRequest('/catalog/items', { accessToken: token ?? undefined });
+}
+
+export async function getCatalogSnapshot() {
+  type Snapshot = { version: string; categories: unknown[]; items: Awaited<ReturnType<typeof listCatalogItems>>; modifierGroups: unknown[]; taxes: unknown[] };
+  const token = await getAccessToken();
+  try {
+    const result = await apiRequest<{ data: Snapshot }>('/catalog/snapshot', { accessToken: token ?? undefined });
+    await saveCatalogSnapshot(result.data.version, result.data);
+    return result.data;
+  } catch (error) {
+    const cached = await readCatalogSnapshot<Snapshot>();
+    if (cached) return cached.payload;
+    throw error;
+  }
 }
 
 export async function listInventory(): Promise<

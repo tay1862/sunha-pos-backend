@@ -36,6 +36,12 @@ export class CatalogController {
     return this.catalog.listItems(request.user.tenantId);
   }
 
+  @Get('snapshot')
+  @RequirePermission('SELL')
+  snapshot(@Req() request: AuthRequest) {
+    return this.catalog.snapshot(request.user.tenantId);
+  }
+
   @Post('categories')
   @RequirePermission('MANAGE_ITEMS')
   createCategory(@Req() request: AuthRequest, @Body() body: unknown) {

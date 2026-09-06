@@ -21,6 +21,8 @@ export class InventoryController {
   adjust(@Req() request: AuthRequest, @Body() body: unknown) {
     const parsed = inventoryAdjustmentSchema.safeParse(body);
     if (!parsed.success) throw new BadRequestException('INVALID_INVENTORY_ADJUSTMENT');
-    return this.inventory.adjust(request.user.tenantId, parsed.data);
+    const actorId = request.headers['x-employee-id'];
+    if (typeof actorId !== 'string') throw new BadRequestException('EMPLOYEE_REQUIRED');
+    return this.inventory.adjust(request.user.tenantId, actorId, parsed.data);
   }
 }

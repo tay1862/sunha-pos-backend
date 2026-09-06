@@ -1,6 +1,7 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import type { InventoryAdjustmentInput } from '@sunha/contracts';
 import { PrismaService } from '../database/prisma.service.js';
+import { verifyManager } from '../shifts/shift.service.js';
 
 @Injectable()
 export class InventoryService {
@@ -13,7 +14,10 @@ export class InventoryService {
     });
   }
 
-  async adjust(tenantId: string, input: InventoryAdjustmentInput) {
+  async adjust(tenantId: string, actorId: string, input: InventoryAdjustmentInput) {
+    await verifyManager(this.prisma, tenantId, input.managerEmployeeId, input.managerPin);
+    const actor = await this.prisma.employee.findFirst({ where: { id: actorId, tenantId, active: true } });
+    if (!actor) throw new NotFoundException('EMPLOYEE_NOT_FOUND');
     const item = await this.prisma.item.findFirst({
       where: { id: input.itemId, store: { tenantId } },
     });
@@ -38,7 +42,10 @@ export class InventoryService {
         });
       }
       await tx.inventoryMovement.create({
-        data: { itemId: item.id, quantityBase: input.quantityBase, reason: input.reason },
+        data: { itemId: item.id, quantityBase: input.quantityBase, reason: `ADJUSTMENT:${input.reason.slice(0, 28)}` },
+      });
+      await tx.auditEvent.create({
+        data: { tenantId, employeeId: actor.id, action: 'STOCK_ADJUSTMENT', entityType: 'ITEM', entityId: item.id, metadata: { reason: input.reason, managerEmployeeId: input.managerEmployeeId, quantityBase: input.quantityBase } },
       });
       return level;
     });

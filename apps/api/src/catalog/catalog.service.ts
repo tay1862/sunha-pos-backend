@@ -27,6 +27,18 @@ export class CatalogService {
     });
   }
 
+  async snapshot(tenantId: string) {
+    const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true, updatedAt: true } });
+    if (!store) throw new NotFoundException('STORE_NOT_FOUND');
+    const [categories, items, modifierGroups, taxes] = await Promise.all([
+      this.prisma.category.findMany({ where: { storeId: store.id, active: true }, orderBy: { name: 'asc' } }),
+      this.prisma.item.findMany({ where: { storeId: store.id, active: true }, include: { category: true, units: { where: { active: true } }, modifierGroups: { include: { group: { include: { options: true } } } }, inventory: true }, orderBy: { name: 'asc' } }),
+      this.prisma.modifierGroup.findMany({ where: { storeId: store.id }, include: { options: true }, orderBy: { name: 'asc' } }),
+      this.prisma.tax.findMany({ where: { storeId: store.id, active: true }, orderBy: { name: 'asc' } }),
+    ]);
+    return { version: store.updatedAt.toISOString(), categories, items, modifierGroups, taxes };
+  }
+
   async createCategory(tenantId: string, input: CreateCategoryInput) {
     const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
