@@ -11,31 +11,36 @@ import {
 import { createDeviceInvitationSchema, enrollDeviceSchema } from '@sunha/contracts';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { PermissionGuard, RequirePermission } from '../auth/permission.guard.js';
 import type { AuthClaims } from '../auth/auth.service.js';
 import { DeviceService } from './device.service.js';
 type AuthRequest = FastifyRequest & { user: AuthClaims };
 @Controller('devices')
 export class DeviceController {
   constructor(private readonly devices: DeviceService) {}
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('MANAGE_DEVICES')
   @Get(':id/lease')
   lease(@Req() r: AuthRequest, @Param('id') id: string) {
     return this.devices.leaseStatus(r.user.tenantId, id);
   }
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('MANAGE_DEVICES')
   @Post(':id/lease/renew')
   renew(@Req() r: AuthRequest, @Param('id') id: string) {
     return this.devices.renewLease(r.user.tenantId, id);
   }
 
   @Get()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('MANAGE_DEVICES')
   list(@Req() r: AuthRequest) {
     return this.devices.list(r.user.tenantId);
   }
 
   @Post('invitations')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('MANAGE_DEVICES')
   invite(@Req() r: AuthRequest, @Body() body: unknown) {
     const parsed = createDeviceInvitationSchema.safeParse(body);
     if (!parsed.success) throw new BadRequestException('INVALID_DEVICE_INVITATION');
@@ -50,7 +55,8 @@ export class DeviceController {
   }
 
   @Post(':id/revoke')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('MANAGE_DEVICES')
   revoke(@Req() r: AuthRequest, @Param('id') id: string) {
     return this.devices.revoke(r.user.tenantId, this.actor(r), id);
   }

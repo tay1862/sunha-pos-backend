@@ -26,12 +26,16 @@
 - [ ] ทำ authorization guard กลาง ตรวจ tenant + store + role/permission + actor/device ทุก mutation → Verify: IDOR, cashier escalation และ forged headers ผ่านไม่ได้
 - [ ] เพิ่ม email verification, password reset, session revoke และ PIN lockout → Verify: token/session ที่ revoke ใช้ไม่ได้
 
+> สถานะล่าสุด: signup สร้าง Owner employee, employee PIN verification, device invitation แบบใช้ครั้งเดียว (10 นาที), enrollment, revoke และ offline lease (24 ชั่วโมง) ใช้งานแล้ว และทดสอบ cashier escalation/tenant scope ของ employee/device ผ่านบน VPS แล้ว แต่ยังไม่ mark phase complete จนกว่าจะสร้าง owner device อัตโนมัติ, บังคับ device context ให้ครบทุก mutation, ทำ email verification/password reset และ PIN lockout แบบสะสมความผิดพลาด
+
 ## Phase 2 — Catalog, pricing และ inventory correctness
 
 - [ ] เชื่อม POS กับ catalog API/local catalog และทำ CRUD categories/items/units/modifiers/taxes → Verify: owner สร้างข้อมูลจากแอปได้ครบ
-- [ ] รวม pricing engine package เดียวกับ API รองรับ modifier, inclusive/exclusive tax, discount และ rounding → Verify: golden test ชุดเดียวผ่าน mobile/server
+- [x] รวม pricing engine package เดียวกับ API รองรับ modifier, inclusive/exclusive tax, discount และ rounding → Verify: golden test ชุดเดียวผ่าน mobile/server
 - [ ] ทำ unit conversion snapshot และป้องกันการแก้ conversion ย้อนหลัง → Verify: แพ็ก/ลังตัด base stock ถูกต้องและ receipt เก่าไม่เปลี่ยน
 - [ ] ทำ stock ledger แบบ transaction-safe, adjustment approval, negative-stock policy และ duplicate barcode error → Verify: concurrent sale ไม่ทำ stock ติดลบ
+
+> สถานะล่าสุด: online checkout ใช้ pricing engine กลางและตัด stock แบบ transaction-safe แล้ว ทดสอบ `2 แพ็ก × 6 = 12` บน VPS ผ่าน เหลือ modifier snapshot, approval policy, duplicate barcode response และ concurrent integration tests
 
 ## Phase 3 — Online sale และเงินจริง
 

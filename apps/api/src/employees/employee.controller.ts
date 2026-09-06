@@ -16,22 +16,25 @@ import {
 } from '@sunha/contracts';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { PermissionGuard, RequirePermission } from '../auth/permission.guard.js';
 import type { AuthClaims } from '../auth/auth.service.js';
 import { EmployeeService } from './employee.service.js';
 
 type AuthRequest = FastifyRequest & { user: AuthClaims };
 
 @Controller('employees')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
 export class EmployeeController {
   constructor(private readonly employees: EmployeeService) {}
 
   @Get()
+  @RequirePermission('MANAGE_EMPLOYEES')
   list(@Req() request: AuthRequest) {
     return this.employees.list(request.user.tenantId);
   }
 
   @Post()
+  @RequirePermission('MANAGE_EMPLOYEES')
   create(@Req() request: AuthRequest, @Body() body: unknown) {
     const parsed = createEmployeeSchema.safeParse(body);
     if (!parsed.success) throw new BadRequestException('INVALID_EMPLOYEE');
@@ -39,6 +42,7 @@ export class EmployeeController {
   }
 
   @Patch(':id')
+  @RequirePermission('MANAGE_EMPLOYEES')
   update(@Req() request: AuthRequest, @Param('id') id: string, @Body() body: unknown) {
     const parsed = updateEmployeeSchema.safeParse(body);
     if (!parsed.success) throw new BadRequestException('INVALID_EMPLOYEE');

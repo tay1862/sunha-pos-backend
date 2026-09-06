@@ -12,6 +12,7 @@ import { SyncModule } from './sync/sync.module.js';
 import { DeviceModule } from './devices/device.module.js';
 import { ReportModule } from './reports/report.module.js';
 import { EmployeeModule } from './employees/employee.module.js';
+import { PermissionModule } from './auth/permission.module.js';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { EmployeeModule } from './employees/employee.module.js';
     DeviceModule,
     ReportModule,
     EmployeeModule,
+    PermissionModule,
   ],
   controllers: [HealthController],
 })
