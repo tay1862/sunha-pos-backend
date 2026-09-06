@@ -31,11 +31,18 @@
 ## Phase 2 — Catalog, pricing และ inventory correctness
 
 - [ ] เชื่อม POS กับ catalog API/local catalog และทำ CRUD categories/items/units/modifiers/taxes → Verify: owner สร้างข้อมูลจากแอปได้ครบ
-- [x] รวม pricing engine package เดียวกับ API รองรับ modifier, inclusive/exclusive tax, discount และ rounding → Verify: golden test ชุดเดียวผ่าน mobile/server
+- [ ] รวม pricing engine package เดียวกับ API รองรับ modifier, inclusive/exclusive tax, discount และ rounding → Verify: golden test ชุดเดียวผ่าน mobile/server
 - [ ] ทำ unit conversion snapshot และป้องกันการแก้ conversion ย้อนหลัง → Verify: แพ็ก/ลังตัด base stock ถูกต้องและ receipt เก่าไม่เปลี่ยน
 - [ ] ทำ stock ledger แบบ transaction-safe, adjustment approval, negative-stock policy และ duplicate barcode error → Verify: concurrent sale ไม่ทำ stock ติดลบ
 
 > สถานะล่าสุด: online checkout ใช้ pricing engine กลางและตัด stock แบบ transaction-safe แล้ว ทดสอบ `2 แพ็ก × 6 = 12` บน VPS ผ่าน เหลือ modifier snapshot, approval policy, duplicate barcode response และ concurrent integration tests
+
+## Implementation log
+
+- 2026-09-06: เพิ่ม API hardening, Prisma migration baseline, employee/device onboarding และ permission guard สำหรับ protected routes
+- 2026-09-06: แก้ canonical pricing, inclusive/exclusive tax และ stock unit conversion; online VPS smoke test ผ่าน (`2 แพ็ก × 6 = 12`, stock เหลือ 0)
+- 2026-09-06: ทดสอบ permission บน VPS: Owner สร้าง category ได้, Cashier ได้ `403` เมื่อสร้าง category/report และ PIN/invitation reuse ถูกปฏิเสธตาม policy
+- ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง
 
