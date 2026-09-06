@@ -35,7 +35,7 @@
 - [x] ทำ unit conversion snapshot และป้องกันการแก้ conversion ย้อนหลัง → Verify: แพ็ก/ลังตัด base stock ถูกต้องและ receipt เก่าไม่เปลี่ยน
 - [ ] ทำ stock ledger แบบ transaction-safe, adjustment approval, negative-stock policy และ duplicate barcode error → Verify: concurrent sale ไม่ทำ stock ติดลบ
 
-> สถานะล่าสุด: เพิ่ม modifier group/option, item assignment, validation ของ required/min/max และ snapshot ราคา modifier ใน order line แล้ว เพิ่ม policy ป้องกัน stock ติดลบ, ปฏิเสธ adjustment กับสินค้าที่ไม่ track stock และ map duplicate SKU/barcode เป็น conflict แล้ว เหลือ stock adjustment approval และ PostgreSQL concurrent integration tests
+> สถานะล่าสุด: เพิ่ม modifier group/option, item assignment, validation ของ required/min/max และ snapshot ราคา modifier ใน order line แล้ว เพิ่ม policy ป้องกัน stock ติดลบ, ปฏิเสธ adjustment กับสินค้าที่ไม่ track stock และ map duplicate SKU/barcode เป็น conflict แล้ว รวมถึง Manager PIN + audit สำหรับ stock adjustment. POS มีหน้าจอสร้าง/ดูรายการสำหรับสินค้า/หมวดหมู่, modifier, ภาษี และพนักงาน พร้อมเชื่อม API จริง; ยังเหลือ edit/delete และตัวแก้หน่วยสินค้าแบบเต็ม จึงยังไม่ mark CRUD catalog complete. PostgreSQL concurrent integration test พร้อมรันจริง แต่ยังไม่ mark stock ledger complete จนกว่า verification บน PostgreSQL จะผ่าน
 
 > ความคืบหน้าล่าสุด: เพิ่ม catalog snapshot สำหรับ POS และ SQLite local cache พร้อม online-first/fallback read, บังคับ Manager PIN + audit สำหรับ stock adjustment และเพิ่ม test สำหรับ net sales หลัง refund; ยังไม่ mark catalog/stock complete จนกว่า POS CRUD, PostgreSQL integration และ reconciliation flow จะผ่านจริง
 
@@ -49,6 +49,8 @@
 - 2026-09-06: เพิ่ม owner-device bootstrap ใน signup transaction และตรวจ typecheck/test/lint ซ้ำผ่าน (API 7 tests)
 - 2026-09-06: เพิ่ม Resend email adapter, catalog snapshot + SQLite local cache และบังคับ Manager PIN/audit สำหรับ stock adjustment; local typecheck/test/lint ผ่าน (API 7 tests)
 - 2026-09-06: เพิ่ม payment reversal ledger ตอน full refund และหัก refund ออกจาก net sales report; เพิ่ม PostgreSQL concurrent checkout integration test harness (ยัง skip หากไม่มี `RUN_INTEGRATION=true` + PostgreSQL)
+- 2026-09-06: เพิ่ม POS screens สำหรับ modifier, tax และ employee และเชื่อม catalog item/category create/list กับ API จริง; local typecheck/test ผ่าน แต่ catalog CRUD ยังไม่ complete เพราะ edit/delete/unit editor ยังเหลือ
+- 2026-09-06: แก้ concurrent checkout integration expectation ให้ยอมรับผลที่ถูกต้องเมื่อคำขอหนึ่งชน stock guard (`INSUFFICIENT_STOCK`) และตรวจ retry ด้วย `clientOrderId` ว่าได้ order เดิมโดยไม่สร้าง receipt ซ้ำ; local lint/typecheck/test ผ่าน โดย integration ยังรอรันกับ PostgreSQL จริง
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง

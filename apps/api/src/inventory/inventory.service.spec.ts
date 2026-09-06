@@ -15,7 +15,7 @@ describe('inventory adjustment policy', () => {
     const prisma = {
       employee: { findFirst: vi.fn().mockResolvedValue({ id: 'manager-1', role: 'MANAGER' }) },
       item: { findFirst: vi.fn().mockResolvedValue({ id: 'item-1', trackStock: true }) },
-      $transaction: vi.fn(async (callback: (client: typeof tx) => unknown) => callback(tx)),
+      $transaction: vi.fn((callback: (client: typeof tx) => unknown) => Promise.resolve(callback(tx))),
     } as never;
     const service = new InventoryService(prisma);
     await expect(service.adjust('tenant-1', 'cashier-1', { itemId: 'item-1', quantityBase: '-1', reason: 'waste', managerEmployeeId: 'manager-1', managerPin: '123456' }))

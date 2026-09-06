@@ -33,12 +33,23 @@ describe.skipIf(!runIntegration)('PostgreSQL concurrent checkout', () => {
     await prisma.$disconnect();
   });
 
-  it('returns one idempotent order and never oversells stock', async () => {
+  it('never oversells stock and makes a retry idempotent', async () => {
     const clientOrderId = randomUUID();
     const input = { clientOrderId, lines: [{ itemId, unitId, quantity: '1', modifierOptionIds: [], note: '' }], paymentType: 'CASH' as const, tenderedAmount: { amount: '1000', currency: 'LAK' as const }, taxRateBasisPoints: 0, offline: false };
-    const result = await Promise.all([orders.checkout(tenantId, employeeId, input, undefined), orders.checkout(tenantId, employeeId, input, undefined)]);
-    expect(result[0].id).toBe(result[1].id);
+    const results = await Promise.allSettled([
+      orders.checkout(tenantId, employeeId, input, undefined),
+      orders.checkout(tenantId, employeeId, input, undefined),
+    ]);
+    const fulfilled = results.filter((result) => result.status === 'fulfilled');
+    const rejected = results.filter((result) => result.status === 'rejected');
+    expect(fulfilled.length).toBeGreaterThanOrEqual(1);
+    expect(rejected.length).toBeLessThanOrEqual(1);
+    if (rejected[0]) expect(String(rejected[0].reason)).toContain('INSUFFICIENT_STOCK');
     expect(await prisma.order.count({ where: { tenantId, clientOrderId } })).toBe(1);
     expect((await prisma.inventoryLevel.findUniqueOrThrow({ where: { itemId } })).quantityBase.toString()).toBe('0');
+    const first = fulfilled[0];
+    if (!first || first.status !== 'fulfilled') throw new Error('checkout did not succeed');
+    const retry = await orders.checkout(tenantId, employeeId, input, undefined);
+    expect(retry.id).toBe(first.value.id);
   });
 });
