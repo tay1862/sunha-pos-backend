@@ -276,6 +276,7 @@ export type OrderLineWhereInput = {
   unitPriceAmount?: Prisma.BigIntFilter<"OrderLine"> | bigint | number
   lineTotalAmount?: Prisma.BigIntFilter<"OrderLine"> | bigint | number
   note?: Prisma.StringFilter<"OrderLine"> | string
+  modifiers?: Prisma.OrderLineModifierListRelationFilter
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
   unit?: Prisma.XOR<Prisma.ItemUnitScalarRelationFilter, Prisma.ItemUnitWhereInput>
@@ -293,6 +294,7 @@ export type OrderLineOrderByWithRelationInput = {
   unitPriceAmount?: Prisma.SortOrder
   lineTotalAmount?: Prisma.SortOrder
   note?: Prisma.SortOrder
+  modifiers?: Prisma.OrderLineModifierOrderByRelationAggregateInput
   order?: Prisma.OrderOrderByWithRelationInput
   item?: Prisma.ItemOrderByWithRelationInput
   unit?: Prisma.ItemUnitOrderByWithRelationInput
@@ -313,6 +315,7 @@ export type OrderLineWhereUniqueInput = Prisma.AtLeast<{
   unitPriceAmount?: Prisma.BigIntFilter<"OrderLine"> | bigint | number
   lineTotalAmount?: Prisma.BigIntFilter<"OrderLine"> | bigint | number
   note?: Prisma.StringFilter<"OrderLine"> | string
+  modifiers?: Prisma.OrderLineModifierListRelationFilter
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
   item?: Prisma.XOR<Prisma.ItemScalarRelationFilter, Prisma.ItemWhereInput>
   unit?: Prisma.XOR<Prisma.ItemUnitScalarRelationFilter, Prisma.ItemUnitWhereInput>
@@ -363,6 +366,7 @@ export type OrderLineCreateInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierCreateNestedManyWithoutOrderLineInput
   order: Prisma.OrderCreateNestedOneWithoutLinesInput
   item: Prisma.ItemCreateNestedOneWithoutOrderLinesInput
   unit: Prisma.ItemUnitCreateNestedOneWithoutOrderLinesInput
@@ -380,6 +384,7 @@ export type OrderLineUncheckedCreateInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierUncheckedCreateNestedManyWithoutOrderLineInput
 }
 
 export type OrderLineUpdateInput = {
@@ -391,6 +396,7 @@ export type OrderLineUpdateInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUpdateManyWithoutOrderLineNestedInput
   order?: Prisma.OrderUpdateOneRequiredWithoutLinesNestedInput
   item?: Prisma.ItemUpdateOneRequiredWithoutOrderLinesNestedInput
   unit?: Prisma.ItemUnitUpdateOneRequiredWithoutOrderLinesNestedInput
@@ -408,6 +414,7 @@ export type OrderLineUncheckedUpdateInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUncheckedUpdateManyWithoutOrderLineNestedInput
 }
 
 export type OrderLineCreateManyInput = {
@@ -513,6 +520,11 @@ export type OrderLineSumOrderByAggregateInput = {
   multiplierSnapshot?: Prisma.SortOrder
   unitPriceAmount?: Prisma.SortOrder
   lineTotalAmount?: Prisma.SortOrder
+}
+
+export type OrderLineScalarRelationFilter = {
+  is?: Prisma.OrderLineWhereInput
+  isNot?: Prisma.OrderLineWhereInput
 }
 
 export type OrderLineCreateNestedManyWithoutItemInput = {
@@ -641,6 +653,20 @@ export type OrderLineUncheckedUpdateManyWithoutOrderNestedInput = {
   deleteMany?: Prisma.OrderLineScalarWhereInput | Prisma.OrderLineScalarWhereInput[]
 }
 
+export type OrderLineCreateNestedOneWithoutModifiersInput = {
+  create?: Prisma.XOR<Prisma.OrderLineCreateWithoutModifiersInput, Prisma.OrderLineUncheckedCreateWithoutModifiersInput>
+  connectOrCreate?: Prisma.OrderLineCreateOrConnectWithoutModifiersInput
+  connect?: Prisma.OrderLineWhereUniqueInput
+}
+
+export type OrderLineUpdateOneRequiredWithoutModifiersNestedInput = {
+  create?: Prisma.XOR<Prisma.OrderLineCreateWithoutModifiersInput, Prisma.OrderLineUncheckedCreateWithoutModifiersInput>
+  connectOrCreate?: Prisma.OrderLineCreateOrConnectWithoutModifiersInput
+  upsert?: Prisma.OrderLineUpsertWithoutModifiersInput
+  connect?: Prisma.OrderLineWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.OrderLineUpdateToOneWithWhereWithoutModifiersInput, Prisma.OrderLineUpdateWithoutModifiersInput>, Prisma.OrderLineUncheckedUpdateWithoutModifiersInput>
+}
+
 export type OrderLineCreateWithoutItemInput = {
   id?: string
   itemNameSnapshot: string
@@ -650,6 +676,7 @@ export type OrderLineCreateWithoutItemInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierCreateNestedManyWithoutOrderLineInput
   order: Prisma.OrderCreateNestedOneWithoutLinesInput
   unit: Prisma.ItemUnitCreateNestedOneWithoutOrderLinesInput
 }
@@ -665,6 +692,7 @@ export type OrderLineUncheckedCreateWithoutItemInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierUncheckedCreateNestedManyWithoutOrderLineInput
 }
 
 export type OrderLineCreateOrConnectWithoutItemInput = {
@@ -719,6 +747,7 @@ export type OrderLineCreateWithoutUnitInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierCreateNestedManyWithoutOrderLineInput
   order: Prisma.OrderCreateNestedOneWithoutLinesInput
   item: Prisma.ItemCreateNestedOneWithoutOrderLinesInput
 }
@@ -734,6 +763,7 @@ export type OrderLineUncheckedCreateWithoutUnitInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierUncheckedCreateNestedManyWithoutOrderLineInput
 }
 
 export type OrderLineCreateOrConnectWithoutUnitInput = {
@@ -771,6 +801,7 @@ export type OrderLineCreateWithoutOrderInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierCreateNestedManyWithoutOrderLineInput
   item: Prisma.ItemCreateNestedOneWithoutOrderLinesInput
   unit: Prisma.ItemUnitCreateNestedOneWithoutOrderLinesInput
 }
@@ -786,6 +817,7 @@ export type OrderLineUncheckedCreateWithoutOrderInput = {
   unitPriceAmount: bigint | number
   lineTotalAmount: bigint | number
   note?: string
+  modifiers?: Prisma.OrderLineModifierUncheckedCreateNestedManyWithoutOrderLineInput
 }
 
 export type OrderLineCreateOrConnectWithoutOrderInput = {
@@ -814,6 +846,78 @@ export type OrderLineUpdateManyWithWhereWithoutOrderInput = {
   data: Prisma.XOR<Prisma.OrderLineUpdateManyMutationInput, Prisma.OrderLineUncheckedUpdateManyWithoutOrderInput>
 }
 
+export type OrderLineCreateWithoutModifiersInput = {
+  id?: string
+  itemNameSnapshot: string
+  unitNameSnapshot: string
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiplierSnapshot: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPriceAmount: bigint | number
+  lineTotalAmount: bigint | number
+  note?: string
+  order: Prisma.OrderCreateNestedOneWithoutLinesInput
+  item: Prisma.ItemCreateNestedOneWithoutOrderLinesInput
+  unit: Prisma.ItemUnitCreateNestedOneWithoutOrderLinesInput
+}
+
+export type OrderLineUncheckedCreateWithoutModifiersInput = {
+  id?: string
+  orderId: string
+  itemId: string
+  unitId: string
+  itemNameSnapshot: string
+  unitNameSnapshot: string
+  quantity: runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiplierSnapshot: runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPriceAmount: bigint | number
+  lineTotalAmount: bigint | number
+  note?: string
+}
+
+export type OrderLineCreateOrConnectWithoutModifiersInput = {
+  where: Prisma.OrderLineWhereUniqueInput
+  create: Prisma.XOR<Prisma.OrderLineCreateWithoutModifiersInput, Prisma.OrderLineUncheckedCreateWithoutModifiersInput>
+}
+
+export type OrderLineUpsertWithoutModifiersInput = {
+  update: Prisma.XOR<Prisma.OrderLineUpdateWithoutModifiersInput, Prisma.OrderLineUncheckedUpdateWithoutModifiersInput>
+  create: Prisma.XOR<Prisma.OrderLineCreateWithoutModifiersInput, Prisma.OrderLineUncheckedCreateWithoutModifiersInput>
+  where?: Prisma.OrderLineWhereInput
+}
+
+export type OrderLineUpdateToOneWithWhereWithoutModifiersInput = {
+  where?: Prisma.OrderLineWhereInput
+  data: Prisma.XOR<Prisma.OrderLineUpdateWithoutModifiersInput, Prisma.OrderLineUncheckedUpdateWithoutModifiersInput>
+}
+
+export type OrderLineUpdateWithoutModifiersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  itemNameSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
+  unitNameSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiplierSnapshot?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  note?: Prisma.StringFieldUpdateOperationsInput | string
+  order?: Prisma.OrderUpdateOneRequiredWithoutLinesNestedInput
+  item?: Prisma.ItemUpdateOneRequiredWithoutOrderLinesNestedInput
+  unit?: Prisma.ItemUnitUpdateOneRequiredWithoutOrderLinesNestedInput
+}
+
+export type OrderLineUncheckedUpdateWithoutModifiersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemId?: Prisma.StringFieldUpdateOperationsInput | string
+  unitId?: Prisma.StringFieldUpdateOperationsInput | string
+  itemNameSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
+  unitNameSnapshot?: Prisma.StringFieldUpdateOperationsInput | string
+  quantity?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  multiplierSnapshot?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  note?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
 export type OrderLineCreateManyItemInput = {
   id?: string
   orderId: string
@@ -836,6 +940,7 @@ export type OrderLineUpdateWithoutItemInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUpdateManyWithoutOrderLineNestedInput
   order?: Prisma.OrderUpdateOneRequiredWithoutLinesNestedInput
   unit?: Prisma.ItemUnitUpdateOneRequiredWithoutOrderLinesNestedInput
 }
@@ -851,6 +956,7 @@ export type OrderLineUncheckedUpdateWithoutItemInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUncheckedUpdateManyWithoutOrderLineNestedInput
 }
 
 export type OrderLineUncheckedUpdateManyWithoutItemInput = {
@@ -888,6 +994,7 @@ export type OrderLineUpdateWithoutUnitInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUpdateManyWithoutOrderLineNestedInput
   order?: Prisma.OrderUpdateOneRequiredWithoutLinesNestedInput
   item?: Prisma.ItemUpdateOneRequiredWithoutOrderLinesNestedInput
 }
@@ -903,6 +1010,7 @@ export type OrderLineUncheckedUpdateWithoutUnitInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUncheckedUpdateManyWithoutOrderLineNestedInput
 }
 
 export type OrderLineUncheckedUpdateManyWithoutUnitInput = {
@@ -940,6 +1048,7 @@ export type OrderLineUpdateWithoutOrderInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUpdateManyWithoutOrderLineNestedInput
   item?: Prisma.ItemUpdateOneRequiredWithoutOrderLinesNestedInput
   unit?: Prisma.ItemUnitUpdateOneRequiredWithoutOrderLinesNestedInput
 }
@@ -955,6 +1064,7 @@ export type OrderLineUncheckedUpdateWithoutOrderInput = {
   unitPriceAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   lineTotalAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   note?: Prisma.StringFieldUpdateOperationsInput | string
+  modifiers?: Prisma.OrderLineModifierUncheckedUpdateManyWithoutOrderLineNestedInput
 }
 
 export type OrderLineUncheckedUpdateManyWithoutOrderInput = {
@@ -971,6 +1081,35 @@ export type OrderLineUncheckedUpdateManyWithoutOrderInput = {
 }
 
 
+/**
+ * Count Type OrderLineCountOutputType
+ */
+
+export type OrderLineCountOutputType = {
+  modifiers: number
+}
+
+export type OrderLineCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  modifiers?: boolean | OrderLineCountOutputTypeCountModifiersArgs
+}
+
+/**
+ * OrderLineCountOutputType without action
+ */
+export type OrderLineCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrderLineCountOutputType
+   */
+  select?: Prisma.OrderLineCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * OrderLineCountOutputType without action
+ */
+export type OrderLineCountOutputTypeCountModifiersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderLineModifierWhereInput
+}
+
 
 export type OrderLineSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -984,9 +1123,11 @@ export type OrderLineSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   unitPriceAmount?: boolean
   lineTotalAmount?: boolean
   note?: boolean
+  modifiers?: boolean | Prisma.OrderLine$modifiersArgs<ExtArgs>
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.ItemUnitDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.OrderLineCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["orderLine"]>
 
 export type OrderLineSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1039,9 +1180,11 @@ export type OrderLineSelectScalar = {
 
 export type OrderLineOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "itemId" | "unitId" | "itemNameSnapshot" | "unitNameSnapshot" | "quantity" | "multiplierSnapshot" | "unitPriceAmount" | "lineTotalAmount" | "note", ExtArgs["result"]["orderLine"]>
 export type OrderLineInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  modifiers?: boolean | Prisma.OrderLine$modifiersArgs<ExtArgs>
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   item?: boolean | Prisma.ItemDefaultArgs<ExtArgs>
   unit?: boolean | Prisma.ItemUnitDefaultArgs<ExtArgs>
+  _count?: boolean | Prisma.OrderLineCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type OrderLineIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
@@ -1057,6 +1200,7 @@ export type OrderLineIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
 export type $OrderLinePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "OrderLine"
   objects: {
+    modifiers: Prisma.$OrderLineModifierPayload<ExtArgs>[]
     order: Prisma.$OrderPayload<ExtArgs>
     item: Prisma.$ItemPayload<ExtArgs>
     unit: Prisma.$ItemUnitPayload<ExtArgs>
@@ -1467,6 +1611,7 @@ readonly fields: OrderLineFieldRefs;
  */
 export interface Prisma__OrderLineClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  modifiers<T extends Prisma.OrderLine$modifiersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderLine$modifiersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderLineModifierPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   order<T extends Prisma.OrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderDefaultArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   item<T extends Prisma.ItemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ItemDefaultArgs<ExtArgs>>): Prisma.Prisma__ItemClient<runtime.Types.Result.GetResult<Prisma.$ItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   unit<T extends Prisma.ItemUnitDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ItemUnitDefaultArgs<ExtArgs>>): Prisma.Prisma__ItemUnitClient<runtime.Types.Result.GetResult<Prisma.$ItemUnitPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -1908,6 +2053,30 @@ export type OrderLineDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many OrderLines to delete.
    */
   limit?: number
+}
+
+/**
+ * OrderLine.modifiers
+ */
+export type OrderLine$modifiersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the OrderLineModifier
+   */
+  select?: Prisma.OrderLineModifierSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the OrderLineModifier
+   */
+  omit?: Prisma.OrderLineModifierOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderLineModifierInclude<ExtArgs> | null
+  where?: Prisma.OrderLineModifierWhereInput
+  orderBy?: Prisma.OrderLineModifierOrderByWithRelationInput | Prisma.OrderLineModifierOrderByWithRelationInput[]
+  cursor?: Prisma.OrderLineModifierWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderLineModifierScalarFieldEnum | Prisma.OrderLineModifierScalarFieldEnum[]
 }
 
 /**

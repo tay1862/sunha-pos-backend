@@ -54,6 +54,7 @@ const ROLE_PERMISSIONS: Record<string, readonly Permission[]> = {
 type RequestWithUser = FastifyRequest & {
   user: { tenantId: string };
   employee?: { id: string; storeId: string; role: string };
+  device?: { id: string; storeId: string; status: string };
 };
 
 @Injectable()
@@ -79,6 +80,16 @@ export class PermissionGuard implements CanActivate {
     if (!employee || !ROLE_PERMISSIONS[employee.role]?.includes(permission))
       throw new ForbiddenException('PERMISSION_DENIED');
     request.employee = employee;
+    const deviceId = request.headers['x-device-id'];
+    if (permission !== 'MANAGE_DEVICES') {
+      if (typeof deviceId !== 'string') throw new ForbiddenException('DEVICE_REQUIRED');
+      const device = await this.prisma.device.findFirst({
+        where: { id: deviceId, tenantId: request.user.tenantId, storeId: employee.storeId, status: 'ACTIVE' },
+        select: { id: true, storeId: true, status: true },
+      });
+      if (!device) throw new ForbiddenException('DEVICE_NOT_ENROLLED');
+      request.device = device;
+    }
     return true;
   }
 }

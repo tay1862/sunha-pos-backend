@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import type { InventoryAdjustmentInput } from '@sunha/contracts';
 import { PrismaService } from '../database/prisma.service.js';
 
@@ -18,12 +18,25 @@ export class InventoryService {
       where: { id: input.itemId, store: { tenantId } },
     });
     if (!item) throw new NotFoundException('ITEM_NOT_FOUND');
+    if (!item.trackStock) throw new ConflictException('TRACK_STOCK_DISABLED');
     return this.prisma.$transaction(async (tx) => {
-      const level = await tx.inventoryLevel.upsert({
-        where: { itemId: item.id },
-        create: { itemId: item.id, quantityBase: input.quantityBase },
-        update: { quantityBase: { increment: input.quantityBase } },
-      });
+      const quantity = input.quantityBase;
+      let level;
+      if (quantity.startsWith('-')) {
+        const absolute = quantity.slice(1);
+        const changed = await tx.inventoryLevel.updateMany({
+          where: { itemId: item.id, quantityBase: { gte: absolute } },
+          data: { quantityBase: { decrement: absolute } },
+        });
+        if (changed.count !== 1) throw new ConflictException('INSUFFICIENT_STOCK');
+        level = await tx.inventoryLevel.findUniqueOrThrow({ where: { itemId: item.id } });
+      } else {
+        level = await tx.inventoryLevel.upsert({
+          where: { itemId: item.id },
+          create: { itemId: item.id, quantityBase: quantity },
+          update: { quantityBase: { increment: quantity } },
+        });
+      }
       await tx.inventoryMovement.create({
         data: { itemId: item.id, quantityBase: input.quantityBase, reason: input.reason },
       });

@@ -14,6 +14,7 @@ export type AuthResult = {
   user: AuthUser;
   store: AuthStore;
   ownerEmployeeId?: string;
+  verificationToken?: string;
 };
 export type AuthClaims = AuthUser & { sub: string };
 
@@ -37,10 +38,26 @@ export interface AuthRepository {
   createSession(value: { userId: string; tokenHash: string; expiresAt: Date }): Promise<void>;
   findSession(tokenHash: string): Promise<StoredSession | null>;
   revokeSession(id: string): Promise<void>;
+  createAuthToken(value: {
+    userId: string;
+    type: 'EMAIL_VERIFICATION' | 'PASSWORD_RESET';
+    tokenHash: string;
+    expiresAt: Date;
+  }): Promise<void>;
+  consumeAuthToken(
+    tokenHash: string,
+    type: 'EMAIL_VERIFICATION' | 'PASSWORD_RESET',
+  ): Promise<string | null>;
+  markEmailVerified(userId: string): Promise<void>;
+  revokeAllSessions(userId: string): Promise<void>;
+  updatePassword(userId: string, passwordHash: string): Promise<void>;
 }
 
+const configuredSecret = process.env.JWT_SECRET;
+if (process.env.NODE_ENV === 'production' && (!configuredSecret || configuredSecret.length < 32))
+  throw new Error('JWT_SECRET must be at least 32 characters in production');
 const secret = new TextEncoder().encode(
-  process.env.JWT_SECRET ?? 'sunha-local-development-secret-change-me',
+  configuredSecret ?? 'sunha-local-development-secret-change-me',
 );
 const accessTokenSeconds = 900;
 const refreshTokenDays = 30;
@@ -120,6 +137,48 @@ export class PrismaAuthRepository implements AuthRepository {
       .then(() => undefined);
   }
 
+  createAuthToken(value: {
+    userId: string;
+    type: 'EMAIL_VERIFICATION' | 'PASSWORD_RESET';
+    tokenHash: string;
+    expiresAt: Date;
+  }): Promise<void> {
+    return this.prisma.authToken.create({ data: value }).then(() => undefined);
+  }
+
+  async consumeAuthToken(
+    tokenHash: string,
+    type: 'EMAIL_VERIFICATION' | 'PASSWORD_RESET',
+  ): Promise<string | null> {
+    const token = await this.prisma.authToken.findFirst({
+      where: { tokenHash, type, usedAt: null, expiresAt: { gt: new Date() } },
+    });
+    if (!token) return null;
+    const updated = await this.prisma.authToken.updateMany({
+      where: { id: token.id, usedAt: null, expiresAt: { gt: new Date() } },
+      data: { usedAt: new Date() },
+    });
+    return updated.count === 1 ? token.userId : null;
+  }
+
+  markEmailVerified(userId: string): Promise<void> {
+    return this.prisma.user
+      .update({ where: { id: userId }, data: { emailVerifiedAt: new Date() } })
+      .then(() => undefined);
+  }
+
+  revokeAllSessions(userId: string): Promise<void> {
+    return this.prisma.authSession
+      .updateMany({ where: { userId, revokedAt: null }, data: { revokedAt: new Date() } })
+      .then(() => undefined);
+  }
+
+  updatePassword(userId: string, passwordHash: string): Promise<void> {
+    return this.prisma.user
+      .update({ where: { id: userId }, data: { passwordHash } })
+      .then(() => undefined);
+  }
+
   private mapUser(
     user: { id: string; email: string; tenantId: string; passwordHash: string },
     store: {
@@ -168,7 +227,17 @@ export class AuthService {
       passwordHash,
       businessName: input.businessName.trim(),
     });
-    return this.issue(user);
+    const verificationToken = randomBytes(32).toString('base64url');
+    await this.repository.createAuthToken({
+      userId: user.id,
+      type: 'EMAIL_VERIFICATION',
+      tokenHash: hashToken(verificationToken),
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    return this.issue(
+      user,
+      process.env.AUTH_TOKEN_OUTPUT === 'true' ? verificationToken : undefined,
+    );
   }
 
   async login(input: LoginInput): Promise<AuthResult> {
@@ -188,7 +257,39 @@ export class AuthService {
     return this.issue(user);
   }
 
-  private async issue(user: StoredUser): Promise<AuthResult> {
+  async logout(refreshToken: string): Promise<void> {
+    const session = await this.repository.findSession(hashToken(refreshToken));
+    if (session) await this.repository.revokeSession(session.id);
+  }
+
+  async verifyEmail(token: string): Promise<void> {
+    const userId = await this.repository.consumeAuthToken(hashToken(token), 'EMAIL_VERIFICATION');
+    if (!userId) throw new UnauthorizedException('INVALID_EMAIL_VERIFICATION_TOKEN');
+    await this.repository.markEmailVerified(userId);
+  }
+
+  async requestPasswordReset(email: string): Promise<{ resetToken?: string }> {
+    const user = await this.repository.findUserByEmail(email.trim().toLowerCase());
+    if (!user) return {};
+    const token = randomBytes(32).toString('base64url');
+    await this.repository.createAuthToken({
+      userId: user.id,
+      type: 'PASSWORD_RESET',
+      tokenHash: hashToken(token),
+      expiresAt: new Date(Date.now() + 30 * 60 * 1000),
+    });
+    return process.env.AUTH_TOKEN_OUTPUT === 'true' ? { resetToken: token } : {};
+  }
+
+  async resetPassword(token: string, password: string): Promise<void> {
+    const userId = await this.repository.consumeAuthToken(hashToken(token), 'PASSWORD_RESET');
+    if (!userId) throw new UnauthorizedException('INVALID_PASSWORD_RESET_TOKEN');
+    const passwordHash = await argon2.hash(password, { type: argon2.argon2id });
+    await this.repository.updatePassword(userId, passwordHash);
+    await this.repository.revokeAllSessions(userId);
+  }
+
+  private async issue(user: StoredUser, verificationToken?: string): Promise<AuthResult> {
     const claims: AuthClaims = {
       sub: user.id,
       id: user.id,
@@ -215,6 +316,7 @@ export class AuthService {
       user: { id: user.id, email: user.email, tenantId: user.tenantId },
       store: user.store,
       ownerEmployeeId: user.ownerEmployeeId,
+      verificationToken,
     };
   }
 }

@@ -1,6 +1,8 @@
 import {
   ConflictException,
   ForbiddenException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -59,9 +61,34 @@ export class EmployeeService {
   async verifyPin(tenantId: string, input: VerifyEmployeePinInput) {
     const employee = await this.prisma.employee.findFirst({
       where: { id: input.employeeId, tenantId, active: true },
+      select: {
+        id: true,
+        name: true,
+        role: true,
+        pinHash: true,
+        pinFailedAttempts: true,
+        pinLockedUntil: true,
+      },
     });
-    if (!employee || !(await argon2.verify(employee.pinHash, input.pin)))
+    if (!employee) throw new UnauthorizedException('INVALID_EMPLOYEE_PIN');
+    if (employee.pinLockedUntil && employee.pinLockedUntil > new Date())
+      throw new HttpException('EMPLOYEE_PIN_LOCKED', HttpStatus.TOO_MANY_REQUESTS);
+    if (!(await argon2.verify(employee.pinHash, input.pin))) {
+      const attempts = employee.pinFailedAttempts + 1;
+      const lockMinutes = attempts >= 5 ? Math.min(60, 5 * 2 ** Math.min(attempts - 5, 3)) : 0;
+      await this.prisma.employee.update({
+        where: { id: employee.id },
+        data: {
+          pinFailedAttempts: attempts,
+          pinLockedUntil: lockMinutes ? new Date(Date.now() + lockMinutes * 60_000) : null,
+        },
+      });
       throw new UnauthorizedException('INVALID_EMPLOYEE_PIN');
+    }
+    await this.prisma.employee.update({
+      where: { id: employee.id },
+      data: { pinFailedAttempts: 0, pinLockedUntil: null },
+    });
     return { id: employee.id, name: employee.name, role: employee.role };
   }
 

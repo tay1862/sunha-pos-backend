@@ -20,8 +20,18 @@ export type EmployeeModel = runtime.Types.Result.DefaultSelection<Prisma.$Employ
 
 export type AggregateEmployee = {
   _count: EmployeeCountAggregateOutputType | null
+  _avg: EmployeeAvgAggregateOutputType | null
+  _sum: EmployeeSumAggregateOutputType | null
   _min: EmployeeMinAggregateOutputType | null
   _max: EmployeeMaxAggregateOutputType | null
+}
+
+export type EmployeeAvgAggregateOutputType = {
+  pinFailedAttempts: number | null
+}
+
+export type EmployeeSumAggregateOutputType = {
+  pinFailedAttempts: number | null
 }
 
 export type EmployeeMinAggregateOutputType = {
@@ -31,6 +41,8 @@ export type EmployeeMinAggregateOutputType = {
   name: string | null
   role: $Enums.EmployeeRole | null
   pinHash: string | null
+  pinFailedAttempts: number | null
+  pinLockedUntil: Date | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -43,6 +55,8 @@ export type EmployeeMaxAggregateOutputType = {
   name: string | null
   role: $Enums.EmployeeRole | null
   pinHash: string | null
+  pinFailedAttempts: number | null
+  pinLockedUntil: Date | null
   active: boolean | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -55,12 +69,22 @@ export type EmployeeCountAggregateOutputType = {
   name: number
   role: number
   pinHash: number
+  pinFailedAttempts: number
+  pinLockedUntil: number
   active: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type EmployeeAvgAggregateInputType = {
+  pinFailedAttempts?: true
+}
+
+export type EmployeeSumAggregateInputType = {
+  pinFailedAttempts?: true
+}
 
 export type EmployeeMinAggregateInputType = {
   id?: true
@@ -69,6 +93,8 @@ export type EmployeeMinAggregateInputType = {
   name?: true
   role?: true
   pinHash?: true
+  pinFailedAttempts?: true
+  pinLockedUntil?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -81,6 +107,8 @@ export type EmployeeMaxAggregateInputType = {
   name?: true
   role?: true
   pinHash?: true
+  pinFailedAttempts?: true
+  pinLockedUntil?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -93,6 +121,8 @@ export type EmployeeCountAggregateInputType = {
   name?: true
   role?: true
   pinHash?: true
+  pinFailedAttempts?: true
+  pinLockedUntil?: true
   active?: true
   createdAt?: true
   updatedAt?: true
@@ -137,6 +167,18 @@ export type EmployeeAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: EmployeeAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: EmployeeSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: EmployeeMinAggregateInputType
@@ -167,6 +209,8 @@ export type EmployeeGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: EmployeeCountAggregateInputType | true
+  _avg?: EmployeeAvgAggregateInputType
+  _sum?: EmployeeSumAggregateInputType
   _min?: EmployeeMinAggregateInputType
   _max?: EmployeeMaxAggregateInputType
 }
@@ -178,10 +222,14 @@ export type EmployeeGroupByOutputType = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts: number
+  pinLockedUntil: Date | null
   active: boolean
   createdAt: Date
   updatedAt: Date
   _count: EmployeeCountAggregateOutputType | null
+  _avg: EmployeeAvgAggregateOutputType | null
+  _sum: EmployeeSumAggregateOutputType | null
   _min: EmployeeMinAggregateOutputType | null
   _max: EmployeeMaxAggregateOutputType | null
 }
@@ -211,6 +259,8 @@ export type EmployeeWhereInput = {
   name?: Prisma.StringFilter<"Employee"> | string
   role?: Prisma.EnumEmployeeRoleFilter<"Employee"> | $Enums.EmployeeRole
   pinHash?: Prisma.StringFilter<"Employee"> | string
+  pinFailedAttempts?: Prisma.IntFilter<"Employee"> | number
+  pinLockedUntil?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   active?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -231,6 +281,8 @@ export type EmployeeOrderByWithRelationInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   pinHash?: Prisma.SortOrder
+  pinFailedAttempts?: Prisma.SortOrder
+  pinLockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -254,6 +306,8 @@ export type EmployeeWhereUniqueInput = Prisma.AtLeast<{
   name?: Prisma.StringFilter<"Employee"> | string
   role?: Prisma.EnumEmployeeRoleFilter<"Employee"> | $Enums.EmployeeRole
   pinHash?: Prisma.StringFilter<"Employee"> | string
+  pinFailedAttempts?: Prisma.IntFilter<"Employee"> | number
+  pinLockedUntil?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   active?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -274,12 +328,16 @@ export type EmployeeOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   pinHash?: Prisma.SortOrder
+  pinFailedAttempts?: Prisma.SortOrder
+  pinLockedUntil?: Prisma.SortOrderInput | Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.EmployeeCountOrderByAggregateInput
+  _avg?: Prisma.EmployeeAvgOrderByAggregateInput
   _max?: Prisma.EmployeeMaxOrderByAggregateInput
   _min?: Prisma.EmployeeMinOrderByAggregateInput
+  _sum?: Prisma.EmployeeSumOrderByAggregateInput
 }
 
 export type EmployeeScalarWhereWithAggregatesInput = {
@@ -292,6 +350,8 @@ export type EmployeeScalarWhereWithAggregatesInput = {
   name?: Prisma.StringWithAggregatesFilter<"Employee"> | string
   role?: Prisma.EnumEmployeeRoleWithAggregatesFilter<"Employee"> | $Enums.EmployeeRole
   pinHash?: Prisma.StringWithAggregatesFilter<"Employee"> | string
+  pinFailedAttempts?: Prisma.IntWithAggregatesFilter<"Employee"> | number
+  pinLockedUntil?: Prisma.DateTimeNullableWithAggregatesFilter<"Employee"> | Date | string | null
   active?: Prisma.BoolWithAggregatesFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Employee"> | Date | string
@@ -302,6 +362,8 @@ export type EmployeeCreateInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -322,6 +384,8 @@ export type EmployeeUncheckedCreateInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -338,6 +402,8 @@ export type EmployeeUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,6 +424,8 @@ export type EmployeeUncheckedUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -376,6 +444,8 @@ export type EmployeeCreateManyInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -386,6 +456,8 @@ export type EmployeeUpdateManyMutationInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -398,6 +470,8 @@ export type EmployeeUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -420,9 +494,15 @@ export type EmployeeCountOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   pinHash?: Prisma.SortOrder
+  pinFailedAttempts?: Prisma.SortOrder
+  pinLockedUntil?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type EmployeeAvgOrderByAggregateInput = {
+  pinFailedAttempts?: Prisma.SortOrder
 }
 
 export type EmployeeMaxOrderByAggregateInput = {
@@ -432,6 +512,8 @@ export type EmployeeMaxOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   pinHash?: Prisma.SortOrder
+  pinFailedAttempts?: Prisma.SortOrder
+  pinLockedUntil?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -444,9 +526,15 @@ export type EmployeeMinOrderByAggregateInput = {
   name?: Prisma.SortOrder
   role?: Prisma.SortOrder
   pinHash?: Prisma.SortOrder
+  pinFailedAttempts?: Prisma.SortOrder
+  pinLockedUntil?: Prisma.SortOrder
   active?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type EmployeeSumOrderByAggregateInput = {
+  pinFailedAttempts?: Prisma.SortOrder
 }
 
 export type EmployeeScalarRelationFilter = {
@@ -547,6 +635,14 @@ export type EnumEmployeeRoleFieldUpdateOperationsInput = {
   set?: $Enums.EmployeeRole
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
@@ -642,6 +738,8 @@ export type EmployeeCreateWithoutTenantInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -660,6 +758,8 @@ export type EmployeeUncheckedCreateWithoutTenantInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -707,6 +807,8 @@ export type EmployeeScalarWhereInput = {
   name?: Prisma.StringFilter<"Employee"> | string
   role?: Prisma.EnumEmployeeRoleFilter<"Employee"> | $Enums.EmployeeRole
   pinHash?: Prisma.StringFilter<"Employee"> | string
+  pinFailedAttempts?: Prisma.IntFilter<"Employee"> | number
+  pinLockedUntil?: Prisma.DateTimeNullableFilter<"Employee"> | Date | string | null
   active?: Prisma.BoolFilter<"Employee"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Employee"> | Date | string
@@ -717,6 +819,8 @@ export type EmployeeCreateWithoutStoreInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -735,6 +839,8 @@ export type EmployeeUncheckedCreateWithoutStoreInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -777,6 +883,8 @@ export type EmployeeCreateWithoutDevicesInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -796,6 +904,8 @@ export type EmployeeUncheckedCreateWithoutDevicesInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -827,6 +937,8 @@ export type EmployeeUpdateWithoutDevicesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -846,6 +958,8 @@ export type EmployeeUncheckedUpdateWithoutDevicesInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -861,6 +975,8 @@ export type EmployeeCreateWithoutOrdersInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -880,6 +996,8 @@ export type EmployeeUncheckedCreateWithoutOrdersInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -911,6 +1029,8 @@ export type EmployeeUpdateWithoutOrdersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -930,6 +1050,8 @@ export type EmployeeUncheckedUpdateWithoutOrdersInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -945,6 +1067,8 @@ export type EmployeeCreateWithoutRefundsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -964,6 +1088,8 @@ export type EmployeeUncheckedCreateWithoutRefundsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -995,6 +1121,8 @@ export type EmployeeUpdateWithoutRefundsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1014,6 +1142,8 @@ export type EmployeeUncheckedUpdateWithoutRefundsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1029,6 +1159,8 @@ export type EmployeeCreateWithoutShiftsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1048,6 +1180,8 @@ export type EmployeeUncheckedCreateWithoutShiftsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1079,6 +1213,8 @@ export type EmployeeUpdateWithoutShiftsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1098,6 +1234,8 @@ export type EmployeeUncheckedUpdateWithoutShiftsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1113,6 +1251,8 @@ export type EmployeeCreateWithoutSyncOpsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1132,6 +1272,8 @@ export type EmployeeUncheckedCreateWithoutSyncOpsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1163,6 +1305,8 @@ export type EmployeeUpdateWithoutSyncOpsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1182,6 +1326,8 @@ export type EmployeeUncheckedUpdateWithoutSyncOpsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1197,6 +1343,8 @@ export type EmployeeCreateWithoutAuditEventsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1216,6 +1364,8 @@ export type EmployeeUncheckedCreateWithoutAuditEventsInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1247,6 +1397,8 @@ export type EmployeeUpdateWithoutAuditEventsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1266,6 +1418,8 @@ export type EmployeeUncheckedUpdateWithoutAuditEventsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1282,6 +1436,8 @@ export type EmployeeCreateManyTenantInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1292,6 +1448,8 @@ export type EmployeeUpdateWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1310,6 +1468,8 @@ export type EmployeeUncheckedUpdateWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1327,6 +1487,8 @@ export type EmployeeUncheckedUpdateManyWithoutTenantInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1338,6 +1500,8 @@ export type EmployeeCreateManyStoreInput = {
   name: string
   role: $Enums.EmployeeRole
   pinHash: string
+  pinFailedAttempts?: number
+  pinLockedUntil?: Date | string | null
   active?: boolean
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -1348,6 +1512,8 @@ export type EmployeeUpdateWithoutStoreInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1366,6 +1532,8 @@ export type EmployeeUncheckedUpdateWithoutStoreInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1383,6 +1551,8 @@ export type EmployeeUncheckedUpdateManyWithoutStoreInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumEmployeeRoleFieldUpdateOperationsInput | $Enums.EmployeeRole
   pinHash?: Prisma.StringFieldUpdateOperationsInput | string
+  pinFailedAttempts?: Prisma.IntFieldUpdateOperationsInput | number
+  pinLockedUntil?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1471,6 +1641,8 @@ export type EmployeeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   name?: boolean
   role?: boolean
   pinHash?: boolean
+  pinFailedAttempts?: boolean
+  pinLockedUntil?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1492,6 +1664,8 @@ export type EmployeeSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   role?: boolean
   pinHash?: boolean
+  pinFailedAttempts?: boolean
+  pinLockedUntil?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1506,6 +1680,8 @@ export type EmployeeSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   name?: boolean
   role?: boolean
   pinHash?: boolean
+  pinFailedAttempts?: boolean
+  pinLockedUntil?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -1520,12 +1696,14 @@ export type EmployeeSelectScalar = {
   name?: boolean
   role?: boolean
   pinHash?: boolean
+  pinFailedAttempts?: boolean
+  pinLockedUntil?: boolean
   active?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "storeId" | "name" | "role" | "pinHash" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
+export type EmployeeOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "storeId" | "name" | "role" | "pinHash" | "pinFailedAttempts" | "pinLockedUntil" | "active" | "createdAt" | "updatedAt", ExtArgs["result"]["employee"]>
 export type EmployeeInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   store?: boolean | Prisma.StoreDefaultArgs<ExtArgs>
@@ -1565,6 +1743,8 @@ export type $EmployeePayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     name: string
     role: $Enums.EmployeeRole
     pinHash: string
+    pinFailedAttempts: number
+    pinLockedUntil: Date | null
     active: boolean
     createdAt: Date
     updatedAt: Date
@@ -2005,6 +2185,8 @@ export interface EmployeeFieldRefs {
   readonly name: Prisma.FieldRef<"Employee", 'String'>
   readonly role: Prisma.FieldRef<"Employee", 'EmployeeRole'>
   readonly pinHash: Prisma.FieldRef<"Employee", 'String'>
+  readonly pinFailedAttempts: Prisma.FieldRef<"Employee", 'Int'>
+  readonly pinLockedUntil: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly active: Prisma.FieldRef<"Employee", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Employee", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Employee", 'DateTime'>

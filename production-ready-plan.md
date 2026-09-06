@@ -26,7 +26,7 @@
 - [ ] ทำ authorization guard กลาง ตรวจ tenant + store + role/permission + actor/device ทุก mutation → Verify: IDOR, cashier escalation และ forged headers ผ่านไม่ได้
 - [ ] เพิ่ม email verification, password reset, session revoke และ PIN lockout → Verify: token/session ที่ revoke ใช้ไม่ได้
 
-> สถานะล่าสุด: signup สร้าง Owner employee, employee PIN verification, device invitation แบบใช้ครั้งเดียว (10 นาที), enrollment, revoke และ offline lease (24 ชั่วโมง) ใช้งานแล้ว และทดสอบ cashier escalation/tenant scope ของ employee/device ผ่านบน VPS แล้ว แต่ยังไม่ mark phase complete จนกว่าจะสร้าง owner device อัตโนมัติ, บังคับ device context ให้ครบทุก mutation, ทำ email verification/password reset และ PIN lockout แบบสะสมความผิดพลาด
+> สถานะล่าสุด: เพิ่ม email verification/password-reset token แบบใช้ครั้งเดียว, logout/revoke session, PIN lockout แบบสะสมความผิดพลาด และบังคับ `x-device-id` ที่ active และอยู่ร้านเดียวกันใน protected business routes แล้ว ส่วน owner device bootstrap และ email delivery provider ยังไม่เสร็จ จึงยังไม่ mark phase complete
 
 ## Phase 2 — Catalog, pricing และ inventory correctness
 
@@ -35,13 +35,14 @@
 - [ ] ทำ unit conversion snapshot และป้องกันการแก้ conversion ย้อนหลัง → Verify: แพ็ก/ลังตัด base stock ถูกต้องและ receipt เก่าไม่เปลี่ยน
 - [ ] ทำ stock ledger แบบ transaction-safe, adjustment approval, negative-stock policy และ duplicate barcode error → Verify: concurrent sale ไม่ทำ stock ติดลบ
 
-> สถานะล่าสุด: online checkout ใช้ pricing engine กลางและตัด stock แบบ transaction-safe แล้ว ทดสอบ `2 แพ็ก × 6 = 12` บน VPS ผ่าน เหลือ modifier snapshot, approval policy, duplicate barcode response และ concurrent integration tests
+> สถานะล่าสุด: เพิ่ม modifier group/option, item assignment, validation ของ required/min/max และ snapshot ราคา modifier ใน order line แล้ว เพิ่ม policy ป้องกัน stock ติดลบ, ปฏิเสธ adjustment กับสินค้าที่ไม่ track stock และ map duplicate SKU/barcode เป็น conflict แล้ว เหลือ stock adjustment approval และ PostgreSQL concurrent integration tests
 
 ## Implementation log
 
 - 2026-09-06: เพิ่ม API hardening, Prisma migration baseline, employee/device onboarding และ permission guard สำหรับ protected routes
 - 2026-09-06: แก้ canonical pricing, inclusive/exclusive tax และ stock unit conversion; online VPS smoke test ผ่าน (`2 แพ็ก × 6 = 12`, stock เหลือ 0)
 - 2026-09-06: ทดสอบ permission บน VPS: Owner สร้าง category ได้, Cashier ได้ `403` เมื่อสร้าง category/report และ PIN/invitation reuse ถูกปฏิเสธตาม policy
+- 2026-09-06: เพิ่ม migration `0002_identity_modifiers`, email/password recovery foundation, PIN lockout, active-device context, modifier assignment/snapshot และ negative-stock policy; local typecheck/test/lint ผ่าน (API 7 tests)
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง

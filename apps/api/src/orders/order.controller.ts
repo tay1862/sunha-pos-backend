@@ -17,6 +17,8 @@ export class OrderController {
     if (!parsed.success) throw new BadRequestException('INVALID_CHECKOUT');
     const employeeId = request.headers['x-employee-id'];
     if (typeof employeeId !== 'string') throw new BadRequestException('EMPLOYEE_REQUIRED');
-    return this.orders.checkout(request.user.tenantId, employeeId, parsed.data);
+    const deviceId = request.headers['x-device-id'];
+    if (typeof deviceId !== 'string') throw new BadRequestException('DEVICE_REQUIRED');
+    return this.orders.checkout(request.user.tenantId, employeeId, parsed.data, deviceId);
   }
 }

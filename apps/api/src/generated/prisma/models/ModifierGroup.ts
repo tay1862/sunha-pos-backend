@@ -494,14 +494,6 @@ export type ModifierGroupUncheckedUpdateManyWithoutStoreNestedInput = {
   deleteMany?: Prisma.ModifierGroupScalarWhereInput | Prisma.ModifierGroupScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type ModifierGroupCreateNestedOneWithoutOptionsInput = {
   create?: Prisma.XOR<Prisma.ModifierGroupCreateWithoutOptionsInput, Prisma.ModifierGroupUncheckedCreateWithoutOptionsInput>
   connectOrCreate?: Prisma.ModifierGroupCreateOrConnectWithoutOptionsInput

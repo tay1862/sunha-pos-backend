@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -9,7 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { createCategorySchema, createItemSchema, updateItemSchema } from '@sunha/contracts';
+import { assignModifierGroupSchema, createCategorySchema, createItemSchema, createModifierGroupSchema, updateItemSchema } from '@sunha/contracts';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { PermissionGuard, RequirePermission } from '../auth/permission.guard.js';
@@ -49,6 +50,34 @@ export class CatalogController {
     const parsed = createItemSchema.safeParse(body);
     if (!parsed.success) throw new BadRequestException('INVALID_ITEM');
     return this.catalog.createItem(request.user.tenantId, parsed.data);
+  }
+
+  @Delete('categories/:id')
+  @RequirePermission('MANAGE_ITEMS')
+  deleteCategory(@Req() request: AuthRequest, @Param('id') id: string) {
+    return this.catalog.deleteCategory(request.user.tenantId, id);
+  }
+
+  @Get('modifier-groups')
+  @RequirePermission('SELL')
+  modifierGroups(@Req() request: AuthRequest) {
+    return this.catalog.listModifierGroups(request.user.tenantId);
+  }
+
+  @Post('modifier-groups')
+  @RequirePermission('MANAGE_ITEMS')
+  createModifierGroup(@Req() request: AuthRequest, @Body() body: unknown) {
+    const parsed = createModifierGroupSchema.safeParse(body);
+    if (!parsed.success) throw new BadRequestException('INVALID_MODIFIER_GROUP');
+    return this.catalog.createModifierGroup(request.user.tenantId, parsed.data);
+  }
+
+  @Post('items/:id/modifier-groups')
+  @RequirePermission('MANAGE_ITEMS')
+  assignModifierGroup(@Req() request: AuthRequest, @Param('id') id: string, @Body() body: unknown) {
+    const parsed = assignModifierGroupSchema.safeParse(body);
+    if (!parsed.success) throw new BadRequestException('INVALID_MODIFIER_ASSIGNMENT');
+    return this.catalog.assignModifierGroup(request.user.tenantId, id, parsed.data.groupId);
   }
 
   @Patch('items/:id')

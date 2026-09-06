@@ -2,11 +2,12 @@ import { ConflictException, Injectable, NotFoundException } from '@nestjs/common
 import type { CheckoutOrderInput } from '@sunha/contracts';
 import { calculateOrderTotals, toBaseQuantity } from '@sunha/domain';
 import { PrismaService } from '../database/prisma.service.js';
+import { Prisma } from '../generated/prisma/client.js';
 
 @Injectable()
 export class OrderService {
   constructor(private readonly prisma: PrismaService) {}
-  async checkout(tenantId: string, employeeId: string, input: CheckoutOrderInput) {
+  async checkout(tenantId: string, employeeId: string, input: CheckoutOrderInput, deviceId?: string) {
     const existing = await this.prisma.order.findUnique({
       where: { clientOrderId: input.clientOrderId },
       include: { receipts: true, payments: true },
@@ -31,7 +32,7 @@ export class OrderService {
     const effectiveTaxMode = taxes[0]?.mode === 'INCLUSIVE' ? 'INCLUSIVE' : 'EXCLUSIVE';
     const units = await this.prisma.itemUnit.findMany({
       where: { id: { in: input.lines.map((line) => line.unitId) }, item: { store: { tenantId } } },
-      include: { item: true },
+      include: { item: { include: { modifierGroups: { include: { group: true } } } } },
     });
     const byId = new Map(units.map((unit) => [unit.id, unit]));
     const resolved = input.lines.map((line) => {
@@ -39,9 +40,31 @@ export class OrderService {
       if (!unit || unit.itemId !== line.itemId) throw new ConflictException('INVALID_ORDER_LINE');
       return { line, unit };
     });
+    const optionIds = [...new Set(input.lines.flatMap((line) => line.modifierOptionIds))];
+    const options = await this.prisma.modifierOption.findMany({
+      where: { id: { in: optionIds }, group: { store: { tenantId } } },
+      include: { group: true },
+    });
+    if (options.length !== optionIds.length) throw new ConflictException('INVALID_MODIFIERS');
+    const optionsById = new Map(options.map((option) => [option.id, option]));
+    const resolvedWithModifiers = resolved.map(({ line, unit }) => {
+      const selectedIds = line.modifierOptionIds;
+      if (new Set(selectedIds).size !== selectedIds.length) throw new ConflictException('INVALID_MODIFIERS');
+      const assignedGroups = new Map(unit.item.modifierGroups.map((assignment) => [assignment.groupId, assignment.group]));
+      const selected = selectedIds.map((id) => optionsById.get(id));
+      if (selected.some((option) => !option || !assignedGroups.has(option.groupId)))
+        throw new ConflictException('INVALID_MODIFIERS');
+      for (const group of assignedGroups.values()) {
+        const count = selected.filter((option) => option?.groupId === group.id).length;
+        if (count < group.minSelections || count > group.maxSelections || (group.required && count === 0))
+          throw new ConflictException('INVALID_MODIFIERS');
+      }
+    const effectiveUnitPrice = modifierUnitPrice(unit.priceAmount.toString(), selected.map((option) => option?.priceDeltaAmount.toString() ?? '0'));
+      return { line, unit, selected: selected.filter((option): option is NonNullable<typeof option> => Boolean(option)), effectiveUnitPrice };
+    });
     const totals = calculateTotals({
-      lines: resolved.map(({ line, unit }) => ({
-        unitPrice: unit.priceAmount.toString(),
+      lines: resolvedWithModifiers.map(({ line, effectiveUnitPrice }) => ({
+        unitPrice: effectiveUnitPrice.toString(),
         quantity: line.quantity,
       })),
       discount: input.discount,
@@ -54,8 +77,9 @@ export class OrderService {
     )
       throw new ConflictException('INSUFFICIENT_TENDER');
     const receiptNumber = `SUNHA-${input.clientOrderId}`;
-    return this.prisma.$transaction(async (tx) => {
-      for (const { line, unit } of resolved) {
+    try {
+      return await this.prisma.$transaction(async (tx) => {
+      for (const { line, unit } of resolvedWithModifiers) {
         if (!unit.item.trackStock) continue;
         const required = baseQuantity(line.quantity, unit.multiplierToBase.toString());
         const changed = await tx.inventoryLevel.updateMany({
@@ -73,6 +97,7 @@ export class OrderService {
           tenantId,
           storeId: store.id,
           employeeId,
+          deviceId,
           status: 'COMPLETED',
           subtotalAmount: BigInt(totals.subtotal),
           discountAmount: BigInt(totals.discount),
@@ -82,21 +107,28 @@ export class OrderService {
           offline: input.offline,
           completedAt: new Date(),
           lines: {
-            create: resolved.map(({ line, unit }) => ({
+            create: resolvedWithModifiers.map(({ line, unit, selected, effectiveUnitPrice }) => ({
               itemId: line.itemId,
               unitId: unit.id,
               itemNameSnapshot: unit.item.name,
               unitNameSnapshot: unit.name,
               quantity: line.quantity,
               multiplierSnapshot: unit.multiplierToBase,
-              unitPriceAmount: unit.priceAmount,
+              unitPriceAmount: effectiveUnitPrice,
               lineTotalAmount: BigInt(
                 calculateTotals({
-                  lines: [{ unitPrice: unit.priceAmount.toString(), quantity: line.quantity }],
+                  lines: [{ unitPrice: effectiveUnitPrice.toString(), quantity: line.quantity }],
                   taxRateBasisPoints: 0,
                 }).subtotal,
               ),
               note: line.note,
+              modifiers: {
+                create: selected.map((option) => ({
+                  optionId: option.id,
+                  nameSnapshot: option.name,
+                  priceDeltaSnapshot: option.priceDeltaAmount,
+                })),
+              },
             })),
           },
           payments: {
@@ -115,7 +147,18 @@ export class OrderService {
         },
         include: { receipts: true, payments: true },
       });
-    });
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+        const concurrent = await this.prisma.order.findUnique({
+          where: { clientOrderId: input.clientOrderId },
+          include: { receipts: true, payments: true },
+        });
+        if (concurrent?.tenantId === tenantId) return concurrent;
+        throw new ConflictException('ORDER_ID_ALREADY_USED');
+      }
+      throw error;
+    }
   }
 }
 
@@ -140,3 +183,11 @@ function baseQuantity(quantity: string, multiplier: string): string {
 }
 
 export { baseQuantity, calculateTotals };
+
+function modifierUnitPrice(basePrice: string, deltas: string[]): bigint {
+  const total = deltas.reduce((sum, delta) => sum + BigInt(delta), BigInt(basePrice));
+  if (total < 0n) throw new ConflictException('INVALID_MODIFIER_PRICE');
+  return total;
+}
+
+export { modifierUnitPrice };

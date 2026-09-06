@@ -54,6 +54,7 @@ export const ModelName = {
   Tenant: 'Tenant',
   User: 'User',
   AuthSession: 'AuthSession',
+  AuthToken: 'AuthToken',
   Store: 'Store',
   Employee: 'Employee',
   Device: 'Device',
@@ -70,6 +71,7 @@ export const ModelName = {
   InventoryMovement: 'InventoryMovement',
   Order: 'Order',
   OrderLine: 'OrderLine',
+  OrderLineModifier: 'OrderLineModifier',
   Payment: 'Payment',
   Receipt: 'Receipt',
   Refund: 'Refund',
@@ -131,6 +133,19 @@ export const AuthSessionScalarFieldEnum = {
 export type AuthSessionScalarFieldEnum = (typeof AuthSessionScalarFieldEnum)[keyof typeof AuthSessionScalarFieldEnum]
 
 
+export const AuthTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuthTokenScalarFieldEnum = (typeof AuthTokenScalarFieldEnum)[keyof typeof AuthTokenScalarFieldEnum]
+
+
 export const StoreScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
@@ -155,6 +170,8 @@ export const EmployeeScalarFieldEnum = {
   name: 'name',
   role: 'role',
   pinHash: 'pinHash',
+  pinFailedAttempts: 'pinFailedAttempts',
+  pinLockedUntil: 'pinLockedUntil',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -349,6 +366,17 @@ export const OrderLineScalarFieldEnum = {
 } as const
 
 export type OrderLineScalarFieldEnum = (typeof OrderLineScalarFieldEnum)[keyof typeof OrderLineScalarFieldEnum]
+
+
+export const OrderLineModifierScalarFieldEnum = {
+  id: 'id',
+  orderLineId: 'orderLineId',
+  optionId: 'optionId',
+  nameSnapshot: 'nameSnapshot',
+  priceDeltaSnapshot: 'priceDeltaSnapshot'
+} as const
+
+export type OrderLineModifierScalarFieldEnum = (typeof OrderLineModifierScalarFieldEnum)[keyof typeof OrderLineModifierScalarFieldEnum]
 
 
 export const PaymentScalarFieldEnum = {

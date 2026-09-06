@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { baseQuantity, calculateTotals } from './order.service.js';
+import { baseQuantity, calculateTotals, modifierUnitPrice } from './order.service.js';
 
 describe('order money and stock calculations', () => {
   it('converts pack quantities into base units without leaking integer scale', () => {
@@ -16,5 +16,10 @@ describe('order money and stock calculations', () => {
         taxRateBasisPoints: 700,
       }),
     ).toEqual({ subtotal: '20000', discount: '2000', tax: '1260', total: '19260' });
+  });
+
+  it('snapshots modifier deltas into an effective unit price', () => {
+    expect(modifierUnitPrice('30000', ['5000', '-2000'])).toBe(33000n);
+    expect(() => modifierUnitPrice('1000', ['-1001'])).toThrow('INVALID_MODIFIER_PRICE');
   });
 });

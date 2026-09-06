@@ -53,6 +53,12 @@ export const loginSchema = z.object({
 });
 
 export const refreshTokenSchema = z.object({ refreshToken: z.string().min(20).max(512) });
+export const authTokenSchema = z.object({ token: z.string().min(20).max(512) });
+export const passwordResetRequestSchema = z.object({ email: z.string().email() });
+export const passwordResetSchema = z.object({
+  token: z.string().min(20).max(512),
+  password: z.string().min(12).max(128),
+});
 
 export const storeSettingsSchema = z.object({
   name: z.string().trim().min(1).max(120),
@@ -158,6 +164,7 @@ export const createModifierGroupSchema = z.object({
   maxSelections: z.number().int().min(1).max(20).default(1),
   options: z.array(modifierOptionSchema).min(1).max(50),
 });
+export const assignModifierGroupSchema = z.object({ groupId: idSchema });
 
 export const paymentTypeSchema = z.enum([
   'CASH',
@@ -226,6 +233,9 @@ export const syncPushSchema = z.object({
 export type SignUpInput = z.infer<typeof signUpSchema>;
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RefreshTokenInput = z.infer<typeof refreshTokenSchema>;
+export type AuthTokenInput = z.infer<typeof authTokenSchema>;
+export type PasswordResetRequestInput = z.infer<typeof passwordResetRequestSchema>;
+export type PasswordResetInput = z.infer<typeof passwordResetSchema>;
 export type StoreSettings = z.infer<typeof storeSettingsSchema>;
 export type UpdateStoreSettingsInput = z.infer<typeof updateStoreSettingsSchema>;
 export type CreateEmployeeInput = z.infer<typeof createEmployeeSchema>;
@@ -237,6 +247,8 @@ export type CreateCategoryInput = z.infer<typeof createCategorySchema>;
 export type CreateItemInput = z.infer<typeof createItemSchema>;
 export type UpdateItemInput = z.infer<typeof updateItemSchema>;
 export type InventoryAdjustmentInput = z.infer<typeof inventoryAdjustmentSchema>;
+export type CreateModifierGroupInput = z.infer<typeof createModifierGroupSchema>;
+export type AssignModifierGroupInput = z.infer<typeof assignModifierGroupSchema>;
 export type CheckoutOrderInput = z.infer<typeof checkoutOrderSchema>;
 export type CreateTaxInput = z.infer<typeof createTaxSchema>;
 export type OpenShiftInput = z.infer<typeof openShiftSchema>;

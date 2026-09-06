@@ -55,6 +55,11 @@ export type User = Prisma.UserModel
  */
 export type AuthSession = Prisma.AuthSessionModel
 /**
+ * Model AuthToken
+ * 
+ */
+export type AuthToken = Prisma.AuthTokenModel
+/**
  * Model Store
  * 
  */
@@ -134,6 +139,11 @@ export type Order = Prisma.OrderModel
  * 
  */
 export type OrderLine = Prisma.OrderLineModel
+/**
+ * Model OrderLineModifier
+ * 
+ */
+export type OrderLineModifier = Prisma.OrderLineModifierModel
 /**
  * Model Payment
  * 

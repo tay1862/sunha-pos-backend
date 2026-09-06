@@ -400,6 +400,7 @@ export const ModelName = {
   Tenant: 'Tenant',
   User: 'User',
   AuthSession: 'AuthSession',
+  AuthToken: 'AuthToken',
   Store: 'Store',
   Employee: 'Employee',
   Device: 'Device',
@@ -416,6 +417,7 @@ export const ModelName = {
   InventoryMovement: 'InventoryMovement',
   Order: 'Order',
   OrderLine: 'OrderLine',
+  OrderLineModifier: 'OrderLineModifier',
   Payment: 'Payment',
   Receipt: 'Receipt',
   Refund: 'Refund',
@@ -438,7 +440,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "user" | "authSession" | "store" | "employee" | "device" | "deviceEnrollmentToken" | "deviceEmployee" | "category" | "item" | "modifierGroup" | "tax" | "modifierOption" | "itemModifierGroup" | "itemUnit" | "inventoryLevel" | "inventoryMovement" | "order" | "orderLine" | "payment" | "receipt" | "refund" | "shift" | "cashMovement" | "syncOperation" | "auditEvent"
+    modelProps: "tenant" | "user" | "authSession" | "authToken" | "store" | "employee" | "device" | "deviceEnrollmentToken" | "deviceEmployee" | "category" | "item" | "modifierGroup" | "tax" | "modifierOption" | "itemModifierGroup" | "itemUnit" | "inventoryLevel" | "inventoryMovement" | "order" | "orderLine" | "orderLineModifier" | "payment" | "receipt" | "refund" | "shift" | "cashMovement" | "syncOperation" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -661,6 +663,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.AuthSessionCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.AuthSessionCountAggregateOutputType> | number
+        }
+      }
+    }
+    AuthToken: {
+      payload: Prisma.$AuthTokenPayload<ExtArgs>
+      fields: Prisma.AuthTokenFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AuthTokenFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AuthTokenFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>
+        }
+        findFirst: {
+          args: Prisma.AuthTokenFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AuthTokenFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>
+        }
+        findMany: {
+          args: Prisma.AuthTokenFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>[]
+        }
+        create: {
+          args: Prisma.AuthTokenCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>
+        }
+        createMany: {
+          args: Prisma.AuthTokenCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AuthTokenCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>[]
+        }
+        delete: {
+          args: Prisma.AuthTokenDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>
+        }
+        update: {
+          args: Prisma.AuthTokenUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>
+        }
+        deleteMany: {
+          args: Prisma.AuthTokenDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AuthTokenUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AuthTokenUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>[]
+        }
+        upsert: {
+          args: Prisma.AuthTokenUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AuthTokenPayload>
+        }
+        aggregate: {
+          args: Prisma.AuthTokenAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAuthToken>
+        }
+        groupBy: {
+          args: Prisma.AuthTokenGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthTokenGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AuthTokenCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AuthTokenCountAggregateOutputType> | number
         }
       }
     }
@@ -1848,6 +1924,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    OrderLineModifier: {
+      payload: Prisma.$OrderLineModifierPayload<ExtArgs>
+      fields: Prisma.OrderLineModifierFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.OrderLineModifierFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.OrderLineModifierFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>
+        }
+        findFirst: {
+          args: Prisma.OrderLineModifierFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.OrderLineModifierFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>
+        }
+        findMany: {
+          args: Prisma.OrderLineModifierFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>[]
+        }
+        create: {
+          args: Prisma.OrderLineModifierCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>
+        }
+        createMany: {
+          args: Prisma.OrderLineModifierCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.OrderLineModifierCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>[]
+        }
+        delete: {
+          args: Prisma.OrderLineModifierDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>
+        }
+        update: {
+          args: Prisma.OrderLineModifierUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>
+        }
+        deleteMany: {
+          args: Prisma.OrderLineModifierDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.OrderLineModifierUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.OrderLineModifierUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>[]
+        }
+        upsert: {
+          args: Prisma.OrderLineModifierUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$OrderLineModifierPayload>
+        }
+        aggregate: {
+          args: Prisma.OrderLineModifierAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateOrderLineModifier>
+        }
+        groupBy: {
+          args: Prisma.OrderLineModifierGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrderLineModifierGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.OrderLineModifierCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.OrderLineModifierCountAggregateOutputType> | number
+        }
+      }
+    }
     Payment: {
       payload: Prisma.$PaymentPayload<ExtArgs>
       fields: Prisma.PaymentFieldRefs
@@ -2441,6 +2591,19 @@ export const AuthSessionScalarFieldEnum = {
 export type AuthSessionScalarFieldEnum = (typeof AuthSessionScalarFieldEnum)[keyof typeof AuthSessionScalarFieldEnum]
 
 
+export const AuthTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  usedAt: 'usedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type AuthTokenScalarFieldEnum = (typeof AuthTokenScalarFieldEnum)[keyof typeof AuthTokenScalarFieldEnum]
+
+
 export const StoreScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
@@ -2465,6 +2628,8 @@ export const EmployeeScalarFieldEnum = {
   name: 'name',
   role: 'role',
   pinHash: 'pinHash',
+  pinFailedAttempts: 'pinFailedAttempts',
+  pinLockedUntil: 'pinLockedUntil',
   active: 'active',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2661,6 +2826,17 @@ export const OrderLineScalarFieldEnum = {
 export type OrderLineScalarFieldEnum = (typeof OrderLineScalarFieldEnum)[keyof typeof OrderLineScalarFieldEnum]
 
 
+export const OrderLineModifierScalarFieldEnum = {
+  id: 'id',
+  orderLineId: 'orderLineId',
+  optionId: 'optionId',
+  nameSnapshot: 'nameSnapshot',
+  priceDeltaSnapshot: 'priceDeltaSnapshot'
+} as const
+
+export type OrderLineModifierScalarFieldEnum = (typeof OrderLineModifierScalarFieldEnum)[keyof typeof OrderLineModifierScalarFieldEnum]
+
+
 export const PaymentScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
@@ -2830,6 +3006,20 @@ export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaM
 
 
 /**
+ * Reference to a field of type 'AuthTokenType'
+ */
+export type EnumAuthTokenTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthTokenType'>
+    
+
+
+/**
+ * Reference to a field of type 'AuthTokenType[]'
+ */
+export type ListEnumAuthTokenTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthTokenType[]'>
+    
+
+
+/**
  * Reference to a field of type 'EmployeeRole'
  */
 export type EnumEmployeeRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeRole'>
@@ -2840,6 +3030,20 @@ export type EnumEmployeeRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'EmployeeRole[]'
  */
 export type ListEnumEmployeeRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeRole[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -2875,20 +3079,6 @@ export type BigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 
  * Reference to a field of type 'BigInt[]'
  */
 export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 
@@ -3129,6 +3319,7 @@ export type GlobalOmitConfig = {
   tenant?: Prisma.TenantOmit
   user?: Prisma.UserOmit
   authSession?: Prisma.AuthSessionOmit
+  authToken?: Prisma.AuthTokenOmit
   store?: Prisma.StoreOmit
   employee?: Prisma.EmployeeOmit
   device?: Prisma.DeviceOmit
@@ -3145,6 +3336,7 @@ export type GlobalOmitConfig = {
   inventoryMovement?: Prisma.InventoryMovementOmit
   order?: Prisma.OrderOmit
   orderLine?: Prisma.OrderLineOmit
+  orderLineModifier?: Prisma.OrderLineModifierOmit
   payment?: Prisma.PaymentOmit
   receipt?: Prisma.ReceiptOmit
   refund?: Prisma.RefundOmit
