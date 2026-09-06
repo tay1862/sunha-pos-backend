@@ -31,14 +31,14 @@
 ## Phase 2 — Catalog, pricing และ inventory correctness
 
 - [x] เชื่อม POS กับ catalog API/local catalog และทำหน้าจอสร้าง/ดู categories/items/modifiers/taxes/employees → Verify: owner สร้างข้อมูลจากแอปและโหลดข้อมูลจาก API ได้
-- [ ] ขยาย catalog เป็น full CRUD สำหรับ edit/delete และ unit editor ทุกโมดูล → Verify: owner แก้ไข/ปิดใช้งานข้อมูลจากแอปได้ครบโดยไม่เปลี่ยน snapshot เก่า
+- [x] ขยาย catalog เป็น full CRUD สำหรับ edit/delete และ unit editor ทุกโมดูล → Verify: owner แก้ไข/ปิดใช้งานข้อมูลจากแอปได้ครบโดยไม่เปลี่ยน snapshot เก่า
 - [x] รวม pricing engine package เดียวกับ API รองรับ modifier, inclusive/exclusive tax, discount และ rounding → Verify: golden test ชุดเดียวผ่าน mobile/server
 - [x] ทำ unit conversion snapshot และป้องกันการแก้ conversion ย้อนหลัง → Verify: แพ็ก/ลังตัด base stock ถูกต้องและ receipt เก่าไม่เปลี่ยน
 - [x] ทำ stock ledger แบบ transaction-safe, adjustment approval, negative-stock policy และ duplicate barcode error → Verify: concurrent sale ไม่ทำ stock ติดลบ
 
 > สถานะล่าสุด: เพิ่ม modifier group/option, item assignment, validation ของ required/min/max และ snapshot ราคา modifier ใน order line แล้ว เพิ่ม policy ป้องกัน stock ติดลบ, ปฏิเสธ adjustment กับสินค้าที่ไม่ track stock และ map duplicate SKU/barcode เป็น conflict แล้ว รวมถึง Manager PIN + audit สำหรับ stock adjustment. POS มีหน้าจอสร้าง/ดูรายการสำหรับสินค้า/หมวดหมู่, modifier, ภาษี และพนักงาน พร้อมเชื่อม API จริง; full edit/delete และ unit editor ยังเป็นงานถัดไป. PostgreSQL concurrent integration test รันผ่านจริงแล้วด้วย PostgreSQL 17 ใน isolated Docker database
 > ความคืบหน้าล่าสุด: เพิ่ม item/category soft-delete, item edit และแก้ไข unit name/conversion/price/SKU/barcode แบบรักษา unit id เดิมเพื่อไม่กระทบ snapshot ของ order เก่า พร้อมฟอร์ม POS ที่ใช้งานจริง; modifier/tax/employee full edit/delete ยังเหลือ
-> ความคืบหน้าล่าสุด: เพิ่ม API update/delete สำหรับ modifier group และ tax พร้อม validation, tenant guard และป้องกันลบ modifier ที่มีประวัติการขาย; UI ของ modifier/tax/employee สำหรับ edit/delete ยังเหลือ จึงยังไม่ติ๊ก full CRUD
+> ความคืบหน้าล่าสุด: เพิ่ม API และ POS UI สำหรับ modifier/tax/employee edit/delete; modifier ที่มีประวัติขายจะลบไม่ได้, tax/employee ใช้ soft-delete. Item/category edit/delete และ unit editor ทำงานแล้ว จึงปิดงาน Catalog CRUD ตามขอบเขต Beta
 
 > ความคืบหน้าล่าสุด: เพิ่ม catalog snapshot สำหรับ POS และ SQLite local cache พร้อม online-first/fallback read, บังคับ Manager PIN + audit สำหรับ stock adjustment และเพิ่ม test สำหรับ net sales หลัง refund; ยังไม่ mark catalog/stock complete จนกว่า POS CRUD, PostgreSQL integration และ reconciliation flow จะผ่านจริง
 
@@ -60,6 +60,7 @@
 - 2026-09-06: เพิ่มตัวแปร Resend ใน production compose โดยอ้างอิงจาก environment เท่านั้น และกำหนด temporary `APP_BASE_URL` default เป็น `http://kanghan.site` กับ test sender `onboarding@resend.dev`; ยังไม่ใส่ secret/deploy เพราะต้องตรวจ sender/domain ของ Resend ก่อน
 - 2026-09-06: ตั้งค่า Resend บน VPS สำเร็จและ deploy API ด้วย project `sunha-pos-prod`; migration ไม่มีรายการค้าง, readiness/database ผ่าน และส่ง test email ไปยัง Resend account owner สำเร็จ (custom recipient ยังถูกปฏิเสธจนกว่า `kanghan.site` จะ verified)
 - 2026-09-06: เพิ่ม Catalog API update/delete สำหรับ modifier group และ tax; local typecheck/test/lint ผ่าน แต่ยังไม่ deploy เพราะต้องปิด UI CRUD ให้ครบก่อน
+- 2026-09-06: เพิ่ม POS UI edit/delete สำหรับ modifier, tax และ employee; typecheck, lint, unit tests และ Android export ผ่าน จึงติ๊ก Catalog full CRUD ตามขอบเขต Beta
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง

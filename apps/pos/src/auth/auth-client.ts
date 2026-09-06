@@ -67,7 +67,7 @@ export async function updateCatalogItem(id: string, input: UpdateItemInput) { co
 export async function deleteCatalogItem(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/items/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
 export async function deleteCatalogCategory(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/categories/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
 
-export async function listModifierGroups() { const token = await getAccessToken(); return apiRequest<Array<{ id: string; name: string; options: Array<{ name: string; priceDeltaAmount: string | number }> }>>('/catalog/modifier-groups', { accessToken: token ?? undefined }); }
+export async function listModifierGroups() { const token = await getAccessToken(); return apiRequest<Array<{ id: string; name: string; options: Array<{ id: string; name: string; priceDeltaAmount: string | number }> }>>('/catalog/modifier-groups', { accessToken: token ?? undefined }); }
 export async function createModifierGroup(input: CreateModifierGroupInput) { const token = await getAccessToken(); return apiRequest('/catalog/modifier-groups', { method: 'POST', body: input, accessToken: token ?? undefined }); }
 export async function updateModifierGroup(id: string, input: UpdateModifierGroupInput) { const token = await getAccessToken(); return apiRequest(`/catalog/modifier-groups/${id}`, { method: 'PATCH', body: input, accessToken: token ?? undefined }); }
 export async function deleteModifierGroup(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/modifier-groups/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
@@ -77,6 +77,7 @@ export async function updateTax(id: string, input: UpdateTaxInput) { const token
 export async function deleteTax(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/taxes/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
 export async function listEmployees() { const token = await getAccessToken(); return apiRequest<Array<{ id: string; name: string; role: string; active: boolean }>>('/employees', { accessToken: token ?? undefined }); }
 export async function createEmployee(input: CreateEmployeeInput) { const token = await getAccessToken(); return apiRequest('/employees', { method: 'POST', body: input, accessToken: token ?? undefined }); }
+export async function updateEmployee(id: string, input: { name?: string; pin?: string; active?: boolean }) { const token = await getAccessToken(); return apiRequest(`/employees/${id}`, { method: 'PATCH', body: input, accessToken: token ?? undefined }); }
 
 export async function getCatalogSnapshot() {
   type Snapshot = { version: string; categories: unknown[]; items: Awaited<ReturnType<typeof listCatalogItems>>; modifierGroups: unknown[]; taxes: unknown[] };
