@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { baseQuantity, calculateTotals, modifierUnitPrice } from './order.service.js';
+import { baseQuantity, calculatePaymentAmounts, calculateTotals, modifierUnitPrice } from './order.service.js';
 
 describe('order money and stock calculations', () => {
   it('converts pack quantities into base units without leaking integer scale', () => {
@@ -21,5 +21,11 @@ describe('order money and stock calculations', () => {
   it('snapshots modifier deltas into an effective unit price', () => {
     expect(modifierUnitPrice('30000', ['5000', '-2000'])).toBe(33000n);
     expect(() => modifierUnitPrice('1000', ['-1001'])).toThrow('INVALID_MODIFIER_PRICE');
+  });
+
+  it('calculates cash change exactly and rejects insufficient tender', () => {
+    expect(calculatePaymentAmounts('CASH', '19260', '20000')).toEqual({ tenderedAmount: 20000n, changeAmount: 740n });
+    expect(calculatePaymentAmounts('BANK_TRANSFER', '19260')).toEqual({ tenderedAmount: null, changeAmount: null });
+    expect(() => calculatePaymentAmounts('CASH', '19260', '19259')).toThrow('INSUFFICIENT_TENDER');
   });
 });

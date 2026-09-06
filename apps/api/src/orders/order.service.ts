@@ -71,11 +71,7 @@ export class OrderService {
       taxRateBasisPoints: effectiveTaxRate,
       taxMode: effectiveTaxMode,
     });
-    if (
-      input.paymentType === 'CASH' &&
-      (!input.tenderedAmount || BigInt(input.tenderedAmount.amount) < BigInt(totals.total))
-    )
-      throw new ConflictException('INSUFFICIENT_TENDER');
+    const payment = calculatePaymentAmounts(input.paymentType, totals.total, input.tenderedAmount?.amount);
     const receiptNumber = `SUNHA-${input.clientOrderId}`;
     try {
       return await this.prisma.$transaction(async (tx) => {
@@ -135,10 +131,8 @@ export class OrderService {
             create: {
               type: input.paymentType,
               amount: BigInt(totals.total),
-              tenderedAmount: input.tenderedAmount ? BigInt(input.tenderedAmount.amount) : null,
-              changeAmount: input.tenderedAmount
-                ? BigInt(input.tenderedAmount.amount) - BigInt(totals.total)
-                : null,
+              tenderedAmount: payment.tenderedAmount,
+              changeAmount: payment.changeAmount,
               reference: input.paymentReference,
               unverified: input.paymentType === 'MANUAL_QR',
             },
@@ -183,6 +177,14 @@ function baseQuantity(quantity: string, multiplier: string): string {
 }
 
 export { baseQuantity, calculateTotals };
+
+function calculatePaymentAmounts(paymentType: CheckoutOrderInput['paymentType'], total: string, tendered?: string) {
+  if (paymentType !== 'CASH') return { tenderedAmount: null, changeAmount: null };
+  if (!tendered || BigInt(tendered) < BigInt(total)) throw new ConflictException('INSUFFICIENT_TENDER');
+  return { tenderedAmount: BigInt(tendered), changeAmount: BigInt(tendered) - BigInt(total) };
+}
+
+export { calculatePaymentAmounts };
 
 function modifierUnitPrice(basePrice: string, deltas: string[]): bigint {
   const total = deltas.reduce((sum, delta) => sum + BigInt(delta), BigInt(basePrice));

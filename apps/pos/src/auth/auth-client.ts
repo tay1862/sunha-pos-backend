@@ -1,4 +1,4 @@
-import type { CreateCategoryInput, CreateEmployeeInput, CreateItemInput, CreateModifierGroupInput, CreateTaxInput, LoginInput, SignUpInput, UpdateItemInput, UpdateModifierGroupInput, UpdateStoreSettingsInput, UpdateTaxInput } from '@sunha/contracts';
+import type { CheckoutOrderInput, CreateCategoryInput, CreateEmployeeInput, CreateItemInput, CreateModifierGroupInput, CreateTaxInput, LoginInput, RefundInput, SignUpInput, UpdateItemInput, UpdateModifierGroupInput, UpdateStoreSettingsInput, UpdateTaxInput } from '@sunha/contracts';
 import { apiRequest } from '../api/client';
 import { getAccessToken, saveSessionContext, saveTokens } from './token-storage';
 import { readCatalogSnapshot, saveCatalogSnapshot } from '../offline/catalog-cache';
@@ -41,7 +41,8 @@ export async function listCatalogItems(): Promise<
   Array<{
     id: string;
     name: string;
-    category?: { name: string } | null;
+    imageUrl?: string | null;
+    category?: { name: string; color?: string } | null;
     units: Array<{ id: string; name: string; multiplierToBase: string | number; priceAmount: string | number | bigint; sku?: string | null; barcode?: string | null }>;
   }>
 > {
@@ -98,4 +99,24 @@ export async function listInventory(): Promise<
 > {
   const token = await getAccessToken();
   return apiRequest('/inventory/levels', { accessToken: token ?? undefined });
+}
+
+export async function checkoutOrder(input: CheckoutOrderInput) {
+  const token = await getAccessToken();
+  return apiRequest<{ receipts?: Array<{ number: string }>; payments?: unknown[] }>('/orders/checkout', { method: 'POST', body: input, accessToken: token ?? undefined });
+}
+
+export async function listReceipts(search?: string) {
+  const token = await getAccessToken();
+  return apiRequest<Array<{ id: string; number: string; createdAt: string; order: { id: string; totalAmount: string; status: string; employee?: { name: string }; payments: Array<{ unverified: boolean }> } }>>(`/receipts${search ? `?search=${encodeURIComponent(search)}` : ''}`, { accessToken: token ?? undefined });
+}
+
+export async function getReceipt(id: string) {
+  const token = await getAccessToken();
+  return apiRequest(`/receipts/${id}`, { accessToken: token ?? undefined });
+}
+
+export async function refundOrder(input: RefundInput) {
+  const token = await getAccessToken();
+  return apiRequest('/refunds', { method: 'POST', body: input, accessToken: token ?? undefined });
 }

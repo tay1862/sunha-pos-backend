@@ -8,7 +8,7 @@ export class ReportService {
     const orders = await this.prisma.order.findMany({
       where: {
         tenantId,
-        status: 'COMPLETED',
+        status: { in: ['COMPLETED', 'REFUNDED'] },
         createdAt: {
           gte: from ? new Date(from) : new Date(0),
           lte: to ? new Date(to) : new Date(),
