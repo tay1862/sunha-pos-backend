@@ -1,4 +1,4 @@
-import type { CreateCategoryInput, CreateEmployeeInput, CreateItemInput, CreateModifierGroupInput, CreateTaxInput, LoginInput, SignUpInput, UpdateStoreSettingsInput } from '@sunha/contracts';
+import type { CreateCategoryInput, CreateEmployeeInput, CreateItemInput, CreateModifierGroupInput, CreateTaxInput, LoginInput, SignUpInput, UpdateItemInput, UpdateStoreSettingsInput } from '@sunha/contracts';
 import { apiRequest } from '../api/client';
 import { getAccessToken, saveSessionContext, saveTokens } from './token-storage';
 import { readCatalogSnapshot, saveCatalogSnapshot } from '../offline/catalog-cache';
@@ -42,7 +42,7 @@ export async function listCatalogItems(): Promise<
     id: string;
     name: string;
     category?: { name: string } | null;
-    units: Array<{ priceAmount: string | number | bigint }>;
+    units: Array<{ id: string; name: string; multiplierToBase: string | number; priceAmount: string | number | bigint; sku?: string | null; barcode?: string | null }>;
   }>
 > {
   const token = await getAccessToken();
@@ -63,6 +63,9 @@ export async function createCatalogItem(input: CreateItemInput) {
   const token = await getAccessToken();
   return apiRequest('/catalog/items', { method: 'POST', body: input, accessToken: token ?? undefined });
 }
+export async function updateCatalogItem(id: string, input: UpdateItemInput) { const token = await getAccessToken(); return apiRequest(`/catalog/items/${id}`, { method: 'PATCH', body: input, accessToken: token ?? undefined }); }
+export async function deleteCatalogItem(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/items/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
+export async function deleteCatalogCategory(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/categories/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
 
 export async function listModifierGroups() { const token = await getAccessToken(); return apiRequest<Array<{ id: string; name: string; options: Array<{ name: string; priceDeltaAmount: string | number }> }>>('/catalog/modifier-groups', { accessToken: token ?? undefined }); }
 export async function createModifierGroup(input: CreateModifierGroupInput) { const token = await getAccessToken(); return apiRequest('/catalog/modifier-groups', { method: 'POST', body: input, accessToken: token ?? undefined }); }

@@ -105,4 +105,10 @@ export class CatalogController {
     if (!parsed.success) throw new BadRequestException('INVALID_ITEM');
     return this.catalog.updateItem(request.user.tenantId, id, parsed.data);
   }
+
+  @Delete('items/:id')
+  @RequirePermission('MANAGE_ITEMS')
+  deleteItem(@Req() request: AuthRequest, @Param('id') id: string) {
+    return this.catalog.deleteItem(request.user.tenantId, id);
+  }
 }

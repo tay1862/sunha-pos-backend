@@ -145,7 +145,9 @@ export const createItemSchema = z.object({
   units: z.array(itemUnitInputSchema).min(1).max(20),
 });
 
-export const updateItemSchema = createItemSchema.partial();
+export const updateItemSchema = createItemSchema.partial().extend({
+  units: z.array(itemUnitInputSchema.extend({ id: idSchema.optional() })).min(1).max(20).optional(),
+});
 export const updateCategorySchema = createCategorySchema.partial();
 
 export const inventoryAdjustmentSchema = z.object({
