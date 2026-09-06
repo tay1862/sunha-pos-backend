@@ -22,17 +22,17 @@
 ## Phase 1 — Identity, tenant และสิทธิ์
 
 - [ ] สร้าง owner employee/device เริ่มต้นพร้อม signup transaction → Verify: สมัครแล้วเข้าสู่การขายได้โดยไม่ต้องแก้ฐานข้อมูล
-- [ ] ทำ Employee/Role/Permission/Device invitation, enrollment, revoke และ lease ครบ → Verify: device/employee ข้ามร้านหรือสิทธิ์ไม่ได้
-- [ ] ทำ authorization guard กลาง ตรวจ tenant + store + role/permission + actor/device ทุก mutation → Verify: IDOR, cashier escalation และ forged headers ผ่านไม่ได้
-- [ ] เพิ่ม email verification, password reset, session revoke และ PIN lockout → Verify: token/session ที่ revoke ใช้ไม่ได้
+- [x] ทำ Employee/Role/Permission/Device invitation, enrollment, revoke และ lease ครบ → Verify: device/employee ข้ามร้านหรือสิทธิ์ไม่ได้
+- [x] ทำ authorization guard กลาง ตรวจ tenant + store + role/permission + actor/device ทุก mutation → Verify: IDOR, cashier escalation และ forged headers ผ่านไม่ได้
+- [x] เพิ่ม email verification, password reset, session revoke และ PIN lockout → Verify: token/session ที่ revoke ใช้ไม่ได้ (ยังเหลือ email delivery provider จริง)
 
 > สถานะล่าสุด: เพิ่ม email verification/password-reset token แบบใช้ครั้งเดียว, logout/revoke session, PIN lockout แบบสะสมความผิดพลาด และบังคับ `x-device-id` ที่ active และอยู่ร้านเดียวกันใน protected business routes แล้ว ส่วน owner device bootstrap และ email delivery provider ยังไม่เสร็จ จึงยังไม่ mark phase complete
 
 ## Phase 2 — Catalog, pricing และ inventory correctness
 
 - [ ] เชื่อม POS กับ catalog API/local catalog และทำ CRUD categories/items/units/modifiers/taxes → Verify: owner สร้างข้อมูลจากแอปได้ครบ
-- [ ] รวม pricing engine package เดียวกับ API รองรับ modifier, inclusive/exclusive tax, discount และ rounding → Verify: golden test ชุดเดียวผ่าน mobile/server
-- [ ] ทำ unit conversion snapshot และป้องกันการแก้ conversion ย้อนหลัง → Verify: แพ็ก/ลังตัด base stock ถูกต้องและ receipt เก่าไม่เปลี่ยน
+- [x] รวม pricing engine package เดียวกับ API รองรับ modifier, inclusive/exclusive tax, discount และ rounding → Verify: golden test ชุดเดียวผ่าน mobile/server
+- [x] ทำ unit conversion snapshot และป้องกันการแก้ conversion ย้อนหลัง → Verify: แพ็ก/ลังตัด base stock ถูกต้องและ receipt เก่าไม่เปลี่ยน
 - [ ] ทำ stock ledger แบบ transaction-safe, adjustment approval, negative-stock policy และ duplicate barcode error → Verify: concurrent sale ไม่ทำ stock ติดลบ
 
 > สถานะล่าสุด: เพิ่ม modifier group/option, item assignment, validation ของ required/min/max และ snapshot ราคา modifier ใน order line แล้ว เพิ่ม policy ป้องกัน stock ติดลบ, ปฏิเสธ adjustment กับสินค้าที่ไม่ track stock และ map duplicate SKU/barcode เป็น conflict แล้ว เหลือ stock adjustment approval และ PostgreSQL concurrent integration tests
