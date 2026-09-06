@@ -46,6 +46,7 @@ import { getSessionContext } from '../src/auth/token-storage';
 import { enqueueOperation, canChargeOffline } from '../src/offline/outbox';
 import { syncPending } from '../src/offline/sync-client';
 import { readLocalCart, saveLocalCart } from '../src/offline/local-db';
+import { listPrinterProfiles, printReceipt } from '../src/hardware/printer';
 
 type Product = {
   id: string;
@@ -57,6 +58,8 @@ type Product = {
   color: string;
   abbreviation: string;
   imageUrl: string;
+  sku?: string;
+  barcode?: string;
   modifierOptionIds: string[];
 };
 
@@ -160,6 +163,8 @@ const navigationItems = [
   { label: 'ກະເງິນ', icon: ReceiptText, route: '/shifts' },
   { label: 'ຕັ້ງຄ່າ', icon: Settings, route: '/settings' },
   { label: 'Sync', icon: Wifi, route: '/sync' },
+  { label: 'Barcode', icon: Search, route: '/barcode' },
+  { label: 'Printer', icon: ReceiptText, route: '/printers' },
 ];
 
 const formatLak = (amount: number) => `${amount.toLocaleString('en-US')} ₭`;
@@ -404,6 +409,8 @@ export default function SaleScreen() {
             color: item.category?.color ?? '#0F8B99',
             abbreviation: item.name.slice(0, 2),
             imageUrl: item.imageUrl ?? '',
+            sku: unit.sku ?? undefined,
+            barcode: unit.barcode ?? undefined,
             modifierOptionIds: [],
           })),
         );
@@ -430,7 +437,7 @@ export default function SaleScreen() {
     const normalized = query.trim().toLowerCase();
     return products.filter((product) => {
       const categoryMatch = activeCategory === categoryNames[0] || product.category === activeCategory;
-      return categoryMatch && (!normalized || product.name.toLowerCase().includes(normalized));
+      return categoryMatch && (!normalized || [product.name, product.sku, product.barcode].filter(Boolean).some((value) => value?.toLowerCase().includes(normalized)));
     });
   }, [activeCategory, categoryNames, products, query]);
 
@@ -476,6 +483,11 @@ export default function SaleScreen() {
       };
     try {
       const result = await checkoutOrder(input);
+      void listPrinterProfiles().then((profiles) => {
+        const profile = profiles.find((candidate) => candidate.autoPrint);
+        if (profile) return printReceipt(profile, `Sunha POS\n${result.receipts?.[0]?.number ?? ''}\n\n`);
+        return undefined;
+      }).catch(() => undefined);
       setCart({});
       setPaymentVisible(false);
       setCartVisible(false);
@@ -697,6 +709,7 @@ export default function SaleScreen() {
             numColumns={columns}
             renderItem={renderProduct}
             keyExtractor={(item) => item.id}
+            ListEmptyComponent={<View style={styles.emptyProducts}><Text style={[styles.emptyProductsTitle, { color: colors.text }]}>{products.length ? 'ບໍ່ພົບສິນຄ້າ' : 'ຍັງບໍ່ມີສິນຄ້າ'}</Text><Text style={[styles.emptyProductsText, { color: colors.textMuted }]}>{products.length ? 'ລອງຄົ້ນຫາດ້ວຍຊື່, SKU ຫຼື Barcode' : 'ເພີ່ມສິນຄ້າໃນ Catalog ເພື່ອເລີ່ມຂາຍ'}</Text></View>}
             contentContainerStyle={styles.productListContent}
             onScroll={(event) => setHeaderCompact(event.nativeEvent.contentOffset.y > 24)}
             scrollEventThrottle={16}
@@ -934,6 +947,9 @@ const styles = StyleSheet.create({
   },
   categoryText: { fontFamily: 'NotoSansLao_700Bold', fontSize: 11, lineHeight: 16 },
   productListContent: { paddingBottom: 82 },
+  emptyProducts: { alignItems: 'center', paddingHorizontal: 24, paddingTop: 56, gap: 6 },
+  emptyProductsTitle: { fontFamily: 'NotoSansLao_700Bold', fontSize: 16 },
+  emptyProductsText: { fontFamily: 'NotoSansLao_400Regular', fontSize: 12, textAlign: 'center' },
   productTile: {
     flex: 1,
     margin: 4,

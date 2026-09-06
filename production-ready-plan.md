@@ -94,8 +94,10 @@
 ## Phase 6 — Hardware และ operational UX
 
 - [ ] ทำ native ESC/POS Bluetooth/LAN module, printer profiles, 58/80mm, auto print/test/reprint/copy → Verify: ทดสอบ printer อย่างน้อย 2 รุ่นต่อประเภท
-- [ ] ทำ barcode camera และค้นหาสินค้าด้วย barcode/SKU → Verify: barcode ซ้ำ/ไม่รู้จักมีข้อความชัดเจน
+- [x] ทำ barcode camera และค้นหาสินค้าด้วย barcode/SKU → Verify: barcode ซ้ำ/ไม่รู้จักมีข้อความชัดเจน
 - [ ] ทำ loading/offline/error/empty states, Lao copy, accessibility และ responsive phone/tablet → Verify: manual UX review ผ่านบน Android จริง
+
+> สถานะ 2026-09-06: เพิ่ม `SunhaPrinter` Android native module สำหรับ Bluetooth RFCOMM/LAN TCP, printer profiles, auto-print setting, test/reprint/copy receipt และ permission สำหรับ Android 12+. เพิ่ม Barcode camera ที่ค้นหาจาก catalog ด้วย barcode/SKU และข้อความกรณีไม่พบ รวมถึง empty state ของรายการสินค้า/ใบเสร็จและ accessibility labels บางจุด. `pnpm typecheck`, `pnpm lint`, `pnpm test` และ `expo export --platform android` ผ่านแล้ว. การสร้าง APK ด้วย Gradle ยัง verify ไม่สำเร็จเพราะเครื่องพัฒนาเต็ม (`No space left on device`) และยังไม่ได้ทดสอบกับเครื่องพิมพ์ Bluetooth จริง 2 รุ่น, LAN จริง, กระดาษ/ฟอนต์ Lao หรือ Android E2E; จึงยังไม่ติ๊ก hardware/UX verification เป็น production-ready. ใบเสร็จที่พิมพ์จากหน้าประวัติปัจจุบันเป็น summary เพราะ receipt list API ยังไม่ได้ส่ง line details สำหรับ full itemized print
 
 ## Phase 7 — Observability และ launch operations
 
