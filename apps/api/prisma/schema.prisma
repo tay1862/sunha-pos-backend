@@ -167,6 +167,7 @@ model Device {
   store                 Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
   employees             DeviceEmployee[]
   syncOps               SyncOperation[]
+  auditEvents           AuditEvent[]
 
   @@index([storeId, status])
 }
@@ -463,6 +464,7 @@ model AuditEvent {
   id         String    @id @default(uuid()) @db.Uuid
   tenantId   String    @db.Uuid
   employeeId String?   @db.Uuid
+  deviceId   String?   @db.Uuid
   action     String    @db.VarChar(80)
   entityType String    @db.VarChar(50)
   entityId   String?   @db.Uuid
@@ -470,6 +472,7 @@ model AuditEvent {
   occurredAt DateTime  @default(now())
   tenant     Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employee   Employee? @relation(fields: [employeeId], references: [id], onDelete: SetNull)
+  device     Device?   @relation(fields: [deviceId], references: [id], onDelete: SetNull)
 
   @@index([tenantId, occurredAt])
   @@index([entityType, entityId])

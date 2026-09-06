@@ -120,3 +120,8 @@ export async function refundOrder(input: RefundInput) {
   const token = await getAccessToken();
   return apiRequest('/refunds', { method: 'POST', body: input, accessToken: token ?? undefined });
 }
+
+export async function openShift(openingAmount: string) { const token = await getAccessToken(); return apiRequest('/shifts/open', { method: 'POST', body: { openingAmount }, accessToken: token ?? undefined }); }
+export async function cashMovement(input: { amount: string; type: 'CASH_IN' | 'CASH_OUT'; reason: string }) { const token = await getAccessToken(); return apiRequest('/shifts/cash-movements', { method: 'POST', body: input, accessToken: token ?? undefined }); }
+export async function closeShift(closingAmount: string) { const token = await getAccessToken(); return apiRequest<{ expectedAmount: string; variance: string }>('/shifts/close', { method: 'POST', body: { closingAmount }, accessToken: token ?? undefined }); }
+export async function getReport(kind: 'sales' | 'payments' | 'discounts' | 'refunds' | 'shifts' | 'stock' | 'audit') { const token = await getAccessToken(); return apiRequest(`/reports/${kind}`, { accessToken: token ?? undefined }); }

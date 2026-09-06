@@ -15,20 +15,20 @@ export class ShiftController {
   open(@Req() r: AuthRequest, @Body() body: unknown) {
     const p = openShiftSchema.safeParse(body);
     if (!p.success) throw new BadRequestException('INVALID_OPEN_SHIFT');
-    return this.shifts.open(r.user.tenantId, String(r.headers['x-employee-id']), p.data);
+    return this.shifts.open(r.user.tenantId, String(r.headers['x-employee-id']), String(r.headers['x-device-id']), p.data);
   }
   @RequirePermission('SELL')
   @Post('cash-movements')
   movement(@Req() r: AuthRequest, @Body() body: unknown) {
     const p = cashMovementSchema.safeParse(body);
     if (!p.success) throw new BadRequestException('INVALID_CASH_MOVEMENT');
-    return this.shifts.movement(r.user.tenantId, String(r.headers['x-employee-id']), p.data);
+    return this.shifts.movement(r.user.tenantId, String(r.headers['x-employee-id']), String(r.headers['x-device-id']), p.data);
   }
   @RequirePermission('SELL')
   @Post('close')
   close(@Req() r: AuthRequest, @Body() body: unknown) {
     const p = closeShiftSchema.safeParse(body);
     if (!p.success) throw new BadRequestException('INVALID_CLOSE_SHIFT');
-    return this.shifts.close(r.user.tenantId, String(r.headers['x-employee-id']), p.data);
+    return this.shifts.close(r.user.tenantId, String(r.headers['x-employee-id']), String(r.headers['x-device-id']), p.data);
   }
 }

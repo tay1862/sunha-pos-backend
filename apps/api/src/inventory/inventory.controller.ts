@@ -23,6 +23,8 @@ export class InventoryController {
     if (!parsed.success) throw new BadRequestException('INVALID_INVENTORY_ADJUSTMENT');
     const actorId = request.headers['x-employee-id'];
     if (typeof actorId !== 'string') throw new BadRequestException('EMPLOYEE_REQUIRED');
-    return this.inventory.adjust(request.user.tenantId, actorId, parsed.data);
+    const deviceId = request.headers['x-device-id'];
+    if (typeof deviceId !== 'string') throw new BadRequestException('DEVICE_REQUIRED');
+    return this.inventory.adjust(request.user.tenantId, actorId, deviceId, parsed.data);
   }
 }

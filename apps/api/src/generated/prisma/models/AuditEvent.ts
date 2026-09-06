@@ -28,6 +28,7 @@ export type AuditEventMinAggregateOutputType = {
   id: string | null
   tenantId: string | null
   employeeId: string | null
+  deviceId: string | null
   action: string | null
   entityType: string | null
   entityId: string | null
@@ -38,6 +39,7 @@ export type AuditEventMaxAggregateOutputType = {
   id: string | null
   tenantId: string | null
   employeeId: string | null
+  deviceId: string | null
   action: string | null
   entityType: string | null
   entityId: string | null
@@ -48,6 +50,7 @@ export type AuditEventCountAggregateOutputType = {
   id: number
   tenantId: number
   employeeId: number
+  deviceId: number
   action: number
   entityType: number
   entityId: number
@@ -61,6 +64,7 @@ export type AuditEventMinAggregateInputType = {
   id?: true
   tenantId?: true
   employeeId?: true
+  deviceId?: true
   action?: true
   entityType?: true
   entityId?: true
@@ -71,6 +75,7 @@ export type AuditEventMaxAggregateInputType = {
   id?: true
   tenantId?: true
   employeeId?: true
+  deviceId?: true
   action?: true
   entityType?: true
   entityId?: true
@@ -81,6 +86,7 @@ export type AuditEventCountAggregateInputType = {
   id?: true
   tenantId?: true
   employeeId?: true
+  deviceId?: true
   action?: true
   entityType?: true
   entityId?: true
@@ -165,6 +171,7 @@ export type AuditEventGroupByOutputType = {
   id: string
   tenantId: string
   employeeId: string | null
+  deviceId: string | null
   action: string
   entityType: string
   entityId: string | null
@@ -197,6 +204,7 @@ export type AuditEventWhereInput = {
   id?: Prisma.UuidFilter<"AuditEvent"> | string
   tenantId?: Prisma.UuidFilter<"AuditEvent"> | string
   employeeId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
+  deviceId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
   action?: Prisma.StringFilter<"AuditEvent"> | string
   entityType?: Prisma.StringFilter<"AuditEvent"> | string
   entityId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
@@ -204,12 +212,14 @@ export type AuditEventWhereInput = {
   occurredAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
+  device?: Prisma.XOR<Prisma.DeviceNullableScalarRelationFilter, Prisma.DeviceWhereInput> | null
 }
 
 export type AuditEventOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deviceId?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
   entityId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -217,6 +227,7 @@ export type AuditEventOrderByWithRelationInput = {
   occurredAt?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
+  device?: Prisma.DeviceOrderByWithRelationInput
 }
 
 export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
@@ -226,6 +237,7 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AuditEventWhereInput | Prisma.AuditEventWhereInput[]
   tenantId?: Prisma.UuidFilter<"AuditEvent"> | string
   employeeId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
+  deviceId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
   action?: Prisma.StringFilter<"AuditEvent"> | string
   entityType?: Prisma.StringFilter<"AuditEvent"> | string
   entityId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
@@ -233,12 +245,14 @@ export type AuditEventWhereUniqueInput = Prisma.AtLeast<{
   occurredAt?: Prisma.DateTimeFilter<"AuditEvent"> | Date | string
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeNullableScalarRelationFilter, Prisma.EmployeeWhereInput> | null
+  device?: Prisma.XOR<Prisma.DeviceNullableScalarRelationFilter, Prisma.DeviceWhereInput> | null
 }, "id">
 
 export type AuditEventOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrderInput | Prisma.SortOrder
+  deviceId?: Prisma.SortOrderInput | Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
   entityId?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -256,6 +270,7 @@ export type AuditEventScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"AuditEvent"> | string
   tenantId?: Prisma.UuidWithAggregatesFilter<"AuditEvent"> | string
   employeeId?: Prisma.UuidNullableWithAggregatesFilter<"AuditEvent"> | string | null
+  deviceId?: Prisma.UuidNullableWithAggregatesFilter<"AuditEvent"> | string | null
   action?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
   entityType?: Prisma.StringWithAggregatesFilter<"AuditEvent"> | string
   entityId?: Prisma.UuidNullableWithAggregatesFilter<"AuditEvent"> | string | null
@@ -272,12 +287,14 @@ export type AuditEventCreateInput = {
   occurredAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutAuditEventsInput
   employee?: Prisma.EmployeeCreateNestedOneWithoutAuditEventsInput
+  device?: Prisma.DeviceCreateNestedOneWithoutAuditEventsInput
 }
 
 export type AuditEventUncheckedCreateInput = {
   id?: string
   tenantId: string
   employeeId?: string | null
+  deviceId?: string | null
   action: string
   entityType: string
   entityId?: string | null
@@ -294,12 +311,14 @@ export type AuditEventUpdateInput = {
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutAuditEventsNestedInput
   employee?: Prisma.EmployeeUpdateOneWithoutAuditEventsNestedInput
+  device?: Prisma.DeviceUpdateOneWithoutAuditEventsNestedInput
 }
 
 export type AuditEventUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -311,6 +330,7 @@ export type AuditEventCreateManyInput = {
   id?: string
   tenantId: string
   employeeId?: string | null
+  deviceId?: string | null
   action: string
   entityType: string
   entityId?: string | null
@@ -331,6 +351,7 @@ export type AuditEventUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -352,6 +373,7 @@ export type AuditEventCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  deviceId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
   entityId?: Prisma.SortOrder
@@ -363,6 +385,7 @@ export type AuditEventMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  deviceId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
   entityId?: Prisma.SortOrder
@@ -373,6 +396,7 @@ export type AuditEventMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   tenantId?: Prisma.SortOrder
   employeeId?: Prisma.SortOrder
+  deviceId?: Prisma.SortOrder
   action?: Prisma.SortOrder
   entityType?: Prisma.SortOrder
   entityId?: Prisma.SortOrder
@@ -463,6 +487,48 @@ export type AuditEventUncheckedUpdateManyWithoutEmployeeNestedInput = {
   deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
 }
 
+export type AuditEventCreateNestedManyWithoutDeviceInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutDeviceInput, Prisma.AuditEventUncheckedCreateWithoutDeviceInput> | Prisma.AuditEventCreateWithoutDeviceInput[] | Prisma.AuditEventUncheckedCreateWithoutDeviceInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutDeviceInput | Prisma.AuditEventCreateOrConnectWithoutDeviceInput[]
+  createMany?: Prisma.AuditEventCreateManyDeviceInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUncheckedCreateNestedManyWithoutDeviceInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutDeviceInput, Prisma.AuditEventUncheckedCreateWithoutDeviceInput> | Prisma.AuditEventCreateWithoutDeviceInput[] | Prisma.AuditEventUncheckedCreateWithoutDeviceInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutDeviceInput | Prisma.AuditEventCreateOrConnectWithoutDeviceInput[]
+  createMany?: Prisma.AuditEventCreateManyDeviceInputEnvelope
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+}
+
+export type AuditEventUpdateManyWithoutDeviceNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutDeviceInput, Prisma.AuditEventUncheckedCreateWithoutDeviceInput> | Prisma.AuditEventCreateWithoutDeviceInput[] | Prisma.AuditEventUncheckedCreateWithoutDeviceInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutDeviceInput | Prisma.AuditEventCreateOrConnectWithoutDeviceInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutDeviceInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutDeviceInput[]
+  createMany?: Prisma.AuditEventCreateManyDeviceInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutDeviceInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutDeviceInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutDeviceInput | Prisma.AuditEventUpdateManyWithWhereWithoutDeviceInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+}
+
+export type AuditEventUncheckedUpdateManyWithoutDeviceNestedInput = {
+  create?: Prisma.XOR<Prisma.AuditEventCreateWithoutDeviceInput, Prisma.AuditEventUncheckedCreateWithoutDeviceInput> | Prisma.AuditEventCreateWithoutDeviceInput[] | Prisma.AuditEventUncheckedCreateWithoutDeviceInput[]
+  connectOrCreate?: Prisma.AuditEventCreateOrConnectWithoutDeviceInput | Prisma.AuditEventCreateOrConnectWithoutDeviceInput[]
+  upsert?: Prisma.AuditEventUpsertWithWhereUniqueWithoutDeviceInput | Prisma.AuditEventUpsertWithWhereUniqueWithoutDeviceInput[]
+  createMany?: Prisma.AuditEventCreateManyDeviceInputEnvelope
+  set?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  disconnect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  delete?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  connect?: Prisma.AuditEventWhereUniqueInput | Prisma.AuditEventWhereUniqueInput[]
+  update?: Prisma.AuditEventUpdateWithWhereUniqueWithoutDeviceInput | Prisma.AuditEventUpdateWithWhereUniqueWithoutDeviceInput[]
+  updateMany?: Prisma.AuditEventUpdateManyWithWhereWithoutDeviceInput | Prisma.AuditEventUpdateManyWithWhereWithoutDeviceInput[]
+  deleteMany?: Prisma.AuditEventScalarWhereInput | Prisma.AuditEventScalarWhereInput[]
+}
+
 export type AuditEventCreateWithoutTenantInput = {
   id?: string
   action: string
@@ -471,11 +537,13 @@ export type AuditEventCreateWithoutTenantInput = {
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   occurredAt?: Date | string
   employee?: Prisma.EmployeeCreateNestedOneWithoutAuditEventsInput
+  device?: Prisma.DeviceCreateNestedOneWithoutAuditEventsInput
 }
 
 export type AuditEventUncheckedCreateWithoutTenantInput = {
   id?: string
   employeeId?: string | null
+  deviceId?: string | null
   action: string
   entityType: string
   entityId?: string | null
@@ -516,6 +584,7 @@ export type AuditEventScalarWhereInput = {
   id?: Prisma.UuidFilter<"AuditEvent"> | string
   tenantId?: Prisma.UuidFilter<"AuditEvent"> | string
   employeeId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
+  deviceId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
   action?: Prisma.StringFilter<"AuditEvent"> | string
   entityType?: Prisma.StringFilter<"AuditEvent"> | string
   entityId?: Prisma.UuidNullableFilter<"AuditEvent"> | string | null
@@ -531,11 +600,13 @@ export type AuditEventCreateWithoutEmployeeInput = {
   metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
   occurredAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutAuditEventsInput
+  device?: Prisma.DeviceCreateNestedOneWithoutAuditEventsInput
 }
 
 export type AuditEventUncheckedCreateWithoutEmployeeInput = {
   id?: string
   tenantId: string
+  deviceId?: string | null
   action: string
   entityType: string
   entityId?: string | null
@@ -569,9 +640,58 @@ export type AuditEventUpdateManyWithWhereWithoutEmployeeInput = {
   data: Prisma.XOR<Prisma.AuditEventUpdateManyMutationInput, Prisma.AuditEventUncheckedUpdateManyWithoutEmployeeInput>
 }
 
+export type AuditEventCreateWithoutDeviceInput = {
+  id?: string
+  action: string
+  entityType: string
+  entityId?: string | null
+  metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  occurredAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutAuditEventsInput
+  employee?: Prisma.EmployeeCreateNestedOneWithoutAuditEventsInput
+}
+
+export type AuditEventUncheckedCreateWithoutDeviceInput = {
+  id?: string
+  tenantId: string
+  employeeId?: string | null
+  action: string
+  entityType: string
+  entityId?: string | null
+  metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  occurredAt?: Date | string
+}
+
+export type AuditEventCreateOrConnectWithoutDeviceInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutDeviceInput, Prisma.AuditEventUncheckedCreateWithoutDeviceInput>
+}
+
+export type AuditEventCreateManyDeviceInputEnvelope = {
+  data: Prisma.AuditEventCreateManyDeviceInput | Prisma.AuditEventCreateManyDeviceInput[]
+  skipDuplicates?: boolean
+}
+
+export type AuditEventUpsertWithWhereUniqueWithoutDeviceInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  update: Prisma.XOR<Prisma.AuditEventUpdateWithoutDeviceInput, Prisma.AuditEventUncheckedUpdateWithoutDeviceInput>
+  create: Prisma.XOR<Prisma.AuditEventCreateWithoutDeviceInput, Prisma.AuditEventUncheckedCreateWithoutDeviceInput>
+}
+
+export type AuditEventUpdateWithWhereUniqueWithoutDeviceInput = {
+  where: Prisma.AuditEventWhereUniqueInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateWithoutDeviceInput, Prisma.AuditEventUncheckedUpdateWithoutDeviceInput>
+}
+
+export type AuditEventUpdateManyWithWhereWithoutDeviceInput = {
+  where: Prisma.AuditEventScalarWhereInput
+  data: Prisma.XOR<Prisma.AuditEventUpdateManyMutationInput, Prisma.AuditEventUncheckedUpdateManyWithoutDeviceInput>
+}
+
 export type AuditEventCreateManyTenantInput = {
   id?: string
   employeeId?: string | null
+  deviceId?: string | null
   action: string
   entityType: string
   entityId?: string | null
@@ -587,11 +707,13 @@ export type AuditEventUpdateWithoutTenantInput = {
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employee?: Prisma.EmployeeUpdateOneWithoutAuditEventsNestedInput
+  device?: Prisma.DeviceUpdateOneWithoutAuditEventsNestedInput
 }
 
 export type AuditEventUncheckedUpdateWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -602,6 +724,7 @@ export type AuditEventUncheckedUpdateWithoutTenantInput = {
 export type AuditEventUncheckedUpdateManyWithoutTenantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  deviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -612,6 +735,7 @@ export type AuditEventUncheckedUpdateManyWithoutTenantInput = {
 export type AuditEventCreateManyEmployeeInput = {
   id?: string
   tenantId: string
+  deviceId?: string | null
   action: string
   entityType: string
   entityId?: string | null
@@ -627,11 +751,13 @@ export type AuditEventUpdateWithoutEmployeeInput = {
   metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutAuditEventsNestedInput
+  device?: Prisma.DeviceUpdateOneWithoutAuditEventsNestedInput
 }
 
 export type AuditEventUncheckedUpdateWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  deviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -642,6 +768,51 @@ export type AuditEventUncheckedUpdateWithoutEmployeeInput = {
 export type AuditEventUncheckedUpdateManyWithoutEmployeeInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  deviceId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  entityType?: Prisma.StringFieldUpdateOperationsInput | string
+  entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditEventCreateManyDeviceInput = {
+  id?: string
+  tenantId: string
+  employeeId?: string | null
+  action: string
+  entityType: string
+  entityId?: string | null
+  metadata: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  occurredAt?: Date | string
+}
+
+export type AuditEventUpdateWithoutDeviceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  entityType?: Prisma.StringFieldUpdateOperationsInput | string
+  entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutAuditEventsNestedInput
+  employee?: Prisma.EmployeeUpdateOneWithoutAuditEventsNestedInput
+}
+
+export type AuditEventUncheckedUpdateWithoutDeviceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  action?: Prisma.StringFieldUpdateOperationsInput | string
+  entityType?: Prisma.StringFieldUpdateOperationsInput | string
+  entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  metadata?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  occurredAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type AuditEventUncheckedUpdateManyWithoutDeviceInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   action?: Prisma.StringFieldUpdateOperationsInput | string
   entityType?: Prisma.StringFieldUpdateOperationsInput | string
   entityId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -655,6 +826,7 @@ export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   tenantId?: boolean
   employeeId?: boolean
+  deviceId?: boolean
   action?: boolean
   entityType?: boolean
   entityId?: boolean
@@ -662,12 +834,14 @@ export type AuditEventSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   occurredAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.AuditEvent$employeeArgs<ExtArgs>
+  device?: boolean | Prisma.AuditEvent$deviceArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tenantId?: boolean
   employeeId?: boolean
+  deviceId?: boolean
   action?: boolean
   entityType?: boolean
   entityId?: boolean
@@ -675,12 +849,14 @@ export type AuditEventSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   occurredAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.AuditEvent$employeeArgs<ExtArgs>
+  device?: boolean | Prisma.AuditEvent$deviceArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   tenantId?: boolean
   employeeId?: boolean
+  deviceId?: boolean
   action?: boolean
   entityType?: boolean
   entityId?: boolean
@@ -688,12 +864,14 @@ export type AuditEventSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   occurredAt?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.AuditEvent$employeeArgs<ExtArgs>
+  device?: boolean | Prisma.AuditEvent$deviceArgs<ExtArgs>
 }, ExtArgs["result"]["auditEvent"]>
 
 export type AuditEventSelectScalar = {
   id?: boolean
   tenantId?: boolean
   employeeId?: boolean
+  deviceId?: boolean
   action?: boolean
   entityType?: boolean
   entityId?: boolean
@@ -701,18 +879,21 @@ export type AuditEventSelectScalar = {
   occurredAt?: boolean
 }
 
-export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "employeeId" | "action" | "entityType" | "entityId" | "metadata" | "occurredAt", ExtArgs["result"]["auditEvent"]>
+export type AuditEventOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "employeeId" | "deviceId" | "action" | "entityType" | "entityId" | "metadata" | "occurredAt", ExtArgs["result"]["auditEvent"]>
 export type AuditEventInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.AuditEvent$employeeArgs<ExtArgs>
+  device?: boolean | Prisma.AuditEvent$deviceArgs<ExtArgs>
 }
 export type AuditEventIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.AuditEvent$employeeArgs<ExtArgs>
+  device?: boolean | Prisma.AuditEvent$deviceArgs<ExtArgs>
 }
 export type AuditEventIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.AuditEvent$employeeArgs<ExtArgs>
+  device?: boolean | Prisma.AuditEvent$deviceArgs<ExtArgs>
 }
 
 export type $AuditEventPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -720,11 +901,13 @@ export type $AuditEventPayload<ExtArgs extends runtime.Types.Extensions.Internal
   objects: {
     tenant: Prisma.$TenantPayload<ExtArgs>
     employee: Prisma.$EmployeePayload<ExtArgs> | null
+    device: Prisma.$DevicePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     tenantId: string
     employeeId: string | null
+    deviceId: string | null
     action: string
     entityType: string
     entityId: string | null
@@ -1126,6 +1309,7 @@ export interface Prisma__AuditEventClient<T, Null = never, ExtArgs extends runti
   readonly [Symbol.toStringTag]: "PrismaPromise"
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   employee<T extends Prisma.AuditEvent$employeeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditEvent$employeeArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  device<T extends Prisma.AuditEvent$deviceArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.AuditEvent$deviceArgs<ExtArgs>>): Prisma.Prisma__DeviceClient<runtime.Types.Result.GetResult<Prisma.$DevicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1158,6 +1342,7 @@ export interface AuditEventFieldRefs {
   readonly id: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly tenantId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly employeeId: Prisma.FieldRef<"AuditEvent", 'String'>
+  readonly deviceId: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly action: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly entityType: Prisma.FieldRef<"AuditEvent", 'String'>
   readonly entityId: Prisma.FieldRef<"AuditEvent", 'String'>
@@ -1580,6 +1765,25 @@ export type AuditEvent$employeeArgs<ExtArgs extends runtime.Types.Extensions.Int
    */
   include?: Prisma.EmployeeInclude<ExtArgs> | null
   where?: Prisma.EmployeeWhereInput
+}
+
+/**
+ * AuditEvent.device
+ */
+export type AuditEvent$deviceArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Device
+   */
+  select?: Prisma.DeviceSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Device
+   */
+  omit?: Prisma.DeviceOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DeviceInclude<ExtArgs> | null
+  where?: Prisma.DeviceWhereInput
 }
 
 /**

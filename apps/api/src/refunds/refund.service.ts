@@ -6,7 +6,7 @@ import { PrismaService } from '../database/prisma.service.js';
 @Injectable()
 export class RefundService {
   constructor(private readonly prisma: PrismaService) {}
-  async refund(tenantId: string, cashierId: string, input: RefundInput) {
+  async refund(tenantId: string, cashierId: string, deviceId: string, input: RefundInput) {
     const manager = await this.prisma.employee.findFirst({
       where: { id: input.managerEmployeeId, tenantId, active: true },
     });
@@ -67,13 +67,14 @@ export class RefundService {
       }
       await tx.order.update({ where: { id: order.id }, data: { status: 'REFUNDED' } });
       await tx.auditEvent.create({
-        data: {
-          tenantId,
-          employeeId: cashierId,
-          action: 'REFUND',
+          data: {
+            tenantId,
+            employeeId: cashierId,
+            deviceId,
+            action: 'REFUND',
           entityType: 'ORDER',
           entityId: order.id,
-          metadata: { managerEmployeeId: manager.id, reason: input.reason },
+          metadata: { managerEmployeeId: manager.id, reason: input.reason, serverTime: new Date().toISOString(), actorDeviceId: deviceId },
         },
       });
       return refund;

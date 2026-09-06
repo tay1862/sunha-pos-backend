@@ -463,6 +463,7 @@ export const AuditEventScalarFieldEnum = {
   id: 'id',
   tenantId: 'tenantId',
   employeeId: 'employeeId',
+  deviceId: 'deviceId',
   action: 'action',
   entityType: 'entityType',
   entityId: 'entityId',

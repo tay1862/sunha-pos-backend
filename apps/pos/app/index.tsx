@@ -151,6 +151,7 @@ const navigationItems = [
   { label: 'Modifier', icon: SlidersHorizontal, route: '/modifiers' },
   { label: 'ພາສີ', icon: Percent, route: '/taxes' },
   { label: 'ລາຍງານ', icon: BarChart3, route: '/reports' },
+  { label: 'ກະເງິນ', icon: ReceiptText, route: '/shifts' },
   { label: 'ຕັ້ງຄ່າ', icon: Settings, route: '/settings' },
 ];
 
