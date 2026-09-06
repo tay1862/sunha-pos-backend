@@ -31,8 +31,8 @@ services:
       CORS_ORIGINS: ${CORS_ORIGINS:-}
       LOG_LEVEL: ${LOG_LEVEL:-info}
       RESEND_API_KEY: ${RESEND_API_KEY:-}
-      EMAIL_FROM: ${EMAIL_FROM:-}
-      APP_BASE_URL: ${APP_BASE_URL:-http://217.216.75.64:3000}
+      EMAIL_FROM: ${EMAIL_FROM:-onboarding@resend.dev}
+      APP_BASE_URL: ${APP_BASE_URL:-http://kanghan.site}
     depends_on:
       postgres:
         condition: service_healthy
