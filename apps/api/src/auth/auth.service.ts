@@ -14,11 +14,12 @@ export type AuthResult = {
   user: AuthUser;
   store: AuthStore;
   ownerEmployeeId?: string;
+  ownerDeviceId?: string;
   verificationToken?: string;
 };
 export type AuthClaims = AuthUser & { sub: string };
 
-type StoredUser = AuthUser & { passwordHash: string; store: AuthStore; ownerEmployeeId?: string };
+type StoredUser = AuthUser & { passwordHash: string; store: AuthStore; ownerEmployeeId?: string; ownerDeviceId?: string };
 type StoredSession = {
   id: string;
   userId: string;
@@ -34,6 +35,8 @@ export interface AuthRepository {
     email: string;
     passwordHash: string;
     businessName: string;
+    deviceName: string;
+    publicKey?: string;
   }): Promise<StoredUser>;
   createSession(value: { userId: string; tokenHash: string; expiresAt: Date }): Promise<void>;
   findSession(tokenHash: string): Promise<StoredSession | null>;
@@ -97,6 +100,8 @@ export class PrismaAuthRepository implements AuthRepository {
     email: string;
     passwordHash: string;
     businessName: string;
+    deviceName: string;
+    publicKey?: string;
   }): Promise<StoredUser> {
     return this.prisma.$transaction(async (tx) => {
       const existing = await tx.user.findUnique({ where: { email: input.email } });
@@ -119,7 +124,20 @@ export class PrismaAuthRepository implements AuthRepository {
           pinHash: await argon2.hash(randomBytes(32).toString('hex'), { type: argon2.argon2id }),
         },
       });
-      return this.mapUser(user, store, owner.id);
+      const device = await tx.device.create({
+        data: {
+          tenantId: tenant.id,
+          storeId: store.id,
+          name: input.deviceName,
+          publicKey: input.publicKey,
+          status: 'ACTIVE',
+          offlineLeaseExpiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+          lastSeenAt: new Date(),
+          employees: { create: { employeeId: owner.id } },
+        },
+        select: { id: true },
+      });
+      return this.mapUser(user, store, owner.id, device.id);
     });
   }
 
@@ -193,6 +211,7 @@ export class PrismaAuthRepository implements AuthRepository {
       language: string;
     },
     ownerEmployeeId?: string,
+    ownerDeviceId?: string,
   ): StoredUser {
     return {
       id: user.id,
@@ -200,6 +219,7 @@ export class PrismaAuthRepository implements AuthRepository {
       tenantId: user.tenantId,
       passwordHash: user.passwordHash,
       ownerEmployeeId,
+      ownerDeviceId,
       store: {
         id: store.id,
         tenantId: store.tenantId,
@@ -226,6 +246,8 @@ export class AuthService {
       email,
       passwordHash,
       businessName: input.businessName.trim(),
+      deviceName: input.deviceName ?? 'Owner device',
+      publicKey: input.publicKey,
     });
     const verificationToken = randomBytes(32).toString('base64url');
     await this.repository.createAuthToken({
@@ -316,6 +338,7 @@ export class AuthService {
       user: { id: user.id, email: user.email, tenantId: user.tenantId },
       store: user.store,
       ownerEmployeeId: user.ownerEmployeeId,
+      ownerDeviceId: user.ownerDeviceId,
       verificationToken,
     };
   }

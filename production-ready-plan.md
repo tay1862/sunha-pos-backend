@@ -21,12 +21,12 @@
 
 ## Phase 1 — Identity, tenant และสิทธิ์
 
-- [ ] สร้าง owner employee/device เริ่มต้นพร้อม signup transaction → Verify: สมัครแล้วเข้าสู่การขายได้โดยไม่ต้องแก้ฐานข้อมูล
+- [x] สร้าง owner employee/device เริ่มต้นพร้อม signup transaction → Verify: สมัครแล้วเข้าสู่การขายได้โดยไม่ต้องแก้ฐานข้อมูล
 - [x] ทำ Employee/Role/Permission/Device invitation, enrollment, revoke และ lease ครบ → Verify: device/employee ข้ามร้านหรือสิทธิ์ไม่ได้
 - [x] ทำ authorization guard กลาง ตรวจ tenant + store + role/permission + actor/device ทุก mutation → Verify: IDOR, cashier escalation และ forged headers ผ่านไม่ได้
 - [x] เพิ่ม email verification, password reset, session revoke และ PIN lockout → Verify: token/session ที่ revoke ใช้ไม่ได้ (ยังเหลือ email delivery provider จริง)
 
-> สถานะล่าสุด: เพิ่ม email verification/password-reset token แบบใช้ครั้งเดียว, logout/revoke session, PIN lockout แบบสะสมความผิดพลาด และบังคับ `x-device-id` ที่ active และอยู่ร้านเดียวกันใน protected business routes แล้ว ส่วน owner device bootstrap และ email delivery provider ยังไม่เสร็จ จึงยังไม่ mark phase complete
+> สถานะล่าสุด: signup สร้าง owner employee และ owner device ที่ active พร้อมผูกสิทธิ์และ offline lease แล้ว; เพิ่ม email verification/password-reset token แบบใช้ครั้งเดียว, logout/revoke session, PIN lockout แบบสะสมความผิดพลาด และบังคับ `x-device-id` ที่ active และอยู่ร้านเดียวกันใน protected business routes แล้ว เหลือ email delivery provider จริงก่อนเปิดใช้งานเชิงพาณิชย์
 
 ## Phase 2 — Catalog, pricing และ inventory correctness
 
@@ -44,6 +44,7 @@
 - 2026-09-06: ทดสอบ permission บน VPS: Owner สร้าง category ได้, Cashier ได้ `403` เมื่อสร้าง category/report และ PIN/invitation reuse ถูกปฏิเสธตาม policy
 - 2026-09-06: เพิ่ม migration `0002_identity_modifiers`, email/password recovery foundation, PIN lockout, active-device context, modifier assignment/snapshot และ negative-stock policy; local typecheck/test/lint ผ่าน (API 7 tests)
 - 2026-09-06: build image ใหม่และ deploy VPS ด้วย `prisma migrate deploy` สำเร็จ; migration `0002_identity_modifiers` ถูก apply, API/PostgreSQL healthy และ readiness check ผ่าน
+- 2026-09-06: เพิ่ม owner-device bootstrap ใน signup transaction และตรวจ typecheck/test/lint ซ้ำผ่าน (API 7 tests)
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง

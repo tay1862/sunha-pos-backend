@@ -45,6 +45,8 @@ export const signUpSchema = z.object({
   password: z.string().min(12).max(128),
   businessName: z.string().trim().min(1).max(120),
   country: z.literal('LA'),
+  deviceName: z.string().trim().min(1).max(120).optional(),
+  publicKey: z.string().max(4096).optional(),
 });
 
 export const loginSchema = z.object({
