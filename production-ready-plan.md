@@ -75,9 +75,11 @@
 
 ## Phase 4 — Shift และ fraud controls
 
-- [ ] ทำ shared shift, cash in/out, blind close และ expected cash ที่รวม refund ถูกต้อง → Verify: เปิด/ปิดกะซ้ำหรือปิดขณะ pending ไม่ได้
-- [ ] ผูกทุก event กับ authenticated employee/device/server time และ audit append-only → Verify: รายงานระบุ actor/device/reason/approver ครบ
-- [ ] ทำ reports sales/payment/discount/refund/shift/employee/device/stock และ CSV → Verify: ยอดรายงาน reconcile กับ receipt ledger
+- [x] ทำ shared shift, cash in/out, blind close และ expected cash ที่รวม refund ถูกต้อง → Verify: เปิด/ปิดกะซ้ำหรือปิดขณะ pending ไม่ได้
+- [x] ผูกทุก event กับ authenticated employee/device/server time และ audit append-only → Verify: รายงานระบุ actor/device/reason/approver ครบ
+- [x] ทำ reports sales/payment/discount/refund/shift/employee/device/stock และ CSV → Verify: ยอดรายงาน reconcile กับ receipt ledger
+
+> สถานะ 2026-09-06: Phase 4 implementation อยู่ใน commit `6cdfe33` และ deploy production แล้ว. เพิ่ม migration `0003_audit_device`, shared-shift API/UI, blind-close pending guard, audit device/server time, report endpoints และ CSV export. PostgreSQL 17 integration suite ผ่าน 5 test files / 12 tests รวมเปิดกะ, cash movement, expected cash, เปิด/ปิดกะซ้ำ และ reconciliation กับ refund/payment ledger
 
 ## Phase 5 — Offline-first จริง
 
