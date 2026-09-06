@@ -35,7 +35,10 @@ describe.skipIf(!runIntegration)('PostgreSQL concurrent checkout', () => {
   });
 
   afterAll(async () => {
-    if (tenantId) await prisma.tenant.delete({ where: { id: tenantId } });
+    if (tenantId) {
+      await prisma.refund.deleteMany({ where: { order: { tenantId } } });
+      await prisma.tenant.delete({ where: { id: tenantId } });
+    }
     await prisma.$disconnect();
   });
 
