@@ -37,6 +37,8 @@
 
 > สถานะล่าสุด: เพิ่ม modifier group/option, item assignment, validation ของ required/min/max และ snapshot ราคา modifier ใน order line แล้ว เพิ่ม policy ป้องกัน stock ติดลบ, ปฏิเสธ adjustment กับสินค้าที่ไม่ track stock และ map duplicate SKU/barcode เป็น conflict แล้ว เหลือ stock adjustment approval และ PostgreSQL concurrent integration tests
 
+> ความคืบหน้าล่าสุด: เพิ่ม catalog snapshot สำหรับ POS และ SQLite local cache พร้อม online-first/fallback read, บังคับ Manager PIN + audit สำหรับ stock adjustment และเพิ่ม test สำหรับ net sales หลัง refund; ยังไม่ mark catalog/stock complete จนกว่า POS CRUD, PostgreSQL integration และ reconciliation flow จะผ่านจริง
+
 ## Implementation log
 
 - 2026-09-06: เพิ่ม API hardening, Prisma migration baseline, employee/device onboarding และ permission guard สำหรับ protected routes
@@ -46,6 +48,7 @@
 - 2026-09-06: build image ใหม่และ deploy VPS ด้วย `prisma migrate deploy` สำเร็จ; migration `0002_identity_modifiers` ถูก apply, API/PostgreSQL healthy และ readiness check ผ่าน
 - 2026-09-06: เพิ่ม owner-device bootstrap ใน signup transaction และตรวจ typecheck/test/lint ซ้ำผ่าน (API 7 tests)
 - 2026-09-06: เพิ่ม Resend email adapter, catalog snapshot + SQLite local cache และบังคับ Manager PIN/audit สำหรับ stock adjustment; local typecheck/test/lint ผ่าน (API 7 tests)
+- 2026-09-06: เพิ่ม payment reversal ledger ตอน full refund และหัก refund ออกจาก net sales report; เพิ่ม PostgreSQL concurrent checkout integration test harness (ยัง skip หากไม่มี `RUN_INTEGRATION=true` + PostgreSQL)
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง

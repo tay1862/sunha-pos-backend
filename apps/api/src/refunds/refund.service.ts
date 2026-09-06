@@ -53,6 +53,18 @@ export class RefundService {
           reason: input.reason,
         },
       });
+      const originalPayment = await tx.payment.findFirst({ where: { orderId: order.id }, orderBy: { createdAt: 'asc' } });
+      if (originalPayment) {
+        await tx.payment.create({
+          data: {
+            orderId: order.id,
+            type: originalPayment.type,
+            amount: -originalPayment.amount,
+            reference: `REFUND:${order.id}`,
+            unverified: originalPayment.unverified,
+          },
+        });
+      }
       await tx.order.update({ where: { id: order.id }, data: { status: 'REFUNDED' } });
       await tx.auditEvent.create({
         data: {

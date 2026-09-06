@@ -8,7 +8,7 @@ export class ReportService {
     const orders = await this.prisma.order.findMany({
       where: {
         tenantId,
-        status: { in: ['COMPLETED', 'REFUNDED'] },
+        status: 'COMPLETED',
         createdAt: {
           gte: from ? new Date(from) : new Date(0),
           lte: to ? new Date(to) : new Date(),
@@ -24,7 +24,11 @@ export class ReportService {
         createdAt: true,
       },
     });
-    const total = orders.reduce((sum, order) => sum + order.totalAmount, 0n);
+    const refunds = await this.prisma.refund.findMany({
+      where: { order: { tenantId }, createdAt: { gte: from ? new Date(from) : new Date(0), lte: to ? new Date(to) : new Date() } },
+      select: { amount: true, orderId: true },
+    });
+    const total = calculateNetSales(orders, refunds);
     return {
       from,
       to,
@@ -32,9 +36,18 @@ export class ReportService {
       totalAmount: total.toString(),
       byEmployee: groupAmount(orders, 'employeeId'),
       byDevice: groupAmount(orders, 'deviceId'),
+      refundAmount: refunds.reduce((sum, refund) => sum + refund.amount, 0n).toString(),
     };
   }
 }
+
+export function calculateNetSales(
+  orders: Array<{ totalAmount: bigint }>,
+  refunds: Array<{ amount: bigint }>,
+): bigint {
+  return orders.reduce((sum, order) => sum + order.totalAmount, 0n) - refunds.reduce((sum, refund) => sum + refund.amount, 0n);
+}
+
 function groupAmount(
   rows: Array<{ totalAmount: bigint; employeeId: string; deviceId: string | null }>,
   key: 'employeeId' | 'deviceId',
