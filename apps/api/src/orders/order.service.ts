@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import type { CheckoutOrderInput } from '@sunha/contracts';
+import { calculateOrderTotals, toBaseQuantity } from '@sunha/domain';
 import { PrismaService } from '../database/prisma.service.js';
 
 @Injectable()
@@ -10,13 +11,24 @@ export class OrderService {
       where: { clientOrderId: input.clientOrderId },
       include: { receipts: true, payments: true },
     });
-    if (existing) return existing;
+    if (existing) {
+      if (existing.tenantId !== tenantId) throw new ConflictException('ORDER_ID_ALREADY_USED');
+      return existing;
+    }
     const store = await this.prisma.store.findUnique({ where: { tenantId } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
     const employee = await this.prisma.employee.findFirst({
       where: { id: employeeId, tenantId, active: true },
     });
     if (!employee) throw new NotFoundException('EMPLOYEE_NOT_FOUND');
+    const taxes = await this.prisma.tax.findMany({
+      where: { storeId: store.id, active: true },
+      select: { rateBasisPoints: true, mode: true },
+    });
+    const taxModes = new Set(taxes.map((tax) => tax.mode));
+    if (taxModes.size > 1) throw new ConflictException('MIXED_TAX_MODES_NOT_SUPPORTED');
+    const effectiveTaxRate = taxes.reduce((sum, tax) => sum + tax.rateBasisPoints, 0);
+    const effectiveTaxMode = taxes[0]?.mode === 'INCLUSIVE' ? 'INCLUSIVE' : 'EXCLUSIVE';
     const units = await this.prisma.itemUnit.findMany({
       where: { id: { in: input.lines.map((line) => line.unitId) }, item: { store: { tenantId } } },
       include: { item: true },
@@ -33,7 +45,8 @@ export class OrderService {
         quantity: line.quantity,
       })),
       discount: input.discount,
-      taxRateBasisPoints: input.taxRateBasisPoints,
+      taxRateBasisPoints: effectiveTaxRate,
+      taxMode: effectiveTaxMode,
     });
     if (
       input.paymentType === 'CASH' &&
@@ -110,32 +123,20 @@ function calculateTotals(input: {
   lines: Array<{ unitPrice: string; quantity: string }>;
   discount?: { type: 'FIXED'; amount: string } | { type: 'PERCENTAGE'; basisPoints: number };
   taxRateBasisPoints: number;
+  taxMode?: 'INCLUSIVE' | 'EXCLUSIVE';
 }): { subtotal: string; discount: string; tax: string; total: string } {
-  const subtotal = input.lines.reduce(
-    (sum, line) => sum + (BigInt(line.unitPrice) * quantityScaled(line.quantity)) / 1000n,
-    0n,
-  );
-  const discount =
-    input.discount?.type === 'FIXED'
-      ? BigInt(input.discount.amount)
-      : input.discount
-        ? (subtotal * BigInt(input.discount.basisPoints)) / 10000n
-        : 0n;
-  const safeDiscount = discount > subtotal ? subtotal : discount;
-  const tax = ((subtotal - safeDiscount) * BigInt(input.taxRateBasisPoints)) / 10000n;
-  return {
-    subtotal: subtotal.toString(),
-    discount: safeDiscount.toString(),
-    tax: tax.toString(),
-    total: (subtotal - safeDiscount + tax).toString(),
-  };
+  return calculateOrderTotals({
+    lines: input.lines,
+    discount: input.discount,
+    tax:
+      input.taxRateBasisPoints > 0
+        ? { rateBasisPoints: input.taxRateBasisPoints, mode: input.taxMode ?? 'EXCLUSIVE' }
+        : undefined,
+  });
 }
 
 function baseQuantity(quantity: string, multiplier: string): string {
-  return ((quantityScaled(quantity) * quantityScaled(multiplier)) / 1000n).toString();
+  return toBaseQuantity(quantity, multiplier);
 }
 
-function quantityScaled(value: string): bigint {
-  const [whole = '0', fraction = ''] = value.split('.');
-  return BigInt(whole) * 1000n + BigInt(fraction.padEnd(3, '0'));
-}
+export { baseQuantity, calculateTotals };
