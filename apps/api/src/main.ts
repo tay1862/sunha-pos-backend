@@ -5,6 +5,7 @@ import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import type { IncomingMessage } from 'node:http';
 import { AppModule } from './app.module.js';
+import { MetricsService } from './observability/metrics.service.js';
 
 async function bootstrap(): Promise<void> {
   const isProduction = process.env.NODE_ENV === 'production';
@@ -32,6 +33,10 @@ async function bootstrap(): Promise<void> {
     }),
   );
   const server = app.getHttpAdapter().getInstance();
+  const metrics = app.get(MetricsService);
+  server.addHook('onResponse', async (request, reply) => {
+    metrics.observeRequest(reply.statusCode, request.routeOptions?.url ?? request.url);
+  });
   await server.register(helmet as unknown as Parameters<typeof server.register>[0], {
     contentSecurityPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },

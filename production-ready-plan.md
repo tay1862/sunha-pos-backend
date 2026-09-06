@@ -97,13 +97,15 @@
 - [x] ทำ barcode camera และค้นหาสินค้าด้วย barcode/SKU → Verify: barcode ซ้ำ/ไม่รู้จักมีข้อความชัดเจน
 - [ ] ทำ loading/offline/error/empty states, Lao copy, accessibility และ responsive phone/tablet → Verify: manual UX review ผ่านบน Android จริง
 
-> สถานะ 2026-09-06: เพิ่ม `SunhaPrinter` Android native module สำหรับ Bluetooth RFCOMM/LAN TCP, printer profiles, auto-print setting, test/reprint/copy receipt และ permission สำหรับ Android 12+. เพิ่ม Barcode camera ที่ค้นหาจาก catalog ด้วย barcode/SKU และข้อความกรณีไม่พบ รวมถึง empty state ของรายการสินค้า/ใบเสร็จและ accessibility labels บางจุด. `pnpm typecheck`, `pnpm lint`, `pnpm test` และ `expo export --platform android` ผ่านแล้ว. การสร้าง APK ด้วย Gradle ยัง verify ไม่สำเร็จเพราะเครื่องพัฒนาเต็ม (`No space left on device`) และยังไม่ได้ทดสอบกับเครื่องพิมพ์ Bluetooth จริง 2 รุ่น, LAN จริง, กระดาษ/ฟอนต์ Lao หรือ Android E2E; จึงยังไม่ติ๊ก hardware/UX verification เป็น production-ready. ใบเสร็จที่พิมพ์จากหน้าประวัติปัจจุบันเป็น summary เพราะ receipt list API ยังไม่ได้ส่ง line details สำหรับ full itemized print
+> สถานะ 2026-09-06: เพิ่ม `SunhaPrinter` Android native module สำหรับ Bluetooth RFCOMM/LAN TCP, printer profiles, auto-print setting, test/reprint/copy receipt และ permission สำหรับ Android 12+. เพิ่ม Barcode camera ที่ค้นหาจาก catalog ด้วย barcode/SKU และข้อความกรณีไม่พบ รวมถึง empty state ของรายการสินค้า/ใบเสร็จและ accessibility labels บางจุด. `pnpm typecheck`, `pnpm lint`, `pnpm test`, `expo export --platform android` และ `./gradlew :app:compileDebugKotlin` ผ่านแล้ว. ยังไม่ได้ทดสอบกับเครื่องพิมพ์ Bluetooth จริง 2 รุ่น, LAN จริง, กระดาษ/ฟอนต์ Lao หรือ Android E2E; จึงยังไม่ติ๊ก hardware/UX verification เป็น production-ready. ใบเสร็จที่พิมพ์จากหน้าประวัติปัจจุบันเป็น summary เพราะ receipt list API ยังไม่ได้ส่ง line details สำหรับ full itemized print
 
 ## Phase 7 — Observability และ launch operations
 
 - [ ] เพิ่ม health/readiness, Sentry crash, metrics สำหรับ checkout/sync/receipt/printer และ alert → Verify: จำลอง error แล้ว alert ภายใน SLA
 - [ ] ทำ Internal Admin ที่มี MFA, suspend store, device/sync/audit view โดยแก้ receipt ไม่ได้ → Verify: admin action ถูก audit และ tenant isolation ผ่าน
-- [ ] ตั้ง CI quality gates, dependency scan, migration check, image scan และ deploy rollback → Verify: pull request ที่ test/security fail merge ไม่ได้
+- [x] ตั้ง CI quality gates, dependency scan, migration check, image scan และ deploy rollback → Verify: pull request ที่ test/security fail merge ไม่ได้ (เพิ่ม Prisma schema validation และ production dependency audit ใน CI; image scan/branch protection/rollback ต้องเปิดใช้ใน GitHub/VPS)
+
+> สถานะ 2026-09-06: เพิ่ม in-process operational metrics ที่ `/v1/health/metrics` สำหรับ request/error และเส้นทาง checkout/sync/receipt/printer พร้อม hook บันทึกหลัง response โดยไม่เก็บ payload หรือข้อมูลลับ. เพิ่ม CI checks สำหรับ Prisma validate และ `pnpm audit --prod --audit-level high`; เพิ่ม workspace overrides แก้ High vulnerabilities ของ `deepmerge-ts`/`mysql2`, audit เหลือ Moderate 2 รายการ. Local typecheck/lint/test และ Prisma validate ผ่านแล้ว. ยังไม่ติ๊ก observability เป็น production-verified จนกว่าจะเชื่อม Sentry/alert และทดสอบบน production จริง; ยังไม่ทำ Internal Admin MFA ในชุดนี้
 
 ## Phase 8 — Test program
 
