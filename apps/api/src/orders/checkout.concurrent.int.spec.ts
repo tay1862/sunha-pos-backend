@@ -5,6 +5,7 @@ import { RefundService } from '../refunds/refund.service.js';
 import { ShiftService } from '../shifts/shift.service.js';
 import argon2 from 'argon2';
 import { OrderService } from './order.service.js';
+import { SyncService } from '../sync/sync.service.js';
 
 const runIntegration = process.env.RUN_INTEGRATION === 'true' && Boolean(process.env.DATABASE_URL);
 
@@ -13,6 +14,7 @@ describe.skipIf(!runIntegration)('PostgreSQL concurrent checkout', () => {
   const orders = new OrderService(prisma);
   const refunds = new RefundService(prisma);
   const shifts = new ShiftService(prisma);
+  const sync = new SyncService(prisma, orders, shifts);
   let tenantId: string;
   let storeId: string;
   let employeeId: string;
@@ -30,7 +32,7 @@ describe.skipIf(!runIntegration)('PostgreSQL concurrent checkout', () => {
     employeeId = employee.id;
     const manager = await prisma.employee.create({ data: { tenantId, storeId, name: 'Integration manager', role: 'MANAGER', pinHash: await argon2.hash('123456') } });
     managerId = manager.id;
-    const device = await prisma.device.create({ data: { tenantId, storeId, name: 'Integration device', status: 'ACTIVE' } });
+    const device = await prisma.device.create({ data: { tenantId, storeId, name: 'Integration device', status: 'ACTIVE', offlineLeaseExpiresAt: new Date(Date.now() + 86_400_000) } });
     deviceId = device.id;
     const item = await prisma.item.create({ data: { storeId, name: 'Concurrent item', trackStock: true, units: { create: { name: 'each', multiplierToBase: '1', priceAmount: 1000 } }, inventory: { create: { quantityBase: 1 } } }, include: { units: true } });
     itemId = item.id;
@@ -41,6 +43,7 @@ describe.skipIf(!runIntegration)('PostgreSQL concurrent checkout', () => {
 
   afterAll(async () => {
     if (tenantId) {
+      await prisma.syncOperation.deleteMany({ where: { tenantId } });
       await prisma.refund.deleteMany({ where: { order: { tenantId } } });
       await prisma.shift.deleteMany({ where: { storeId } });
       await prisma.tenant.delete({ where: { id: tenantId } });
@@ -96,5 +99,23 @@ describe.skipIf(!runIntegration)('PostgreSQL concurrent checkout', () => {
     expect(closed.expectedAmount).toBe('600');
     expect(closed.variance).toBe('0');
     await expect(shifts.close(tenantId, employeeId, deviceId, { closingAmount: '600' })).rejects.toThrow('NO_OPEN_SHIFT');
+  });
+
+  it('replays offline checkout once and routes expired or multi-device operations to review', async () => {
+    const operationId = randomUUID();
+    const input = { clientOrderId: randomUUID(), lines: [{ itemId, unitId, quantity: '1', modifierOptionIds: [], note: '' }], paymentType: 'CASH' as const, tenderedAmount: { amount: '1000', currency: 'LAK' as const }, taxRateBasisPoints: 0, offline: true };
+    const first = await sync.push(tenantId, { deviceId, employeeId, operations: [{ operationId, type: 'CHECKOUT_ORDER', occurredAtDevice: new Date().toISOString(), payload: input }] });
+    expect(first.results[0]?.status).toBe('ACKED');
+    const duplicate = await sync.push(tenantId, { deviceId, employeeId, operations: [{ operationId, type: 'CHECKOUT_ORDER', occurredAtDevice: new Date().toISOString(), payload: input }] });
+    expect(duplicate.results[0]?.status).toBe('ACKED');
+    expect(await prisma.order.count({ where: { clientOrderId: input.clientOrderId } })).toBe(1);
+
+    await prisma.device.update({ where: { id: deviceId }, data: { offlineLeaseExpiresAt: new Date(Date.now() - 1) } });
+    const expired = await sync.push(tenantId, { deviceId, employeeId, operations: [{ operationId: randomUUID(), type: 'CHECKOUT_ORDER', occurredAtDevice: new Date().toISOString(), payload: { ...input, clientOrderId: randomUUID() } }] });
+    expect(expired.results[0]).toMatchObject({ status: 'FAILED_REVIEW', error: 'OFFLINE_LEASE_EXPIRED' });
+    await prisma.device.create({ data: { tenantId, storeId, name: 'Second device', status: 'ACTIVE', offlineLeaseExpiresAt: new Date(Date.now() + 86_400_000) } });
+    await prisma.device.update({ where: { id: deviceId }, data: { offlineLeaseExpiresAt: new Date(Date.now() + 86_400_000) } });
+    const multi = await sync.push(tenantId, { deviceId, employeeId, operations: [{ operationId: randomUUID(), type: 'CHECKOUT_ORDER', occurredAtDevice: new Date().toISOString(), payload: { ...input, clientOrderId: randomUUID() } }] });
+    expect(multi.results[0]).toMatchObject({ status: 'FAILED_REVIEW', error: 'MULTI_DEVICE_OFFLINE_FORBIDDEN' });
   });
 });

@@ -39,7 +39,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { darkColors, lightColors, type SunhaColors } from '../src/design/tokens';
 import { SunhaButton } from '../src/ui/sunha-button';
-import { checkoutOrder, getCatalogSnapshot } from '../src/auth/auth-client';
+import type { CheckoutOrderInput } from '@sunha/contracts';
+import { checkoutOrder, getCatalogSnapshot, getSellingPolicy } from '../src/auth/auth-client';
+import { enqueueOperation, canChargeOffline } from '../src/offline/outbox';
+import { readLocalCart, saveLocalCart } from '../src/offline/local-db';
 
 type Product = {
   id: string;
@@ -153,6 +156,7 @@ const navigationItems = [
   { label: 'ລາຍງານ', icon: BarChart3, route: '/reports' },
   { label: 'ກະເງິນ', icon: ReceiptText, route: '/shifts' },
   { label: 'ຕັ້ງຄ່າ', icon: Settings, route: '/settings' },
+  { label: 'Sync', icon: Wifi, route: '/sync' },
 ];
 
 const formatLak = (amount: number) => `${amount.toLocaleString('en-US')} ₭`;
@@ -378,8 +382,12 @@ export default function SaleScreen() {
   const [paymentReference, setPaymentReference] = useState('');
   const [discountAmount, setDiscountAmount] = useState('');
   const [checkingOut, setCheckingOut] = useState(false);
+  const [cartHydrated, setCartHydrated] = useState(false);
+  const [offlinePolicy, setOfflinePolicy] = useState<{ sellingDeviceCount: number; leaseExpiresAt: string | null }>({ sellingDeviceCount: 0, leaseExpiresAt: null });
 
   useEffect(() => {
+    readLocalCart().then((saved) => { setCart(saved); setCartHydrated(true); }).catch(() => setCartHydrated(true));
+    getSellingPolicy().then((policy) => setOfflinePolicy({ sellingDeviceCount: policy.sellingDeviceCount, leaseExpiresAt: policy.offlineLeaseExpiresAt ?? null })).catch(() => undefined);
     getCatalogSnapshot()
       .then((snapshot) => {
         const mapped = snapshot.items.flatMap((item) =>
@@ -401,6 +409,8 @@ export default function SaleScreen() {
       })
       .catch(() => Alert.alert('ໂຫຼດສິນຄ້າບໍ່ສຳເລັດ', 'ກວດສອບອິນເຕີເນັດ ແລ້ວລອງໃໝ່'));
   }, []);
+
+  useEffect(() => { if (cartHydrated) saveLocalCart(cart).catch(() => undefined); }, [cart, cartHydrated]);
 
   const visibleProducts = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -436,12 +446,11 @@ export default function SaleScreen() {
   const checkout = useCallback(async () => {
     if (!cartLines.length || checkingOut) return;
     setCheckingOut(true);
-    try {
-      const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
         const r = (Date.now() + Math.random() * 16) % 16 | 0;
         return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
       });
-      const result = await checkoutOrder({
+    const input: CheckoutOrderInput = {
         clientOrderId: uuid(),
         lines: cartLines.map((line) => ({ itemId: line.itemId, unitId: line.unitId, quantity: String(line.quantity), modifierOptionIds: line.modifierOptionIds, note: '' })),
         discount: discountAmount ? { type: 'FIXED', amount: discountAmount } : undefined,
@@ -450,7 +459,9 @@ export default function SaleScreen() {
         paymentReference: paymentType === 'CASH' ? undefined : paymentReference || undefined,
         taxRateBasisPoints: 0,
         offline: false,
-      });
+      };
+    try {
+      const result = await checkoutOrder(input);
       setCart({});
       setPaymentVisible(false);
       setCartVisible(false);
@@ -458,11 +469,15 @@ export default function SaleScreen() {
       setPaymentReference('');
       Alert.alert('ຮັບຊຳລະສຳເລັດ', `ເລກໃບເສັດ: ${result.receipts?.[0]?.number ?? 'ສຳເລັດ'}`);
     } catch (error) {
-      Alert.alert('ຮັບຊຳລະບໍ່ສຳເລັດ', error instanceof Error ? error.message : 'ກະລຸນາລອງໃໝ່');
+      if (canChargeOffline(offlinePolicy.sellingDeviceCount, offlinePolicy.leaseExpiresAt)) {
+        await enqueueOperation({ operationId: input.clientOrderId, type: 'CHECKOUT_ORDER', payload: { ...input, offline: true }, occurredAtDevice: new Date().toISOString() });
+        setCart({}); setPaymentVisible(false); setCartVisible(false); setTendered(''); setPaymentReference('');
+        Alert.alert('ບັນທຶກການຂາຍອອບລາຍແລ້ວ', 'ລະບົບຈະ sync ໃຫ້ອັດຕະໂນມັດເມື່ອອອນລາຍ');
+      } else Alert.alert('ຮັບຊຳລະບໍ່ສຳເລັດ', error instanceof Error ? error.message : 'ກະລຸນາລອງໃໝ່');
     } finally {
       setCheckingOut(false);
     }
-  }, [cartLines, checkingOut, discountAmount, paymentReference, paymentType, tendered]);
+  }, [cartLines, checkingOut, discountAmount, offlinePolicy, paymentReference, paymentType, tendered]);
 
   const renderProduct: ListRenderItem<Product> = useCallback(
     ({ item }) => <ProductTile {...item} colors={colors} onAdd={addItem} compact={compact} />,

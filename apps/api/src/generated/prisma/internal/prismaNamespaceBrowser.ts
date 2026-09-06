@@ -453,6 +453,10 @@ export const SyncOperationScalarFieldEnum = {
   payload: 'payload',
   occurredAtDevice: 'occurredAtDevice',
   status: 'status',
+  attemptCount: 'attemptCount',
+  lastError: 'lastError',
+  nextRetryAt: 'nextRetryAt',
+  lastAttemptAt: 'lastAttemptAt',
   createdAt: 'createdAt'
 } as const
 

@@ -25,6 +25,13 @@ export class DeviceService {
     };
   }
 
+  async sellingPolicy(tenantId: string, id: string) {
+    const lease = await this.leaseStatus(tenantId, id);
+    const device = await this.prisma.device.findUnique({ where: { id }, select: { storeId: true } });
+    const sellingDeviceCount = device ? await this.prisma.device.count({ where: { storeId: device.storeId, status: 'ACTIVE' } }) : 0;
+    return { ...lease, sellingDeviceCount, canChargeOffline: lease.canSellOffline && sellingDeviceCount === 1 };
+  }
+
   async renewLease(tenantId: string, id: string) {
     const device = await this.prisma.device.findFirst({
       where: { id, tenantId, status: 'ACTIVE' },

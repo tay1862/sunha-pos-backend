@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Query,
   Req,
@@ -30,5 +31,17 @@ export class SyncController {
   @Get('pull')
   pull(@Req() r: AuthRequest, @Query('cursor') cursor?: string) {
     return this.sync.pull(r.user.tenantId, cursor);
+  }
+
+  @RequirePermission('VIEW_REPORTS')
+  @Get('operations')
+  operations(@Req() r: AuthRequest, @Query('status') status?: 'PENDING' | 'ACKED' | 'FAILED_REVIEW') {
+    return this.sync.list(r.user.tenantId, status);
+  }
+
+  @RequirePermission('MANAGE_STOCK')
+  @Post('operations/:operationId/retry')
+  retry(@Req() r: AuthRequest, @Param('operationId') operationId: string) {
+    return this.sync.retry(r.user.tenantId, operationId);
   }
 }

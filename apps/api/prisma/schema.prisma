@@ -452,12 +452,17 @@ model SyncOperation {
   payload          Json
   occurredAtDevice DateTime
   status           SyncOperationStatus @default(PENDING)
+  attemptCount     Int                 @default(0)
+  lastError        String?             @db.VarChar(300)
+  nextRetryAt      DateTime?
+  lastAttemptAt    DateTime?
   createdAt        DateTime            @default(now())
   tenant           Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   device           Device              @relation(fields: [deviceId], references: [id])
   employee         Employee            @relation(fields: [employeeId], references: [id])
 
   @@index([tenantId, status, createdAt])
+  @@index([tenantId, nextRetryAt])
 }
 
 model AuditEvent {

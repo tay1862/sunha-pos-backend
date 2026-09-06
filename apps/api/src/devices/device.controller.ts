@@ -18,6 +18,13 @@ type AuthRequest = FastifyRequest & { user: AuthClaims };
 @Controller('devices')
 export class DeviceController {
   constructor(private readonly devices: DeviceService) {}
+
+  @UseGuards(JwtAuthGuard, PermissionGuard)
+  @RequirePermission('SELL')
+  @Get('current/policy')
+  policy(@Req() r: AuthRequest) {
+    return this.devices.sellingPolicy(r.user.tenantId, String(r.headers['x-device-id']));
+  }
   @UseGuards(JwtAuthGuard, PermissionGuard)
   @RequirePermission('MANAGE_DEVICES')
   @Get(':id/lease')

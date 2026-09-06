@@ -18,6 +18,18 @@ export class OrderService {
     }
     const store = await this.prisma.store.findUnique({ where: { tenantId } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
+    if (input.offline) {
+      if (!deviceId) throw new ConflictException('OFFLINE_DEVICE_REQUIRED');
+      const device = await this.prisma.device.findFirst({
+        where: { id: deviceId, tenantId, storeId: store.id, status: 'ACTIVE' },
+      });
+      if (!device || !device.offlineLeaseExpiresAt || device.offlineLeaseExpiresAt <= new Date())
+        throw new ConflictException('OFFLINE_LEASE_EXPIRED');
+      const activeDevices = await this.prisma.device.count({
+        where: { storeId: store.id, status: 'ACTIVE' },
+      });
+      if (activeDevices > 1) throw new ConflictException('MULTI_DEVICE_OFFLINE_FORBIDDEN');
+    }
     const employee = await this.prisma.employee.findFirst({
       where: { id: employeeId, tenantId, active: true },
     });
