@@ -30,6 +30,9 @@ services:
       RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-1 minute}
       CORS_ORIGINS: ${CORS_ORIGINS:-}
       LOG_LEVEL: ${LOG_LEVEL:-info}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      APP_BASE_URL: ${APP_BASE_URL:-}
     depends_on:
       postgres:
         condition: service_healthy
