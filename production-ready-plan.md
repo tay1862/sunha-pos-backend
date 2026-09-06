@@ -38,6 +38,7 @@
 
 > สถานะล่าสุด: เพิ่ม modifier group/option, item assignment, validation ของ required/min/max และ snapshot ราคา modifier ใน order line แล้ว เพิ่ม policy ป้องกัน stock ติดลบ, ปฏิเสธ adjustment กับสินค้าที่ไม่ track stock และ map duplicate SKU/barcode เป็น conflict แล้ว รวมถึง Manager PIN + audit สำหรับ stock adjustment. POS มีหน้าจอสร้าง/ดูรายการสำหรับสินค้า/หมวดหมู่, modifier, ภาษี และพนักงาน พร้อมเชื่อม API จริง; full edit/delete และ unit editor ยังเป็นงานถัดไป. PostgreSQL concurrent integration test รันผ่านจริงแล้วด้วย PostgreSQL 17 ใน isolated Docker database
 > ความคืบหน้าล่าสุด: เพิ่ม item/category soft-delete, item edit และแก้ไข unit name/conversion/price/SKU/barcode แบบรักษา unit id เดิมเพื่อไม่กระทบ snapshot ของ order เก่า พร้อมฟอร์ม POS ที่ใช้งานจริง; modifier/tax/employee full edit/delete ยังเหลือ
+> ความคืบหน้าล่าสุด: เพิ่ม API update/delete สำหรับ modifier group และ tax พร้อม validation, tenant guard และป้องกันลบ modifier ที่มีประวัติการขาย; UI ของ modifier/tax/employee สำหรับ edit/delete ยังเหลือ จึงยังไม่ติ๊ก full CRUD
 
 > ความคืบหน้าล่าสุด: เพิ่ม catalog snapshot สำหรับ POS และ SQLite local cache พร้อม online-first/fallback read, บังคับ Manager PIN + audit สำหรับ stock adjustment และเพิ่ม test สำหรับ net sales หลัง refund; ยังไม่ mark catalog/stock complete จนกว่า POS CRUD, PostgreSQL integration และ reconciliation flow จะผ่านจริง
 
@@ -58,6 +59,7 @@
 - 2026-09-06: เพิ่ม Catalog item edit/soft-delete, category delete และ unit editor สำหรับชื่อ/ราคา/conversion/SKU/barcode; typecheck, lint และ Android export ผ่าน
 - 2026-09-06: เพิ่มตัวแปร Resend ใน production compose โดยอ้างอิงจาก environment เท่านั้น และกำหนด temporary `APP_BASE_URL` default เป็น `http://kanghan.site` กับ test sender `onboarding@resend.dev`; ยังไม่ใส่ secret/deploy เพราะต้องตรวจ sender/domain ของ Resend ก่อน
 - 2026-09-06: ตั้งค่า Resend บน VPS สำเร็จและ deploy API ด้วย project `sunha-pos-prod`; migration ไม่มีรายการค้าง, readiness/database ผ่าน และส่ง test email ไปยัง Resend account owner สำเร็จ (custom recipient ยังถูกปฏิเสธจนกว่า `kanghan.site` จะ verified)
+- 2026-09-06: เพิ่ม Catalog API update/delete สำหรับ modifier group และ tax; local typecheck/test/lint ผ่าน แต่ยังไม่ deploy เพราะต้องปิด UI CRUD ให้ครบก่อน
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง

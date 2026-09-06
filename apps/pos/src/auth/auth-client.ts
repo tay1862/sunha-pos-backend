@@ -1,4 +1,4 @@
-import type { CreateCategoryInput, CreateEmployeeInput, CreateItemInput, CreateModifierGroupInput, CreateTaxInput, LoginInput, SignUpInput, UpdateItemInput, UpdateStoreSettingsInput } from '@sunha/contracts';
+import type { CreateCategoryInput, CreateEmployeeInput, CreateItemInput, CreateModifierGroupInput, CreateTaxInput, LoginInput, SignUpInput, UpdateItemInput, UpdateModifierGroupInput, UpdateStoreSettingsInput, UpdateTaxInput } from '@sunha/contracts';
 import { apiRequest } from '../api/client';
 import { getAccessToken, saveSessionContext, saveTokens } from './token-storage';
 import { readCatalogSnapshot, saveCatalogSnapshot } from '../offline/catalog-cache';
@@ -69,8 +69,12 @@ export async function deleteCatalogCategory(id: string) { const token = await ge
 
 export async function listModifierGroups() { const token = await getAccessToken(); return apiRequest<Array<{ id: string; name: string; options: Array<{ name: string; priceDeltaAmount: string | number }> }>>('/catalog/modifier-groups', { accessToken: token ?? undefined }); }
 export async function createModifierGroup(input: CreateModifierGroupInput) { const token = await getAccessToken(); return apiRequest('/catalog/modifier-groups', { method: 'POST', body: input, accessToken: token ?? undefined }); }
+export async function updateModifierGroup(id: string, input: UpdateModifierGroupInput) { const token = await getAccessToken(); return apiRequest(`/catalog/modifier-groups/${id}`, { method: 'PATCH', body: input, accessToken: token ?? undefined }); }
+export async function deleteModifierGroup(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/modifier-groups/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
 export async function listTaxes() { const token = await getAccessToken(); return apiRequest<Array<{ id: string; name: string; rateBasisPoints: number; mode: string }>>('/catalog/taxes', { accessToken: token ?? undefined }); }
 export async function createTax(input: CreateTaxInput) { const token = await getAccessToken(); return apiRequest('/catalog/taxes', { method: 'POST', body: input, accessToken: token ?? undefined }); }
+export async function updateTax(id: string, input: UpdateTaxInput) { const token = await getAccessToken(); return apiRequest(`/catalog/taxes/${id}`, { method: 'PATCH', body: input, accessToken: token ?? undefined }); }
+export async function deleteTax(id: string) { const token = await getAccessToken(); return apiRequest(`/catalog/taxes/${id}`, { method: 'DELETE', accessToken: token ?? undefined }); }
 export async function listEmployees() { const token = await getAccessToken(); return apiRequest<Array<{ id: string; name: string; role: string; active: boolean }>>('/employees', { accessToken: token ?? undefined }); }
 export async function createEmployee(input: CreateEmployeeInput) { const token = await getAccessToken(); return apiRequest('/employees', { method: 'POST', body: input, accessToken: token ?? undefined }); }
 

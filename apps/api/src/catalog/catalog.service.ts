@@ -5,6 +5,8 @@ import type {
   CreateModifierGroupInput,
   CreateTaxInput,
   UpdateItemInput,
+  UpdateModifierGroupInput,
+  UpdateTaxInput,
 } from '@sunha/contracts';
 import { PrismaService } from '../database/prisma.service.js';
 import { Prisma } from '../generated/prisma/client.js';
@@ -173,6 +175,32 @@ export class CatalogService {
     });
   }
 
+  async updateModifierGroup(tenantId: string, id: string, input: UpdateModifierGroupInput) {
+    const group = await this.prisma.modifierGroup.findFirst({ where: { id, store: { tenantId } } });
+    if (!group) throw new NotFoundException('MODIFIER_GROUP_NOT_FOUND');
+    if (input.minSelections !== undefined && input.maxSelections !== undefined && input.minSelections > input.maxSelections) throw new ConflictException('INVALID_MODIFIER_LIMITS');
+    return this.prisma.$transaction(async (tx) => {
+      const updated = await tx.modifierGroup.update({ where: { id }, data: { name: input.name, required: input.required, minSelections: input.minSelections, maxSelections: input.maxSelections }, include: { options: true } });
+      if (input.options) for (const option of input.options) {
+        if (option.id) {
+          const existing = await tx.modifierOption.findFirst({ where: { id: option.id, groupId: id } });
+          if (!existing) throw new NotFoundException('MODIFIER_OPTION_NOT_FOUND');
+          await tx.modifierOption.update({ where: { id: option.id }, data: { name: option.name, priceDeltaAmount: BigInt(option.priceDelta.amount) } });
+        }
+        else await tx.modifierOption.create({ data: { groupId: id, name: option.name, priceDeltaAmount: BigInt(option.priceDelta.amount) } });
+      }
+      return updated;
+    });
+  }
+
+  async deleteModifierGroup(tenantId: string, id: string) {
+    const group = await this.prisma.modifierGroup.findFirst({ where: { id, store: { tenantId } }, include: { options: { include: { orderLineModifiers: { select: { id: true }, take: 1 } } } } });
+    if (!group) throw new NotFoundException('MODIFIER_GROUP_NOT_FOUND');
+    if (group.options.some((option) => option.orderLineModifiers.length > 0)) throw new ConflictException('MODIFIER_GROUP_HAS_HISTORY');
+    await this.prisma.modifierGroup.delete({ where: { id } });
+    return { success: true };
+  }
+
   async assignModifierGroup(tenantId: string, itemId: string, groupId: string) {
     const item = await this.prisma.item.findFirst({ where: { id: itemId, store: { tenantId }, active: true } });
     const group = await this.prisma.modifierGroup.findFirst({ where: { id: groupId, store: { tenantId } } });
@@ -192,5 +220,18 @@ export class CatalogService {
     const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
     return this.prisma.tax.create({ data: { storeId: store.id, ...input } });
+  }
+
+  async updateTax(tenantId: string, id: string, input: UpdateTaxInput) {
+    const tax = await this.prisma.tax.findFirst({ where: { id, store: { tenantId }, active: true } });
+    if (!tax) throw new NotFoundException('TAX_NOT_FOUND');
+    return this.prisma.tax.update({ where: { id }, data: input });
+  }
+
+  async deleteTax(tenantId: string, id: string) {
+    const tax = await this.prisma.tax.findFirst({ where: { id, store: { tenantId }, active: true } });
+    if (!tax) throw new NotFoundException('TAX_NOT_FOUND');
+    await this.prisma.tax.update({ where: { id }, data: { active: false } });
+    return { success: true };
   }
 }

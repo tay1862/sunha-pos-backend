@@ -170,6 +170,9 @@ export const createModifierGroupSchema = z.object({
   maxSelections: z.number().int().min(1).max(20).default(1),
   options: z.array(modifierOptionSchema).min(1).max(50),
 });
+export const updateModifierGroupSchema = createModifierGroupSchema.partial().extend({
+  options: z.array(modifierOptionSchema.extend({ id: idSchema.optional() })).min(1).max(50).optional(),
+});
 export const assignModifierGroupSchema = z.object({ groupId: idSchema });
 
 export const paymentTypeSchema = z.enum([
@@ -208,6 +211,7 @@ export const createTaxSchema = z.object({
   rateBasisPoints: z.number().int().min(0).max(10_000),
   mode: z.enum(['INCLUSIVE', 'EXCLUSIVE']),
 });
+export const updateTaxSchema = createTaxSchema.partial();
 
 export const openShiftSchema = z.object({ openingAmount: z.string().regex(/^\d+$/) });
 export const cashMovementSchema = z.object({
@@ -254,9 +258,11 @@ export type CreateItemInput = z.infer<typeof createItemSchema>;
 export type UpdateItemInput = z.infer<typeof updateItemSchema>;
 export type InventoryAdjustmentInput = z.infer<typeof inventoryAdjustmentSchema>;
 export type CreateModifierGroupInput = z.infer<typeof createModifierGroupSchema>;
+export type UpdateModifierGroupInput = z.infer<typeof updateModifierGroupSchema>;
 export type AssignModifierGroupInput = z.infer<typeof assignModifierGroupSchema>;
 export type CheckoutOrderInput = z.infer<typeof checkoutOrderSchema>;
 export type CreateTaxInput = z.infer<typeof createTaxSchema>;
+export type UpdateTaxInput = z.infer<typeof updateTaxSchema>;
 export type OpenShiftInput = z.infer<typeof openShiftSchema>;
 export type CashMovementInput = z.infer<typeof cashMovementSchema>;
 export type CloseShiftInput = z.infer<typeof closeShiftSchema>;

@@ -10,7 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { assignModifierGroupSchema, createCategorySchema, createItemSchema, createModifierGroupSchema, createTaxSchema, updateItemSchema } from '@sunha/contracts';
+import { assignModifierGroupSchema, createCategorySchema, createItemSchema, createModifierGroupSchema, createTaxSchema, updateItemSchema, updateModifierGroupSchema, updateTaxSchema } from '@sunha/contracts';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { PermissionGuard, RequirePermission } from '../auth/permission.guard.js';
@@ -54,6 +54,18 @@ export class CatalogController {
     return this.catalog.createTax(request.user.tenantId, parsed.data);
   }
 
+  @Patch('taxes/:id')
+  @RequirePermission('MANAGE_SETTINGS')
+  updateTax(@Req() request: AuthRequest, @Param('id') id: string, @Body() body: unknown) {
+    const parsed = updateTaxSchema.safeParse(body);
+    if (!parsed.success) throw new BadRequestException('INVALID_TAX');
+    return this.catalog.updateTax(request.user.tenantId, id, parsed.data);
+  }
+
+  @Delete('taxes/:id')
+  @RequirePermission('MANAGE_SETTINGS')
+  deleteTax(@Req() request: AuthRequest, @Param('id') id: string) { return this.catalog.deleteTax(request.user.tenantId, id); }
+
   @Post('categories')
   @RequirePermission('MANAGE_ITEMS')
   createCategory(@Req() request: AuthRequest, @Body() body: unknown) {
@@ -89,6 +101,18 @@ export class CatalogController {
     if (!parsed.success) throw new BadRequestException('INVALID_MODIFIER_GROUP');
     return this.catalog.createModifierGroup(request.user.tenantId, parsed.data);
   }
+
+  @Patch('modifier-groups/:id')
+  @RequirePermission('MANAGE_ITEMS')
+  updateModifierGroup(@Req() request: AuthRequest, @Param('id') id: string, @Body() body: unknown) {
+    const parsed = updateModifierGroupSchema.safeParse(body);
+    if (!parsed.success) throw new BadRequestException('INVALID_MODIFIER_GROUP');
+    return this.catalog.updateModifierGroup(request.user.tenantId, id, parsed.data);
+  }
+
+  @Delete('modifier-groups/:id')
+  @RequirePermission('MANAGE_ITEMS')
+  deleteModifierGroup(@Req() request: AuthRequest, @Param('id') id: string) { return this.catalog.deleteModifierGroup(request.user.tenantId, id); }
 
   @Post('items/:id/modifier-groups')
   @RequirePermission('MANAGE_ITEMS')
