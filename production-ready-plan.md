@@ -53,6 +53,7 @@
 - 2026-09-06: เพิ่ม POS screens สำหรับ modifier, tax และ employee และเชื่อม catalog item/category create/list กับ API จริง; local typecheck/test ผ่าน แต่ catalog CRUD ยังไม่ complete เพราะ edit/delete/unit editor ยังเหลือ
 - 2026-09-06: แก้ concurrent checkout integration expectation ให้ยอมรับผลที่ถูกต้องเมื่อคำขอหนึ่งชน stock guard (`INSUFFICIENT_STOCK`) และตรวจ retry ด้วย `clientOrderId` ว่าได้ order เดิมโดยไม่สร้าง receipt ซ้ำ; local lint/typecheck/test ผ่าน
 - 2026-09-06: รัน migration และ API integration suite กับ PostgreSQL 17 จริงบน VPS ใน database/network/volume ชั่วคราวแบบ isolated; ผ่าน 5 test files และ 9 tests รวม concurrent checkout, จากนั้น cleanup resource สำเร็จ
+- 2026-09-06: รัน `pnpm --filter @sunha/pos build` สำเร็จด้วย Expo Android export; routes ของ catalog/modifier/tax/employee bundle ได้จริง (ยังต้องทดสอบบนอุปกรณ์ Android/เครื่องพิมพ์จริง)
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง
