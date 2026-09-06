@@ -67,85 +67,112 @@ type CartLine = Product & { quantity: number };
 
 const demoProducts: Product[] = [
   {
-    id: '1', itemId: '1', unitId: '1',
+    id: '1',
+    itemId: '1',
+    unitId: '1',
     name: 'ກາເຟດຳ',
     price: 18000,
     category: 'ກາເຟ',
     color: '#D8B58C',
     abbreviation: 'ດຳ',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '2', itemId: '2', unitId: '2',
+    id: '2',
+    itemId: '2',
+    unitId: '2',
     name: 'ກາເຟນົມ',
     price: 22000,
     category: 'ກາເຟ',
     color: '#D7C39E',
     abbreviation: 'ນົມ',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '3', itemId: '3', unitId: '3',
+    id: '3',
+    itemId: '3',
+    unitId: '3',
     name: 'ລາເຕ້ເຢັນ',
     price: 25000,
     category: 'ກາເຟ',
     color: '#C9A36F',
     abbreviation: 'LT',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '4', itemId: '4', unitId: '4',
+    id: '4',
+    itemId: '4',
+    unitId: '4',
     name: 'ຊາຂຽວນົມ',
     price: 24000,
     category: 'ຊາ',
     color: '#AFC8A2',
     abbreviation: 'ຊາ',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '5', itemId: '5', unitId: '5',
+    id: '5',
+    itemId: '5',
+    unitId: '5',
     name: 'ຊາໝາກນາວ',
     price: 20000,
     category: 'ຊາ',
     color: '#D8D997',
     abbreviation: 'ຊນ',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '6', itemId: '6', unitId: '6',
+    id: '6',
+    itemId: '6',
+    unitId: '6',
     name: 'ນ້ຳສົ້ມ',
     price: 18000,
     category: 'ນ້ຳດື່ມ',
     color: '#F0B477',
     abbreviation: 'ສົ້ມ',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '7', itemId: '7', unitId: '7',
+    id: '7',
+    itemId: '7',
+    unitId: '7',
     name: 'ຄຣົວຊອງ',
     price: 19000,
     category: 'ເຂົ້າໜົມ',
     color: '#D8A46F',
     abbreviation: 'CR',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '8', itemId: '8', unitId: '8',
+    id: '8',
+    itemId: '8',
+    unitId: '8',
     name: 'ເຄັກຊັອກໂກແລັດ',
     price: 28000,
     category: 'ເຂົ້າໜົມ',
     color: '#A98273',
     abbreviation: 'CK',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
   {
-    id: '9', itemId: '9', unitId: '9',
+    id: '9',
+    itemId: '9',
+    unitId: '9',
     name: 'ນ້ຳດື່ມ',
     price: 7000,
     category: 'ນ້ຳດື່ມ',
     color: '#A7C9D9',
     abbreviation: 'H₂O',
-    imageUrl: '', modifierOptionIds: [],
+    imageUrl: '',
+    modifierOptionIds: [],
   },
 ];
 void demoProducts;
@@ -211,7 +238,9 @@ const ProductTile = memo(function ProductTile({
           compact && styles.productVisualCompact,
         ]}
       >
-        {imageUrl ? <Image source={{ uri: imageUrl }} style={styles.productImage} resizeMode="cover" /> : null}
+        {imageUrl ? (
+          <Image source={{ uri: imageUrl }} style={styles.productImage} resizeMode="cover" />
+        ) : null}
         <View style={styles.productImageShade} />
         <Text style={styles.productAbbreviation}>{abbreviation}</Text>
         <View style={[styles.addBadge, { backgroundColor: colors.surface }]}>
@@ -385,17 +414,34 @@ export default function SaleScreen() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [headerCompact, setHeaderCompact] = useState(false);
   const [paymentVisible, setPaymentVisible] = useState(false);
-  const [paymentType, setPaymentType] = useState<'CASH' | 'MANUAL_QR' | 'BANK_TRANSFER' | 'CARD_MANUAL'>('CASH');
+  const [paymentType, setPaymentType] = useState<
+    'CASH' | 'MANUAL_QR' | 'BANK_TRANSFER' | 'CARD_MANUAL'
+  >('CASH');
   const [tendered, setTendered] = useState('');
   const [paymentReference, setPaymentReference] = useState('');
   const [discountAmount, setDiscountAmount] = useState('');
   const [checkingOut, setCheckingOut] = useState(false);
   const [cartHydrated, setCartHydrated] = useState(false);
-  const [offlinePolicy, setOfflinePolicy] = useState<{ sellingDeviceCount: number; leaseExpiresAt: string | null }>({ sellingDeviceCount: 0, leaseExpiresAt: null });
+  const [offlinePolicy, setOfflinePolicy] = useState<{
+    sellingDeviceCount: number;
+    leaseExpiresAt: string | null;
+  }>({ sellingDeviceCount: 0, leaseExpiresAt: null });
 
   useEffect(() => {
-    readLocalCart().then((saved) => { setCart(saved); setCartHydrated(true); }).catch(() => setCartHydrated(true));
-    getSellingPolicy().then((policy) => setOfflinePolicy({ sellingDeviceCount: policy.sellingDeviceCount, leaseExpiresAt: policy.offlineLeaseExpiresAt ?? null })).catch(() => undefined);
+    readLocalCart()
+      .then((saved) => {
+        setCart(saved);
+        setCartHydrated(true);
+      })
+      .catch(() => setCartHydrated(true));
+    getSellingPolicy()
+      .then((policy) =>
+        setOfflinePolicy({
+          sellingDeviceCount: policy.sellingDeviceCount,
+          leaseExpiresAt: policy.offlineLeaseExpiresAt ?? null,
+        }),
+      )
+      .catch(() => undefined);
     getCatalogSnapshot()
       .then((snapshot) => {
         const mapped = snapshot.items.flatMap((item) =>
@@ -415,7 +461,10 @@ export default function SaleScreen() {
           })),
         );
         setProducts(mapped);
-        setCategoryNames([categories[0] ?? 'ທັງໝົດ', ...[...new Set(mapped.map((item) => item.category))]]);
+        setCategoryNames([
+          categories[0] ?? 'ທັງໝົດ',
+          ...[...new Set(mapped.map((item) => item.category))],
+        ]);
       })
       .catch(() => Alert.alert('ໂຫຼດສິນຄ້າບໍ່ສຳເລັດ', 'ກວດສອບອິນເຕີເນັດ ແລ້ວລອງໃໝ່'));
   }, []);
@@ -424,20 +473,33 @@ export default function SaleScreen() {
     let active = true;
     const sync = async () => {
       const context = await getSessionContext();
-      if (active && context.deviceId && context.employeeId) await syncPending(context.deviceId, context.employeeId);
+      if (active && context.deviceId && context.employeeId)
+        await syncPending(context.deviceId, context.employeeId);
     };
     void sync();
     const timer = setInterval(() => void sync(), 30_000);
-    return () => { active = false; clearInterval(timer); };
+    return () => {
+      active = false;
+      clearInterval(timer);
+    };
   }, []);
 
-  useEffect(() => { if (cartHydrated) saveLocalCart(cart).catch(() => undefined); }, [cart, cartHydrated]);
+  useEffect(() => {
+    if (cartHydrated) saveLocalCart(cart).catch(() => undefined);
+  }, [cart, cartHydrated]);
 
   const visibleProducts = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     return products.filter((product) => {
-      const categoryMatch = activeCategory === categoryNames[0] || product.category === activeCategory;
-      return categoryMatch && (!normalized || [product.name, product.sku, product.barcode].filter(Boolean).some((value) => value?.toLowerCase().includes(normalized)));
+      const categoryMatch =
+        activeCategory === categoryNames[0] || product.category === activeCategory;
+      return (
+        categoryMatch &&
+        (!normalized ||
+          [product.name, product.sku, product.barcode]
+            .filter(Boolean)
+            .some((value) => value?.toLowerCase().includes(normalized)))
+      );
     });
   }, [activeCategory, categoryNames, products, query]);
 
@@ -467,27 +529,38 @@ export default function SaleScreen() {
   const checkout = useCallback(async () => {
     if (!cartLines.length || checkingOut) return;
     setCheckingOut(true);
-    const uuid = () => 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        const r = (Date.now() + Math.random() * 16) % 16 | 0;
+    const uuid = () =>
+      'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+        const r = ((Date.now() + Math.random() * 16) % 16) | 0;
         return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
       });
     const input: CheckoutOrderInput = {
-        clientOrderId: uuid(),
-        lines: cartLines.map((line) => ({ itemId: line.itemId, unitId: line.unitId, quantity: String(line.quantity), modifierOptionIds: line.modifierOptionIds, note: '' })),
-        discount: discountAmount ? { type: 'FIXED', amount: discountAmount } : undefined,
-        paymentType,
-        tenderedAmount: paymentType === 'CASH' ? { amount: tendered || '0', currency: 'LAK' } : undefined,
-        paymentReference: paymentType === 'CASH' ? undefined : paymentReference || undefined,
-        taxRateBasisPoints: 0,
-        offline: false,
-      };
+      clientOrderId: uuid(),
+      lines: cartLines.map((line) => ({
+        itemId: line.itemId,
+        unitId: line.unitId,
+        quantity: String(line.quantity),
+        modifierOptionIds: line.modifierOptionIds,
+        note: '',
+      })),
+      discount: discountAmount ? { type: 'FIXED', amount: discountAmount } : undefined,
+      paymentType,
+      tenderedAmount:
+        paymentType === 'CASH' ? { amount: tendered || '0', currency: 'LAK' } : undefined,
+      paymentReference: paymentType === 'CASH' ? undefined : paymentReference || undefined,
+      taxRateBasisPoints: 0,
+      offline: false,
+    };
     try {
       const result = await checkoutOrder(input);
-      void listPrinterProfiles().then((profiles) => {
-        const profile = profiles.find((candidate) => candidate.autoPrint);
-        if (profile) return printReceipt(profile, `Sunha POS\n${result.receipts?.[0]?.number ?? ''}\n\n`);
-        return undefined;
-      }).catch(() => undefined);
+      void listPrinterProfiles()
+        .then((profiles) => {
+          const profile = profiles.find((candidate) => candidate.autoPrint);
+          if (profile)
+            return printReceipt(profile, `Sunha POS\n${result.receipts?.[0]?.number ?? ''}\n\n`);
+          return undefined;
+        })
+        .catch(() => undefined);
       setCart({});
       setPaymentVisible(false);
       setCartVisible(false);
@@ -495,15 +568,36 @@ export default function SaleScreen() {
       setPaymentReference('');
       Alert.alert('ຮັບຊຳລະສຳເລັດ', `ເລກໃບເສັດ: ${result.receipts?.[0]?.number ?? 'ສຳເລັດ'}`);
     } catch (error) {
-      if (!(error instanceof ApiError) && canChargeOffline(offlinePolicy.sellingDeviceCount, offlinePolicy.leaseExpiresAt)) {
-        await enqueueOperation({ operationId: input.clientOrderId, type: 'CHECKOUT_ORDER', payload: { ...input, offline: true }, occurredAtDevice: new Date().toISOString() });
-        setCart({}); setPaymentVisible(false); setCartVisible(false); setTendered(''); setPaymentReference('');
+      if (
+        !(error instanceof ApiError) &&
+        canChargeOffline(offlinePolicy.sellingDeviceCount, offlinePolicy.leaseExpiresAt)
+      ) {
+        await enqueueOperation({
+          operationId: input.clientOrderId,
+          type: 'CHECKOUT_ORDER',
+          payload: { ...input, offline: true },
+          occurredAtDevice: new Date().toISOString(),
+        });
+        setCart({});
+        setPaymentVisible(false);
+        setCartVisible(false);
+        setTendered('');
+        setPaymentReference('');
         Alert.alert('ບັນທຶກການຂາຍອອບລາຍແລ້ວ', 'ລະບົບຈະ sync ໃຫ້ອັດຕະໂນມັດເມື່ອອອນລາຍ');
-      } else Alert.alert('ຮັບຊຳລະບໍ່ສຳເລັດ', error instanceof Error ? error.message : 'ກະລຸນາລອງໃໝ່');
+      } else
+        Alert.alert('ຮັບຊຳລະບໍ່ສຳເລັດ', error instanceof Error ? error.message : 'ກະລຸນາລອງໃໝ່');
     } finally {
       setCheckingOut(false);
     }
-  }, [cartLines, checkingOut, discountAmount, offlinePolicy, paymentReference, paymentType, tendered]);
+  }, [
+    cartLines,
+    checkingOut,
+    discountAmount,
+    offlinePolicy,
+    paymentReference,
+    paymentType,
+    tendered,
+  ]);
 
   const renderProduct: ListRenderItem<Product> = useCallback(
     ({ item }) => <ProductTile {...item} colors={colors} onAdd={addItem} compact={compact} />,
@@ -568,7 +662,12 @@ export default function SaleScreen() {
           <Text style={[styles.summaryLabel, { color: colors.textMuted }]}>ຍອດລວມ</Text>
           <Text style={[styles.summaryValue, { color: colors.text }]}>{formatLak(subtotal)}</Text>
         </View>
-        <SunhaButton colors={colors} disabled={!itemCount} style={styles.chargeButton} onPress={() => setPaymentVisible(true)}>
+        <SunhaButton
+          colors={colors}
+          disabled={!itemCount}
+          style={styles.chargeButton}
+          onPress={() => setPaymentVisible(true)}
+        >
           ຮັບຊຳລະ · {formatLak(subtotal)}
         </SunhaButton>
       </View>
@@ -709,7 +808,18 @@ export default function SaleScreen() {
             numColumns={columns}
             renderItem={renderProduct}
             keyExtractor={(item) => item.id}
-            ListEmptyComponent={<View style={styles.emptyProducts}><Text style={[styles.emptyProductsTitle, { color: colors.text }]}>{products.length ? 'ບໍ່ພົບສິນຄ້າ' : 'ຍັງບໍ່ມີສິນຄ້າ'}</Text><Text style={[styles.emptyProductsText, { color: colors.textMuted }]}>{products.length ? 'ລອງຄົ້ນຫາດ້ວຍຊື່, SKU ຫຼື Barcode' : 'ເພີ່ມສິນຄ້າໃນ Catalog ເພື່ອເລີ່ມຂາຍ'}</Text></View>}
+            ListEmptyComponent={
+              <View style={styles.emptyProducts}>
+                <Text style={[styles.emptyProductsTitle, { color: colors.text }]}>
+                  {products.length ? 'ບໍ່ພົບສິນຄ້າ' : 'ຍັງບໍ່ມີສິນຄ້າ'}
+                </Text>
+                <Text style={[styles.emptyProductsText, { color: colors.textMuted }]}>
+                  {products.length
+                    ? 'ລອງຄົ້ນຫາດ້ວຍຊື່, SKU ຫຼື Barcode'
+                    : 'ເພີ່ມສິນຄ້າໃນ Catalog ເພື່ອເລີ່ມຂາຍ'}
+                </Text>
+              </View>
+            }
             contentContainerStyle={styles.productListContent}
             onScroll={(event) => setHeaderCompact(event.nativeEvent.contentOffset.y > 24)}
             scrollEventThrottle={16}
@@ -764,21 +874,79 @@ export default function SaleScreen() {
         </SafeAreaView>
       </Modal>
 
-      <Modal visible={paymentVisible} animationType="slide" transparent onRequestClose={() => setPaymentVisible(false)}>
-        <Pressable style={[styles.modalScrim, { backgroundColor: colors.scrim }]} onPress={() => setPaymentVisible(false)} />
+      <Modal
+        visible={paymentVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setPaymentVisible(false)}
+      >
+        <Pressable
+          style={[styles.modalScrim, { backgroundColor: colors.scrim }]}
+          onPress={() => setPaymentVisible(false)}
+        />
         <View style={[styles.paymentSheet, { backgroundColor: colors.surface }]}>
-          <Text style={[styles.paymentTitle, { color: colors.text }]}>ຮັບຊຳລະ · {formatLak(subtotal)}</Text>
+          <Text style={[styles.paymentTitle, { color: colors.text }]}>
+            ຮັບຊຳລະ · {formatLak(subtotal)}
+          </Text>
           <View style={styles.paymentTypes}>
             {(['CASH', 'MANUAL_QR', 'BANK_TRANSFER', 'CARD_MANUAL'] as const).map((type) => (
-              <Pressable key={type} onPress={() => setPaymentType(type)} style={[styles.paymentType, { borderColor: paymentType === type ? colors.primary : colors.border, backgroundColor: paymentType === type ? colors.soft : colors.surface }]}>
-                <Text style={[styles.paymentTypeText, { color: colors.text }]}>{type === 'CASH' ? 'ເງິນສົດ' : type === 'MANUAL_QR' ? 'QR (ບໍ່ຢືນຢັນ)' : type === 'BANK_TRANSFER' ? 'ໂອນເງິນ' : 'ບັດ'}</Text>
+              <Pressable
+                key={type}
+                onPress={() => setPaymentType(type)}
+                style={[
+                  styles.paymentType,
+                  {
+                    borderColor: paymentType === type ? colors.primary : colors.border,
+                    backgroundColor: paymentType === type ? colors.soft : colors.surface,
+                  },
+                ]}
+              >
+                <Text style={[styles.paymentTypeText, { color: colors.text }]}>
+                  {type === 'CASH'
+                    ? 'ເງິນສົດ'
+                    : type === 'MANUAL_QR'
+                      ? 'QR (ບໍ່ຢືນຢັນ)'
+                      : type === 'BANK_TRANSFER'
+                        ? 'ໂອນເງິນ'
+                        : 'ບັດ'}
+                </Text>
               </Pressable>
             ))}
           </View>
-          <TextInput value={discountAmount} onChangeText={setDiscountAmount} keyboardType="number-pad" placeholder="ສ່ວນຫຼຸດ (LAK)" placeholderTextColor={colors.textMuted} style={[styles.paymentInput, { color: colors.text, borderColor: colors.border }]} />
-          {paymentType === 'CASH' ? <TextInput value={tendered} onChangeText={setTendered} keyboardType="number-pad" placeholder="ເງິນທີ່ຮັບ" placeholderTextColor={colors.textMuted} style={[styles.paymentInput, { color: colors.text, borderColor: colors.border }]} /> : <TextInput value={paymentReference} onChangeText={setPaymentReference} placeholder="ເລກອ້າງອີງ (ຖ້າມີ)" placeholderTextColor={colors.textMuted} style={[styles.paymentInput, { color: colors.text, borderColor: colors.border }]} />}
-          {paymentType === 'CASH' && tendered ? <Text style={[styles.changeText, { color: colors.primary }]}>ເງິນທອນ: {formatLak(Math.max(0, Number(tendered) - subtotal))}</Text> : null}
-          <SunhaButton colors={colors} disabled={checkingOut} onPress={checkout}>{checkingOut ? 'ກຳລັງບັນທຶກ...' : 'ຢືນຢັນຮັບຊຳລະ'}</SunhaButton>
+          <TextInput
+            value={discountAmount}
+            onChangeText={setDiscountAmount}
+            keyboardType="number-pad"
+            placeholder="ສ່ວນຫຼຸດ (LAK)"
+            placeholderTextColor={colors.textMuted}
+            style={[styles.paymentInput, { color: colors.text, borderColor: colors.border }]}
+          />
+          {paymentType === 'CASH' ? (
+            <TextInput
+              value={tendered}
+              onChangeText={setTendered}
+              keyboardType="number-pad"
+              placeholder="ເງິນທີ່ຮັບ"
+              placeholderTextColor={colors.textMuted}
+              style={[styles.paymentInput, { color: colors.text, borderColor: colors.border }]}
+            />
+          ) : (
+            <TextInput
+              value={paymentReference}
+              onChangeText={setPaymentReference}
+              placeholder="ເລກອ້າງອີງ (ຖ້າມີ)"
+              placeholderTextColor={colors.textMuted}
+              style={[styles.paymentInput, { color: colors.text, borderColor: colors.border }]}
+            />
+          )}
+          {paymentType === 'CASH' && tendered ? (
+            <Text style={[styles.changeText, { color: colors.primary }]}>
+              ເງິນທອນ: {formatLak(Math.max(0, Number(tendered) - subtotal))}
+            </Text>
+          ) : null}
+          <SunhaButton colors={colors} disabled={checkingOut} onPress={checkout}>
+            {checkingOut ? 'ກຳລັງບັນທຶກ...' : 'ຢືນຢັນຮັບຊຳລະ'}
+          </SunhaButton>
         </View>
       </Modal>
 
@@ -1121,11 +1289,32 @@ const styles = StyleSheet.create({
     marginTop: 9,
     marginBottom: 2,
   },
-  paymentSheet: { position: 'absolute', left: 14, right: 14, bottom: 14, borderRadius: 22, padding: 18, gap: 12 },
+  paymentSheet: {
+    position: 'absolute',
+    left: 14,
+    right: 14,
+    bottom: 14,
+    borderRadius: 22,
+    padding: 18,
+    gap: 12,
+  },
   paymentTitle: { fontFamily: 'NotoSansLao_700Bold', fontSize: 18, lineHeight: 26 },
   paymentTypes: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
-  paymentType: { minHeight: 38, paddingHorizontal: 11, borderWidth: 1, borderRadius: 12, justifyContent: 'center' },
+  paymentType: {
+    minHeight: 38,
+    paddingHorizontal: 11,
+    borderWidth: 1,
+    borderRadius: 12,
+    justifyContent: 'center',
+  },
   paymentTypeText: { fontFamily: 'NotoSansLao_700Bold', fontSize: 11 },
-  paymentInput: { minHeight: 46, borderWidth: 1, borderRadius: 12, paddingHorizontal: 12, fontFamily: 'NotoSansLao_400Regular', fontSize: 13 },
+  paymentInput: {
+    minHeight: 46,
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    fontFamily: 'NotoSansLao_400Regular',
+    fontSize: 13,
+  },
   changeText: { fontFamily: 'NotoSansLao_700Bold', fontSize: 14 },
 });
