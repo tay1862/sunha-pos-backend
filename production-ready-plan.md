@@ -43,6 +43,7 @@
 - 2026-09-06: แก้ canonical pricing, inclusive/exclusive tax และ stock unit conversion; online VPS smoke test ผ่าน (`2 แพ็ก × 6 = 12`, stock เหลือ 0)
 - 2026-09-06: ทดสอบ permission บน VPS: Owner สร้าง category ได้, Cashier ได้ `403` เมื่อสร้าง category/report และ PIN/invitation reuse ถูกปฏิเสธตาม policy
 - 2026-09-06: เพิ่ม migration `0002_identity_modifiers`, email/password recovery foundation, PIN lockout, active-device context, modifier assignment/snapshot และ negative-stock policy; local typecheck/test/lint ผ่าน (API 7 tests)
+- 2026-09-06: build image ใหม่และ deploy VPS ด้วย `prisma migrate deploy` สำเร็จ; migration `0002_identity_modifiers` ถูก apply, API/PostgreSQL healthy และ readiness check ผ่าน
 - ยังไม่เปิดรับเงินจริงหรือประกาศ Production Ready จนกว่า Phase 1–8 และ release gates จะผ่านครบ
 
 ## Phase 3 — Online sale และเงินจริง
