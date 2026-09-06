@@ -10,7 +10,7 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { assignModifierGroupSchema, createCategorySchema, createItemSchema, createModifierGroupSchema, updateItemSchema } from '@sunha/contracts';
+import { assignModifierGroupSchema, createCategorySchema, createItemSchema, createModifierGroupSchema, createTaxSchema, updateItemSchema } from '@sunha/contracts';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { PermissionGuard, RequirePermission } from '../auth/permission.guard.js';
@@ -40,6 +40,18 @@ export class CatalogController {
   @RequirePermission('SELL')
   snapshot(@Req() request: AuthRequest) {
     return this.catalog.snapshot(request.user.tenantId);
+  }
+
+  @Get('taxes')
+  @RequirePermission('SELL')
+  taxes(@Req() request: AuthRequest) { return this.catalog.listTaxes(request.user.tenantId); }
+
+  @Post('taxes')
+  @RequirePermission('MANAGE_SETTINGS')
+  createTax(@Req() request: AuthRequest, @Body() body: unknown) {
+    const parsed = createTaxSchema.safeParse(body);
+    if (!parsed.success) throw new BadRequestException('INVALID_TAX');
+    return this.catalog.createTax(request.user.tenantId, parsed.data);
   }
 
   @Post('categories')

@@ -3,6 +3,7 @@ import type {
   CreateCategoryInput,
   CreateItemInput,
   CreateModifierGroupInput,
+  CreateTaxInput,
   UpdateItemInput,
 } from '@sunha/contracts';
 import { PrismaService } from '../database/prisma.service.js';
@@ -155,5 +156,15 @@ export class CatalogService {
       create: { itemId, groupId },
       update: {},
     });
+  }
+
+  listTaxes(tenantId: string) {
+    return this.prisma.tax.findMany({ where: { store: { tenantId }, active: true }, orderBy: { name: 'asc' } });
+  }
+
+  async createTax(tenantId: string, input: CreateTaxInput) {
+    const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true } });
+    if (!store) throw new NotFoundException('STORE_NOT_FOUND');
+    return this.prisma.tax.create({ data: { storeId: store.id, ...input } });
   }
 }
