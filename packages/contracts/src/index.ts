@@ -146,7 +146,11 @@ export const createItemSchema = z.object({
 });
 
 export const updateItemSchema = createItemSchema.partial().extend({
-  units: z.array(itemUnitInputSchema.extend({ id: idSchema.optional() })).min(1).max(20).optional(),
+  units: z
+    .array(itemUnitInputSchema.extend({ id: idSchema.optional() }))
+    .min(1)
+    .max(20)
+    .optional(),
 });
 export const updateCategorySchema = createCategorySchema.partial();
 
@@ -171,7 +175,11 @@ export const createModifierGroupSchema = z.object({
   options: z.array(modifierOptionSchema).min(1).max(50),
 });
 export const updateModifierGroupSchema = createModifierGroupSchema.partial().extend({
-  options: z.array(modifierOptionSchema.extend({ id: idSchema.optional() })).min(1).max(50).optional(),
+  options: z
+    .array(modifierOptionSchema.extend({ id: idSchema.optional() }))
+    .min(1)
+    .max(50)
+    .optional(),
 });
 export const assignModifierGroupSchema = z.object({ groupId: idSchema });
 

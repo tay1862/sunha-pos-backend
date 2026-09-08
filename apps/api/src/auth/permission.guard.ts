@@ -84,7 +84,12 @@ export class PermissionGuard implements CanActivate {
     if (permission !== 'MANAGE_DEVICES') {
       if (typeof deviceId !== 'string') throw new ForbiddenException('DEVICE_REQUIRED');
       const device = await this.prisma.device.findFirst({
-        where: { id: deviceId, tenantId: request.user.tenantId, storeId: employee.storeId, status: 'ACTIVE' },
+        where: {
+          id: deviceId,
+          tenantId: request.user.tenantId,
+          storeId: employee.storeId,
+          status: 'ACTIVE',
+        },
         select: { id: true, storeId: true, status: true },
       });
       if (!device) throw new ForbiddenException('DEVICE_NOT_ENROLLED');

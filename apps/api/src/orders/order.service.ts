@@ -7,7 +7,12 @@ import { Prisma } from '../generated/prisma/client.js';
 @Injectable()
 export class OrderService {
   constructor(private readonly prisma: PrismaService) {}
-  async checkout(tenantId: string, employeeId: string, input: CheckoutOrderInput, deviceId?: string) {
+  async checkout(
+    tenantId: string,
+    employeeId: string,
+    input: CheckoutOrderInput,
+    deviceId?: string,
+  ) {
     const existing = await this.prisma.order.findUnique({
       where: { clientOrderId: input.clientOrderId },
       include: { receipts: true, payments: true },
@@ -61,18 +66,35 @@ export class OrderService {
     const optionsById = new Map(options.map((option) => [option.id, option]));
     const resolvedWithModifiers = resolved.map(({ line, unit }) => {
       const selectedIds = line.modifierOptionIds;
-      if (new Set(selectedIds).size !== selectedIds.length) throw new ConflictException('INVALID_MODIFIERS');
-      const assignedGroups = new Map(unit.item.modifierGroups.map((assignment) => [assignment.groupId, assignment.group]));
+      if (new Set(selectedIds).size !== selectedIds.length)
+        throw new ConflictException('INVALID_MODIFIERS');
+      const assignedGroups = new Map(
+        unit.item.modifierGroups.map((assignment) => [assignment.groupId, assignment.group]),
+      );
       const selected = selectedIds.map((id) => optionsById.get(id));
       if (selected.some((option) => !option || !assignedGroups.has(option.groupId)))
         throw new ConflictException('INVALID_MODIFIERS');
       for (const group of assignedGroups.values()) {
         const count = selected.filter((option) => option?.groupId === group.id).length;
-        if (count < group.minSelections || count > group.maxSelections || (group.required && count === 0))
+        if (
+          count < group.minSelections ||
+          count > group.maxSelections ||
+          (group.required && count === 0)
+        )
           throw new ConflictException('INVALID_MODIFIERS');
       }
-    const effectiveUnitPrice = modifierUnitPrice(unit.priceAmount.toString(), selected.map((option) => option?.priceDeltaAmount.toString() ?? '0'));
-      return { line, unit, selected: selected.filter((option): option is NonNullable<typeof option> => Boolean(option)), effectiveUnitPrice };
+      const effectiveUnitPrice = modifierUnitPrice(
+        unit.priceAmount.toString(),
+        selected.map((option) => option?.priceDeltaAmount.toString() ?? '0'),
+      );
+      return {
+        line,
+        unit,
+        selected: selected.filter((option): option is NonNullable<typeof option> =>
+          Boolean(option),
+        ),
+        effectiveUnitPrice,
+      };
     });
     const totals = calculateTotals({
       lines: resolvedWithModifiers.map(({ line, effectiveUnitPrice }) => ({
@@ -83,76 +105,80 @@ export class OrderService {
       taxRateBasisPoints: effectiveTaxRate,
       taxMode: effectiveTaxMode,
     });
-    const payment = calculatePaymentAmounts(input.paymentType, totals.total, input.tenderedAmount?.amount);
+    const payment = calculatePaymentAmounts(
+      input.paymentType,
+      totals.total,
+      input.tenderedAmount?.amount,
+    );
     const receiptNumber = `SUNHA-${input.clientOrderId}`;
     try {
       return await this.prisma.$transaction(async (tx) => {
-      for (const { line, unit } of resolvedWithModifiers) {
-        if (!unit.item.trackStock) continue;
-        const required = baseQuantity(line.quantity, unit.multiplierToBase.toString());
-        const changed = await tx.inventoryLevel.updateMany({
-          where: { itemId: unit.itemId, quantityBase: { gte: required } },
-          data: { quantityBase: { decrement: required } },
-        });
-        if (changed.count !== 1) throw new ConflictException('INSUFFICIENT_STOCK');
-        await tx.inventoryMovement.create({
-          data: { itemId: unit.itemId, quantityBase: `-${required}`, reason: 'SALE' },
-        });
-      }
-      return tx.order.create({
-        data: {
-          clientOrderId: input.clientOrderId,
-          tenantId,
-          storeId: store.id,
-          employeeId,
-          deviceId,
-          status: 'COMPLETED',
-          subtotalAmount: BigInt(totals.subtotal),
-          discountAmount: BigInt(totals.discount),
-          taxAmount: BigInt(totals.tax),
-          totalAmount: BigInt(totals.total),
-          currency: 'LAK',
-          offline: input.offline,
-          completedAt: new Date(),
-          lines: {
-            create: resolvedWithModifiers.map(({ line, unit, selected, effectiveUnitPrice }) => ({
-              itemId: line.itemId,
-              unitId: unit.id,
-              itemNameSnapshot: unit.item.name,
-              unitNameSnapshot: unit.name,
-              quantity: line.quantity,
-              multiplierSnapshot: unit.multiplierToBase,
-              unitPriceAmount: effectiveUnitPrice,
-              lineTotalAmount: BigInt(
-                calculateTotals({
-                  lines: [{ unitPrice: effectiveUnitPrice.toString(), quantity: line.quantity }],
-                  taxRateBasisPoints: 0,
-                }).subtotal,
-              ),
-              note: line.note,
-              modifiers: {
-                create: selected.map((option) => ({
-                  optionId: option.id,
-                  nameSnapshot: option.name,
-                  priceDeltaSnapshot: option.priceDeltaAmount,
-                })),
-              },
-            })),
-          },
-          payments: {
-            create: {
-              type: input.paymentType,
-              amount: BigInt(totals.total),
-              tenderedAmount: payment.tenderedAmount,
-              changeAmount: payment.changeAmount,
-              reference: input.paymentReference,
-              unverified: input.paymentType === 'MANUAL_QR',
+        for (const { line, unit } of resolvedWithModifiers) {
+          if (!unit.item.trackStock) continue;
+          const required = baseQuantity(line.quantity, unit.multiplierToBase.toString());
+          const changed = await tx.inventoryLevel.updateMany({
+            where: { itemId: unit.itemId, quantityBase: { gte: required } },
+            data: { quantityBase: { decrement: required } },
+          });
+          if (changed.count !== 1) throw new ConflictException('INSUFFICIENT_STOCK');
+          await tx.inventoryMovement.create({
+            data: { itemId: unit.itemId, quantityBase: `-${required}`, reason: 'SALE' },
+          });
+        }
+        return tx.order.create({
+          data: {
+            clientOrderId: input.clientOrderId,
+            tenantId,
+            storeId: store.id,
+            employeeId,
+            deviceId,
+            status: 'COMPLETED',
+            subtotalAmount: BigInt(totals.subtotal),
+            discountAmount: BigInt(totals.discount),
+            taxAmount: BigInt(totals.tax),
+            totalAmount: BigInt(totals.total),
+            currency: 'LAK',
+            offline: input.offline,
+            completedAt: new Date(),
+            lines: {
+              create: resolvedWithModifiers.map(({ line, unit, selected, effectiveUnitPrice }) => ({
+                itemId: line.itemId,
+                unitId: unit.id,
+                itemNameSnapshot: unit.item.name,
+                unitNameSnapshot: unit.name,
+                quantity: line.quantity,
+                multiplierSnapshot: unit.multiplierToBase,
+                unitPriceAmount: effectiveUnitPrice,
+                lineTotalAmount: BigInt(
+                  calculateTotals({
+                    lines: [{ unitPrice: effectiveUnitPrice.toString(), quantity: line.quantity }],
+                    taxRateBasisPoints: 0,
+                  }).subtotal,
+                ),
+                note: line.note,
+                modifiers: {
+                  create: selected.map((option) => ({
+                    optionId: option.id,
+                    nameSnapshot: option.name,
+                    priceDeltaSnapshot: option.priceDeltaAmount,
+                  })),
+                },
+              })),
             },
+            payments: {
+              create: {
+                type: input.paymentType,
+                amount: BigInt(totals.total),
+                tenderedAmount: payment.tenderedAmount,
+                changeAmount: payment.changeAmount,
+                reference: input.paymentReference,
+                unverified: input.paymentType === 'MANUAL_QR',
+              },
+            },
+            receipts: { create: { number: receiptNumber } },
           },
-          receipts: { create: { number: receiptNumber } },
-        },
-        include: { receipts: true, payments: true },
-      });
+          include: { receipts: true, payments: true },
+        });
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
@@ -190,9 +216,14 @@ function baseQuantity(quantity: string, multiplier: string): string {
 
 export { baseQuantity, calculateTotals };
 
-function calculatePaymentAmounts(paymentType: CheckoutOrderInput['paymentType'], total: string, tendered?: string) {
+function calculatePaymentAmounts(
+  paymentType: CheckoutOrderInput['paymentType'],
+  total: string,
+  tendered?: string,
+) {
   if (paymentType !== 'CASH') return { tenderedAmount: null, changeAmount: null };
-  if (!tendered || BigInt(tendered) < BigInt(total)) throw new ConflictException('INSUFFICIENT_TENDER');
+  if (!tendered || BigInt(tendered) < BigInt(total))
+    throw new ConflictException('INSUFFICIENT_TENDER');
   return { tenderedAmount: BigInt(tendered), changeAmount: BigInt(tendered) - BigInt(total) };
 }
 

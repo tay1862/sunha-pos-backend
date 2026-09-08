@@ -18,7 +18,10 @@ export async function saveSessionContext(employeeId?: string, deviceId?: string)
   ]);
 }
 export async function getSessionContext() {
-  const [employeeId, deviceId] = await Promise.all([SecureStore.getItemAsync(employeeKey), SecureStore.getItemAsync(deviceKey)]);
+  const [employeeId, deviceId] = await Promise.all([
+    SecureStore.getItemAsync(employeeKey),
+    SecureStore.getItemAsync(deviceKey),
+  ]);
   return { employeeId, deviceId };
 }
 

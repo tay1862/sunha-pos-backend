@@ -8,9 +8,13 @@ import { ResendEmailDelivery } from './email.service.js';
 @Module({
   imports: [DatabaseModule],
   controllers: [AuthController],
-  providers: [ResendEmailDelivery,
+  providers: [
+    ResendEmailDelivery,
     {
-      provide: AuthService, useFactory: (prisma: PrismaService, email: ResendEmailDelivery) => new AuthService(new PrismaAuthRepository(prisma), email), inject: [PrismaService, ResendEmailDelivery],
+      provide: AuthService,
+      useFactory: (prisma: PrismaService, email: ResendEmailDelivery) =>
+        new AuthService(new PrismaAuthRepository(prisma), email),
+      inject: [PrismaService, ResendEmailDelivery],
     },
   ],
   exports: [AuthService],

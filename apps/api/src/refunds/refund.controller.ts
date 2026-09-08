@@ -15,6 +15,11 @@ export class RefundController {
   create(@Req() r: AuthRequest, @Body() body: unknown) {
     const p = refundSchema.safeParse(body);
     if (!p.success) throw new BadRequestException('INVALID_REFUND');
-    return this.refunds.refund(r.user.tenantId, String(r.headers['x-employee-id']), String(r.headers['x-device-id']), p.data);
+    return this.refunds.refund(
+      r.user.tenantId,
+      String(r.headers['x-employee-id']),
+      String(r.headers['x-device-id']),
+      p.data,
+    );
   }
 }

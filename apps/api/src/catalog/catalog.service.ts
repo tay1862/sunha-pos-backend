@@ -31,13 +31,35 @@ export class CatalogService {
   }
 
   async snapshot(tenantId: string) {
-    const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true, updatedAt: true } });
+    const store = await this.prisma.store.findUnique({
+      where: { tenantId },
+      select: { id: true, updatedAt: true },
+    });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
     const [categories, items, modifierGroups, taxes] = await Promise.all([
-      this.prisma.category.findMany({ where: { storeId: store.id, active: true }, orderBy: { name: 'asc' } }),
-      this.prisma.item.findMany({ where: { storeId: store.id, active: true }, include: { category: true, units: { where: { active: true } }, modifierGroups: { include: { group: { include: { options: true } } } }, inventory: true }, orderBy: { name: 'asc' } }),
-      this.prisma.modifierGroup.findMany({ where: { storeId: store.id }, include: { options: true }, orderBy: { name: 'asc' } }),
-      this.prisma.tax.findMany({ where: { storeId: store.id, active: true }, orderBy: { name: 'asc' } }),
+      this.prisma.category.findMany({
+        where: { storeId: store.id, active: true },
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.item.findMany({
+        where: { storeId: store.id, active: true },
+        include: {
+          category: true,
+          units: { where: { active: true } },
+          modifierGroups: { include: { group: { include: { options: true } } } },
+          inventory: true,
+        },
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.modifierGroup.findMany({
+        where: { storeId: store.id },
+        include: { options: true },
+        orderBy: { name: 'asc' },
+      }),
+      this.prisma.tax.findMany({
+        where: { storeId: store.id, active: true },
+        orderBy: { name: 'asc' },
+      }),
     ]);
     return { version: store.updatedAt.toISOString(), categories, items, modifierGroups, taxes };
   }
@@ -61,7 +83,9 @@ export class CatalogService {
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
     const { units, cost, baseUnitName, ...item } = input;
     if (input.categoryId) {
-      const category = await this.prisma.category.findFirst({ where: { id: input.categoryId, storeId: store.id, active: true } });
+      const category = await this.prisma.category.findFirst({
+        where: { id: input.categoryId, storeId: store.id, active: true },
+      });
       if (!category) throw new NotFoundException('CATEGORY_NOT_FOUND');
     }
     let created;
@@ -107,7 +131,9 @@ export class CatalogService {
     const item = await this.prisma.item.findFirst({ where: { id, store: { tenantId } } });
     if (!item) throw new NotFoundException('ITEM_NOT_FOUND');
     if (input.categoryId) {
-      const category = await this.prisma.category.findFirst({ where: { id: input.categoryId, storeId: item.storeId, active: true } });
+      const category = await this.prisma.category.findFirst({
+        where: { id: input.categoryId, storeId: item.storeId, active: true },
+      });
       if (!category) throw new NotFoundException('CATEGORY_NOT_FOUND');
     }
     try {
@@ -127,22 +153,43 @@ export class CatalogService {
             if (unit.id) {
               const existing = await tx.itemUnit.findFirst({ where: { id: unit.id, itemId: id } });
               if (!existing) throw new NotFoundException('UNIT_NOT_FOUND');
-              await tx.itemUnit.update({ where: { id: unit.id }, data: { name: unit.name, multiplierToBase: unit.multiplierToBase, priceAmount: BigInt(unit.price.amount), sku: unit.sku, barcode: unit.barcode } });
+              await tx.itemUnit.update({
+                where: { id: unit.id },
+                data: {
+                  name: unit.name,
+                  multiplierToBase: unit.multiplierToBase,
+                  priceAmount: BigInt(unit.price.amount),
+                  sku: unit.sku,
+                  barcode: unit.barcode,
+                },
+              });
             } else {
-              await tx.itemUnit.create({ data: { itemId: id, name: unit.name, multiplierToBase: unit.multiplierToBase, priceAmount: BigInt(unit.price.amount), sku: unit.sku, barcode: unit.barcode } });
+              await tx.itemUnit.create({
+                data: {
+                  itemId: id,
+                  name: unit.name,
+                  multiplierToBase: unit.multiplierToBase,
+                  priceAmount: BigInt(unit.price.amount),
+                  sku: unit.sku,
+                  barcode: unit.barcode,
+                },
+              });
             }
           }
         }
         return updated;
       });
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') throw new ConflictException('SKU_OR_BARCODE_ALREADY_EXISTS');
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
+        throw new ConflictException('SKU_OR_BARCODE_ALREADY_EXISTS');
       throw error;
     }
   }
 
   async deleteItem(tenantId: string, id: string) {
-    const item = await this.prisma.item.findFirst({ where: { id, store: { tenantId }, active: true } });
+    const item = await this.prisma.item.findFirst({
+      where: { id, store: { tenantId }, active: true },
+    });
     if (!item) throw new NotFoundException('ITEM_NOT_FOUND');
     await this.prisma.item.update({ where: { id }, data: { active: false } });
     return { success: true };
@@ -159,7 +206,8 @@ export class CatalogService {
   async createModifierGroup(tenantId: string, input: CreateModifierGroupInput) {
     const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
-    if (input.minSelections > input.maxSelections) throw new ConflictException('INVALID_MODIFIER_LIMITS');
+    if (input.minSelections > input.maxSelections)
+      throw new ConflictException('INVALID_MODIFIER_LIMITS');
     return this.prisma.modifierGroup.create({
       data: {
         storeId: store.id,
@@ -168,7 +216,10 @@ export class CatalogService {
         minSelections: input.minSelections,
         maxSelections: input.maxSelections,
         options: {
-          create: input.options.map((option) => ({ name: option.name, priceDeltaAmount: BigInt(option.priceDelta.amount) })),
+          create: input.options.map((option) => ({
+            name: option.name,
+            priceDeltaAmount: BigInt(option.priceDelta.amount),
+          })),
         },
       },
       include: { options: true },
@@ -178,32 +229,66 @@ export class CatalogService {
   async updateModifierGroup(tenantId: string, id: string, input: UpdateModifierGroupInput) {
     const group = await this.prisma.modifierGroup.findFirst({ where: { id, store: { tenantId } } });
     if (!group) throw new NotFoundException('MODIFIER_GROUP_NOT_FOUND');
-    if (input.minSelections !== undefined && input.maxSelections !== undefined && input.minSelections > input.maxSelections) throw new ConflictException('INVALID_MODIFIER_LIMITS');
+    if (
+      input.minSelections !== undefined &&
+      input.maxSelections !== undefined &&
+      input.minSelections > input.maxSelections
+    )
+      throw new ConflictException('INVALID_MODIFIER_LIMITS');
     return this.prisma.$transaction(async (tx) => {
-      const updated = await tx.modifierGroup.update({ where: { id }, data: { name: input.name, required: input.required, minSelections: input.minSelections, maxSelections: input.maxSelections }, include: { options: true } });
-      if (input.options) for (const option of input.options) {
-        if (option.id) {
-          const existing = await tx.modifierOption.findFirst({ where: { id: option.id, groupId: id } });
-          if (!existing) throw new NotFoundException('MODIFIER_OPTION_NOT_FOUND');
-          await tx.modifierOption.update({ where: { id: option.id }, data: { name: option.name, priceDeltaAmount: BigInt(option.priceDelta.amount) } });
+      const updated = await tx.modifierGroup.update({
+        where: { id },
+        data: {
+          name: input.name,
+          required: input.required,
+          minSelections: input.minSelections,
+          maxSelections: input.maxSelections,
+        },
+        include: { options: true },
+      });
+      if (input.options)
+        for (const option of input.options) {
+          if (option.id) {
+            const existing = await tx.modifierOption.findFirst({
+              where: { id: option.id, groupId: id },
+            });
+            if (!existing) throw new NotFoundException('MODIFIER_OPTION_NOT_FOUND');
+            await tx.modifierOption.update({
+              where: { id: option.id },
+              data: { name: option.name, priceDeltaAmount: BigInt(option.priceDelta.amount) },
+            });
+          } else
+            await tx.modifierOption.create({
+              data: {
+                groupId: id,
+                name: option.name,
+                priceDeltaAmount: BigInt(option.priceDelta.amount),
+              },
+            });
         }
-        else await tx.modifierOption.create({ data: { groupId: id, name: option.name, priceDeltaAmount: BigInt(option.priceDelta.amount) } });
-      }
       return updated;
     });
   }
 
   async deleteModifierGroup(tenantId: string, id: string) {
-    const group = await this.prisma.modifierGroup.findFirst({ where: { id, store: { tenantId } }, include: { options: { include: { orderLineModifiers: { select: { id: true }, take: 1 } } } } });
+    const group = await this.prisma.modifierGroup.findFirst({
+      where: { id, store: { tenantId } },
+      include: { options: { include: { orderLineModifiers: { select: { id: true }, take: 1 } } } },
+    });
     if (!group) throw new NotFoundException('MODIFIER_GROUP_NOT_FOUND');
-    if (group.options.some((option) => option.orderLineModifiers.length > 0)) throw new ConflictException('MODIFIER_GROUP_HAS_HISTORY');
+    if (group.options.some((option) => option.orderLineModifiers.length > 0))
+      throw new ConflictException('MODIFIER_GROUP_HAS_HISTORY');
     await this.prisma.modifierGroup.delete({ where: { id } });
     return { success: true };
   }
 
   async assignModifierGroup(tenantId: string, itemId: string, groupId: string) {
-    const item = await this.prisma.item.findFirst({ where: { id: itemId, store: { tenantId }, active: true } });
-    const group = await this.prisma.modifierGroup.findFirst({ where: { id: groupId, store: { tenantId } } });
+    const item = await this.prisma.item.findFirst({
+      where: { id: itemId, store: { tenantId }, active: true },
+    });
+    const group = await this.prisma.modifierGroup.findFirst({
+      where: { id: groupId, store: { tenantId } },
+    });
     if (!item || !group) throw new NotFoundException('ITEM_OR_MODIFIER_GROUP_NOT_FOUND');
     return this.prisma.itemModifierGroup.upsert({
       where: { itemId_groupId: { itemId, groupId } },
@@ -213,7 +298,10 @@ export class CatalogService {
   }
 
   listTaxes(tenantId: string) {
-    return this.prisma.tax.findMany({ where: { store: { tenantId }, active: true }, orderBy: { name: 'asc' } });
+    return this.prisma.tax.findMany({
+      where: { store: { tenantId }, active: true },
+      orderBy: { name: 'asc' },
+    });
   }
 
   async createTax(tenantId: string, input: CreateTaxInput) {
@@ -223,13 +311,17 @@ export class CatalogService {
   }
 
   async updateTax(tenantId: string, id: string, input: UpdateTaxInput) {
-    const tax = await this.prisma.tax.findFirst({ where: { id, store: { tenantId }, active: true } });
+    const tax = await this.prisma.tax.findFirst({
+      where: { id, store: { tenantId }, active: true },
+    });
     if (!tax) throw new NotFoundException('TAX_NOT_FOUND');
     return this.prisma.tax.update({ where: { id }, data: input });
   }
 
   async deleteTax(tenantId: string, id: string) {
-    const tax = await this.prisma.tax.findFirst({ where: { id, store: { tenantId }, active: true } });
+    const tax = await this.prisma.tax.findFirst({
+      where: { id, store: { tenantId }, active: true },
+    });
     if (!tax) throw new NotFoundException('TAX_NOT_FOUND');
     await this.prisma.tax.update({ where: { id }, data: { active: false } });
     return { success: true };
