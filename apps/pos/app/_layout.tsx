@@ -10,10 +10,13 @@ import tamaguiConfig from '../tamagui.config';
 import '../src/i18n';
 import * as Sentry from '@sentry/react-native';
 
+const expoEnv =
+  (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {};
+
 Sentry.init({
-  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
-  environment: process.env.EXPO_PUBLIC_APP_ENV ?? (__DEV__ ? 'development' : 'production'),
-  release: process.env.EXPO_PUBLIC_APP_RELEASE,
+  dsn: expoEnv.EXPO_PUBLIC_SENTRY_DSN,
+  environment: expoEnv.EXPO_PUBLIC_APP_ENV ?? (__DEV__ ? 'development' : 'production'),
+  release: expoEnv.EXPO_PUBLIC_APP_RELEASE,
   sendDefaultPii: false,
   enableLogs: false,
 });

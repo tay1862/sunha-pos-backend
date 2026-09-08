@@ -178,7 +178,7 @@ const demoProducts: Product[] = [
 void demoProducts;
 
 const categories = ['ທັງໝົດ'];
-const navigationItems = [
+const navigationItems: Array<{ label: string; icon: typeof ShoppingBag; route: string }> = [
   { label: 'ຂາຍ', icon: ShoppingBag, route: '/' },
   { label: 'ໃບເສັດ', icon: ReceiptText, route: '/receipts' },
   { label: 'ສິນຄ້າ', icon: Package, route: '/items' },
@@ -322,7 +322,7 @@ function Sidebar({
   expanded: boolean;
   colors: SunhaColors;
   onToggle: () => void;
-  onNavigate: (route: Href) => void;
+  onNavigate: (route: string) => void;
 }) {
   return (
     <View
@@ -352,7 +352,7 @@ function Sidebar({
             key={label}
             accessibilityRole="button"
             accessibilityLabel={label}
-            onPress={() => onNavigate(route as Href)}
+            onPress={() => onNavigate(route)}
             style={[
               styles.sidebarItem,
               index === 0 && { backgroundColor: colors.soft },
@@ -737,7 +737,7 @@ export default function SaleScreen() {
             expanded={sidebarExpanded}
             colors={colors}
             onToggle={() => setSidebarExpanded((value) => !value)}
-            onNavigate={(route) => router.push(route)}
+            onNavigate={(route) => router.push(route as Href)}
           />
         )}
         <View style={styles.catalog}>

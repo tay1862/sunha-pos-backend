@@ -1,5 +1,7 @@
 import { getSessionContext } from '../auth/token-storage';
-const configuredBase = process.env.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2:3001';
+const expoEnv =
+  (globalThis as { process?: { env?: Record<string, string | undefined> } }).process?.env ?? {};
+const configuredBase = expoEnv.EXPO_PUBLIC_API_URL ?? 'http://10.0.2.2:3001';
 export const API_BASE_URL = configuredBase.replace(/\/$/, '').endsWith('/v1')
   ? configuredBase.replace(/\/$/, '')
   : `${configuredBase.replace(/\/$/, '')}/v1`;
