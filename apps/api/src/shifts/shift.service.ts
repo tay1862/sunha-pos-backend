@@ -48,7 +48,9 @@ export class ShiftService {
 
   async close(tenantId: string, employeeId: string, deviceId: string, input: CloseShiftInput) {
     const shift = await this.current(tenantId);
-    const pending = await this.prisma.syncOperation.count({ where: { tenantId, status: 'PENDING' } });
+    const pending = await this.prisma.syncOperation.count({
+      where: { tenantId, status: 'PENDING' },
+    });
     if (pending > 0) throw new ConflictException('PENDING_OPERATIONS');
     const expected = await this.expectedCash(shift);
     const closed = await this.prisma.shift.update({
@@ -105,7 +107,22 @@ export class ShiftService {
     metadata: Record<string, string>,
   ) {
     return this.prisma.auditEvent
-      .create({ data: { tenantId, employeeId, deviceId, action, entityType: 'SHIFT', entityId, metadata: { ...metadata, serverTime: new Date().toISOString(), actorEmployeeId: employeeId, actorDeviceId: deviceId } } })
+      .create({
+        data: {
+          tenantId,
+          employeeId,
+          deviceId,
+          action,
+          entityType: 'SHIFT',
+          entityId,
+          metadata: {
+            ...metadata,
+            serverTime: new Date().toISOString(),
+            actorEmployeeId: employeeId,
+            actorDeviceId: deviceId,
+          },
+        },
+      })
       .then(() => undefined);
   }
 }

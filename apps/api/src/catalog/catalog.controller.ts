@@ -10,7 +10,16 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { assignModifierGroupSchema, createCategorySchema, createItemSchema, createModifierGroupSchema, createTaxSchema, updateItemSchema, updateModifierGroupSchema, updateTaxSchema } from '@sunha/contracts';
+import {
+  assignModifierGroupSchema,
+  createCategorySchema,
+  createItemSchema,
+  createModifierGroupSchema,
+  createTaxSchema,
+  updateItemSchema,
+  updateModifierGroupSchema,
+  updateTaxSchema,
+} from '@sunha/contracts';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { PermissionGuard, RequirePermission } from '../auth/permission.guard.js';
@@ -44,7 +53,9 @@ export class CatalogController {
 
   @Get('taxes')
   @RequirePermission('SELL')
-  taxes(@Req() request: AuthRequest) { return this.catalog.listTaxes(request.user.tenantId); }
+  taxes(@Req() request: AuthRequest) {
+    return this.catalog.listTaxes(request.user.tenantId);
+  }
 
   @Post('taxes')
   @RequirePermission('MANAGE_SETTINGS')
@@ -64,7 +75,9 @@ export class CatalogController {
 
   @Delete('taxes/:id')
   @RequirePermission('MANAGE_SETTINGS')
-  deleteTax(@Req() request: AuthRequest, @Param('id') id: string) { return this.catalog.deleteTax(request.user.tenantId, id); }
+  deleteTax(@Req() request: AuthRequest, @Param('id') id: string) {
+    return this.catalog.deleteTax(request.user.tenantId, id);
+  }
 
   @Post('categories')
   @RequirePermission('MANAGE_ITEMS')
@@ -112,7 +125,9 @@ export class CatalogController {
 
   @Delete('modifier-groups/:id')
   @RequirePermission('MANAGE_ITEMS')
-  deleteModifierGroup(@Req() request: AuthRequest, @Param('id') id: string) { return this.catalog.deleteModifierGroup(request.user.tenantId, id); }
+  deleteModifierGroup(@Req() request: AuthRequest, @Param('id') id: string) {
+    return this.catalog.deleteModifierGroup(request.user.tenantId, id);
+  }
 
   @Post('items/:id/modifier-groups')
   @RequirePermission('MANAGE_ITEMS')

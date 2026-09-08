@@ -20,7 +20,12 @@ export type AuthResult = {
 };
 export type AuthClaims = AuthUser & { sub: string };
 
-type StoredUser = AuthUser & { passwordHash: string; store: AuthStore; ownerEmployeeId?: string; ownerDeviceId?: string };
+type StoredUser = AuthUser & {
+  passwordHash: string;
+  store: AuthStore;
+  ownerEmployeeId?: string;
+  ownerDeviceId?: string;
+};
 type StoredSession = {
   id: string;
   userId: string;
@@ -74,12 +79,23 @@ export class PrismaAuthRepository implements AuthRepository {
       where: { email },
       include: {
         tenant: {
-          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true, devices: { select: { deviceId: true }, take: 1 } } } },
+          include: {
+            store: true,
+            employees: {
+              where: { role: 'OWNER' },
+              select: { id: true, devices: { select: { deviceId: true }, take: 1 } },
+            },
+          },
         },
       },
     });
     return user?.tenant.store
-      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id, user.tenant.employees[0]?.devices[0]?.deviceId)
+      ? this.mapUser(
+          user,
+          user.tenant.store,
+          user.tenant.employees[0]?.id,
+          user.tenant.employees[0]?.devices[0]?.deviceId,
+        )
       : null;
   }
 
@@ -88,12 +104,23 @@ export class PrismaAuthRepository implements AuthRepository {
       where: { id },
       include: {
         tenant: {
-          include: { store: true, employees: { where: { role: 'OWNER' }, select: { id: true, devices: { select: { deviceId: true }, take: 1 } } } },
+          include: {
+            store: true,
+            employees: {
+              where: { role: 'OWNER' },
+              select: { id: true, devices: { select: { deviceId: true }, take: 1 } },
+            },
+          },
         },
       },
     });
     return user?.tenant.store
-      ? this.mapUser(user, user.tenant.store, user.tenant.employees[0]?.id, user.tenant.employees[0]?.devices[0]?.deviceId)
+      ? this.mapUser(
+          user,
+          user.tenant.store,
+          user.tenant.employees[0]?.id,
+          user.tenant.employees[0]?.devices[0]?.deviceId,
+        )
       : null;
   }
 
@@ -238,7 +265,10 @@ export class PrismaAuthRepository implements AuthRepository {
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly repository: AuthRepository, private readonly email?: EmailDelivery) {}
+  constructor(
+    private readonly repository: AuthRepository,
+    private readonly email?: EmailDelivery,
+  ) {}
 
   async signup(input: SignUpInput): Promise<AuthResult> {
     const email = input.email.trim().toLowerCase();

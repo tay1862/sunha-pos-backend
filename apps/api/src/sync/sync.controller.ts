@@ -35,7 +35,10 @@ export class SyncController {
 
   @RequirePermission('VIEW_REPORTS')
   @Get('operations')
-  operations(@Req() r: AuthRequest, @Query('status') status?: 'PENDING' | 'ACKED' | 'FAILED_REVIEW') {
+  operations(
+    @Req() r: AuthRequest,
+    @Query('status') status?: 'PENDING' | 'ACKED' | 'FAILED_REVIEW',
+  ) {
     return this.sync.list(r.user.tenantId, status);
   }
 

@@ -6,9 +6,86 @@ import { lightColors } from '../src/design/tokens';
 import { getReport } from '../src/auth/auth-client';
 export default function ReportsScreen() {
   const router = useRouter();
-  const [sales, setSales] = useState<{ totalAmount: string; orderCount: number; refundAmount: string } | null>(null);
-  const [payments, setPayments] = useState<Array<{ type: string; amount: string; count: number; unverified: number }>>([]);
-  useEffect(() => { void Promise.all([getReport('sales'), getReport('payments')]).then(([sale, payment]) => { setSales(sale as typeof sales); setPayments(payment as typeof payments); }).catch(() => undefined); }, []);
-  return <View style={styles.page}><Text onPress={() => router.replace('/')} style={styles.back}>‹ ກັບໜ້າຂາຍ</Text><View style={styles.heading}><BarChart3 color={lightColors.primary} size={25} /><Text style={styles.title}>ລາຍງານ</Text></View>{!sales ? <ActivityIndicator color={lightColors.primary} /> : <><View style={styles.hero}><Text style={styles.label}>ຍອດຂາຍສຸດທິ</Text><Text style={styles.total}>{Number(sales.totalAmount).toLocaleString()} ₭</Text><Text style={styles.meta}>{sales.orderCount} ໃບເສັດ · refund {Number(sales.refundAmount).toLocaleString()} ₭</Text></View><Text style={styles.section}>ຕາມວິທີຊຳລະ</Text>{payments.map((payment) => <View key={payment.type} style={styles.row}><Text style={styles.name}>{payment.type}</Text><Text style={styles.amount}>{Number(payment.amount).toLocaleString()} ₭ · {payment.count}</Text></View>)}</>}</View>;
+  const [sales, setSales] = useState<{
+    totalAmount: string;
+    orderCount: number;
+    refundAmount: string;
+  } | null>(null);
+  const [payments, setPayments] = useState<
+    Array<{ type: string; amount: string; count: number; unverified: number }>
+  >([]);
+  useEffect(() => {
+    void Promise.all([getReport('sales'), getReport('payments')])
+      .then(([sale, payment]) => {
+        setSales(sale as typeof sales);
+        setPayments(payment as typeof payments);
+      })
+      .catch(() => undefined);
+  }, []);
+  return (
+    <View style={styles.page}>
+      <Text onPress={() => router.replace('/')} style={styles.back}>
+        ‹ ກັບໜ້າຂາຍ
+      </Text>
+      <View style={styles.heading}>
+        <BarChart3 color={lightColors.primary} size={25} />
+        <Text style={styles.title}>ລາຍງານ</Text>
+      </View>
+      {!sales ? (
+        <ActivityIndicator color={lightColors.primary} />
+      ) : (
+        <>
+          <View style={styles.hero}>
+            <Text style={styles.label}>ຍອດຂາຍສຸດທິ</Text>
+            <Text style={styles.total}>{Number(sales.totalAmount).toLocaleString()} ₭</Text>
+            <Text style={styles.meta}>
+              {sales.orderCount} ໃບເສັດ · refund {Number(sales.refundAmount).toLocaleString()} ₭
+            </Text>
+          </View>
+          <Text style={styles.section}>ຕາມວິທີຊຳລະ</Text>
+          {payments.map((payment) => (
+            <View key={payment.type} style={styles.row}>
+              <Text style={styles.name}>{payment.type}</Text>
+              <Text style={styles.amount}>
+                {Number(payment.amount).toLocaleString()} ₭ · {payment.count}
+              </Text>
+            </View>
+          ))}
+        </>
+      )}
+    </View>
+  );
 }
-const styles = StyleSheet.create({ page: { flex: 1, backgroundColor: lightColors.background, padding: 22 }, back: { color: lightColors.textMuted, fontSize: 13, marginBottom: 24 }, heading: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 22 }, title: { color: lightColors.text, fontFamily: 'NotoSansLao_700Bold', fontSize: 24 }, hero: { backgroundColor: lightColors.primary, borderRadius: 18, padding: 18, marginBottom: 22 }, label: { color: lightColors.onPrimary, fontFamily: 'NotoSansLao_400Regular', fontSize: 12 }, total: { color: lightColors.onPrimary, fontFamily: 'NotoSansLao_700Bold', fontSize: 28, marginVertical: 7 }, meta: { color: lightColors.onPrimary, fontFamily: 'NotoSansLao_400Regular', fontSize: 11 }, section: { color: lightColors.text, fontFamily: 'NotoSansLao_700Bold', fontSize: 15, marginBottom: 9 }, row: { backgroundColor: lightColors.surface, borderWidth: 1, borderColor: lightColors.border, borderRadius: 13, padding: 14, marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between' }, name: { color: lightColors.text, fontFamily: 'NotoSansLao_700Bold', fontSize: 12 }, amount: { color: lightColors.primary, fontFamily: 'NotoSansLao_700Bold', fontSize: 12 } });
+const styles = StyleSheet.create({
+  page: { flex: 1, backgroundColor: lightColors.background, padding: 22 },
+  back: { color: lightColors.textMuted, fontSize: 13, marginBottom: 24 },
+  heading: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 22 },
+  title: { color: lightColors.text, fontFamily: 'NotoSansLao_700Bold', fontSize: 24 },
+  hero: { backgroundColor: lightColors.primary, borderRadius: 18, padding: 18, marginBottom: 22 },
+  label: { color: lightColors.onPrimary, fontFamily: 'NotoSansLao_400Regular', fontSize: 12 },
+  total: {
+    color: lightColors.onPrimary,
+    fontFamily: 'NotoSansLao_700Bold',
+    fontSize: 28,
+    marginVertical: 7,
+  },
+  meta: { color: lightColors.onPrimary, fontFamily: 'NotoSansLao_400Regular', fontSize: 11 },
+  section: {
+    color: lightColors.text,
+    fontFamily: 'NotoSansLao_700Bold',
+    fontSize: 15,
+    marginBottom: 9,
+  },
+  row: {
+    backgroundColor: lightColors.surface,
+    borderWidth: 1,
+    borderColor: lightColors.border,
+    borderRadius: 13,
+    padding: 14,
+    marginBottom: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  name: { color: lightColors.text, fontFamily: 'NotoSansLao_700Bold', fontSize: 12 },
+  amount: { color: lightColors.primary, fontFamily: 'NotoSansLao_700Bold', fontSize: 12 },
+});

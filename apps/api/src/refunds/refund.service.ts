@@ -53,7 +53,10 @@ export class RefundService {
           reason: input.reason,
         },
       });
-      const originalPayment = await tx.payment.findFirst({ where: { orderId: order.id }, orderBy: { createdAt: 'asc' } });
+      const originalPayment = await tx.payment.findFirst({
+        where: { orderId: order.id },
+        orderBy: { createdAt: 'asc' },
+      });
       if (originalPayment) {
         await tx.payment.create({
           data: {
@@ -67,14 +70,19 @@ export class RefundService {
       }
       await tx.order.update({ where: { id: order.id }, data: { status: 'REFUNDED' } });
       await tx.auditEvent.create({
-          data: {
-            tenantId,
-            employeeId: cashierId,
-            deviceId,
-            action: 'REFUND',
+        data: {
+          tenantId,
+          employeeId: cashierId,
+          deviceId,
+          action: 'REFUND',
           entityType: 'ORDER',
           entityId: order.id,
-          metadata: { managerEmployeeId: manager.id, reason: input.reason, serverTime: new Date().toISOString(), actorDeviceId: deviceId },
+          metadata: {
+            managerEmployeeId: manager.id,
+            reason: input.reason,
+            serverTime: new Date().toISOString(),
+            actorDeviceId: deviceId,
+          },
         },
       });
       return refund;
