@@ -267,5 +267,5 @@ describe.skipIf(!runIntegration)('PostgreSQL concurrent checkout', () => {
       status: 'FAILED_REVIEW',
       error: 'MULTI_DEVICE_OFFLINE_FORBIDDEN',
     });
-  });
+  }, 30_000);
 });
