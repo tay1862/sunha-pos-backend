@@ -102,7 +102,8 @@ export const TenantScalarFieldEnum = {
   businessName: 'businessName',
   country: 'country',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  suspendedAt: 'suspendedAt'
 } as const
 
 export type TenantScalarFieldEnum = (typeof TenantScalarFieldEnum)[keyof typeof TenantScalarFieldEnum]

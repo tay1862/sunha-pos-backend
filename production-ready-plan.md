@@ -102,10 +102,10 @@
 ## Phase 7 — Observability และ launch operations
 
 - [ ] เพิ่ม health/readiness, Sentry crash, metrics สำหรับ checkout/sync/receipt/printer และ alert → Verify: จำลอง error แล้ว alert ภายใน SLA
-- [ ] ทำ Internal Admin ที่มี MFA, suspend store, device/sync/audit view โดยแก้ receipt ไม่ได้ → Verify: admin action ถูก audit และ tenant isolation ผ่าน
+- [x] ทำ Internal Admin ที่มี MFA, suspend store, device/sync/audit view โดยแก้ receipt ไม่ได้ → Verify: admin action ถูก audit และ tenant isolation ผ่าน (MFA gate ใช้ admin token + MFA token แยกกัน; ต้องตั้ง secret และทดสอบ production ก่อนเปิดใช้งาน)
 - [x] ตั้ง CI quality gates, dependency scan, migration check, image scan และ deploy rollback → Verify: pull request ที่ test/security fail merge ไม่ได้ (เพิ่ม Prisma schema validation และ production dependency audit ใน CI; image scan/branch protection/rollback ต้องเปิดใช้ใน GitHub/VPS)
 
-> สถานะ 2026-09-06: เพิ่ม in-process operational metrics ที่ `/v1/health/metrics` สำหรับ request/error และเส้นทาง checkout/sync/receipt/printer พร้อม hook บันทึกหลัง response โดยไม่เก็บ payload หรือข้อมูลลับ. เพิ่ม CI checks สำหรับ Prisma validate และ `pnpm audit --prod --audit-level high`; เพิ่ม workspace overrides แก้ High vulnerabilities ของ `deepmerge-ts`/`mysql2`, audit เหลือ Moderate 2 รายการ. Local typecheck/lint/test และ Prisma validate ผ่านแล้ว. ยังไม่ติ๊ก observability เป็น production-verified จนกว่าจะเชื่อม Sentry/alert และทดสอบบน production จริง; ยังไม่ทำ Internal Admin MFA ในชุดนี้
+> สถานะ 2026-09-08: เพิ่ม in-process operational metrics ที่ `/v1/health/metrics` สำหรับ request/error และเส้นทาง checkout/sync/receipt/printer พร้อม hook บันทึกหลัง response โดยไม่เก็บ payload หรือข้อมูลลับ. เพิ่ม optional Sentry capture สำหรับ error hook โดยปิดอัตโนมัติเมื่อไม่มี `SENTRY_DSN`, `sendDefaultPii=false` และส่งเฉพาะ correlation/route tags. เพิ่ม Internal Admin API แบบ fail-closed ด้วย admin token + MFA token, overview/stores/device/sync/audit read views และ suspend store ที่บันทึก append-only audit และไม่เปิด receipt mutation; เพิ่ม suspended tenant enforcement ใน JWT guard. เพิ่ม CI checks สำหรับ Prisma validate และ `pnpm audit --prod --audit-level high`; audit เหลือ Moderate 2 รายการ. Sentry alert rule/destination, GitHub branch protection/image scan และ production MFA secret/HTTPS smoke test ยังต้องตั้งค่า/verify จริงก่อนติ๊ก observability เป็น production-verified
 
 ## Phase 8 — Test program
 

@@ -30,6 +30,7 @@ export type TenantMinAggregateOutputType = {
   country: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  suspendedAt: Date | null
 }
 
 export type TenantMaxAggregateOutputType = {
@@ -38,6 +39,7 @@ export type TenantMaxAggregateOutputType = {
   country: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  suspendedAt: Date | null
 }
 
 export type TenantCountAggregateOutputType = {
@@ -46,6 +48,7 @@ export type TenantCountAggregateOutputType = {
   country: number
   createdAt: number
   updatedAt: number
+  suspendedAt: number
   _all: number
 }
 
@@ -56,6 +59,7 @@ export type TenantMinAggregateInputType = {
   country?: true
   createdAt?: true
   updatedAt?: true
+  suspendedAt?: true
 }
 
 export type TenantMaxAggregateInputType = {
@@ -64,6 +68,7 @@ export type TenantMaxAggregateInputType = {
   country?: true
   createdAt?: true
   updatedAt?: true
+  suspendedAt?: true
 }
 
 export type TenantCountAggregateInputType = {
@@ -72,6 +77,7 @@ export type TenantCountAggregateInputType = {
   country?: true
   createdAt?: true
   updatedAt?: true
+  suspendedAt?: true
   _all?: true
 }
 
@@ -153,6 +159,7 @@ export type TenantGroupByOutputType = {
   country: string
   createdAt: Date
   updatedAt: Date
+  suspendedAt: Date | null
   _count: TenantCountAggregateOutputType | null
   _min: TenantMinAggregateOutputType | null
   _max: TenantMaxAggregateOutputType | null
@@ -182,6 +189,7 @@ export type TenantWhereInput = {
   country?: Prisma.StringFilter<"Tenant"> | string
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
+  suspendedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   store?: Prisma.XOR<Prisma.StoreNullableScalarRelationFilter, Prisma.StoreWhereInput> | null
   auditEvents?: Prisma.AuditEventListRelationFilter
@@ -198,6 +206,7 @@ export type TenantOrderByWithRelationInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  suspendedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   owner?: Prisma.UserOrderByWithRelationInput
   store?: Prisma.StoreOrderByWithRelationInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
@@ -217,6 +226,7 @@ export type TenantWhereUniqueInput = Prisma.AtLeast<{
   country?: Prisma.StringFilter<"Tenant"> | string
   createdAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Tenant"> | Date | string
+  suspendedAt?: Prisma.DateTimeNullableFilter<"Tenant"> | Date | string | null
   owner?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   store?: Prisma.XOR<Prisma.StoreNullableScalarRelationFilter, Prisma.StoreWhereInput> | null
   auditEvents?: Prisma.AuditEventListRelationFilter
@@ -233,6 +243,7 @@ export type TenantOrderByWithAggregationInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  suspendedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.TenantCountOrderByAggregateInput
   _max?: Prisma.TenantMaxOrderByAggregateInput
   _min?: Prisma.TenantMinOrderByAggregateInput
@@ -247,6 +258,7 @@ export type TenantScalarWhereWithAggregatesInput = {
   country?: Prisma.StringWithAggregatesFilter<"Tenant"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Tenant"> | Date | string
+  suspendedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Tenant"> | Date | string | null
 }
 
 export type TenantCreateInput = {
@@ -255,6 +267,7 @@ export type TenantCreateInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
@@ -271,6 +284,7 @@ export type TenantUncheckedCreateInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
@@ -287,6 +301,7 @@ export type TenantUpdateInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
@@ -303,6 +318,7 @@ export type TenantUncheckedUpdateInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
@@ -319,6 +335,7 @@ export type TenantCreateManyInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
 }
 
 export type TenantUpdateManyMutationInput = {
@@ -327,6 +344,7 @@ export type TenantUpdateManyMutationInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type TenantUncheckedUpdateManyInput = {
@@ -335,6 +353,7 @@ export type TenantUncheckedUpdateManyInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type TenantCountOrderByAggregateInput = {
@@ -343,6 +362,7 @@ export type TenantCountOrderByAggregateInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  suspendedAt?: Prisma.SortOrder
 }
 
 export type TenantMaxOrderByAggregateInput = {
@@ -351,6 +371,7 @@ export type TenantMaxOrderByAggregateInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  suspendedAt?: Prisma.SortOrder
 }
 
 export type TenantMinOrderByAggregateInput = {
@@ -359,6 +380,7 @@ export type TenantMinOrderByAggregateInput = {
   country?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  suspendedAt?: Prisma.SortOrder
 }
 
 export type TenantScalarRelationFilter = {
@@ -372,6 +394,10 @@ export type StringFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type TenantCreateNestedOneWithoutOwnerInput = {
@@ -492,6 +518,7 @@ export type TenantCreateWithoutOwnerInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
@@ -507,6 +534,7 @@ export type TenantUncheckedCreateWithoutOwnerInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
@@ -538,6 +566,7 @@ export type TenantUpdateWithoutOwnerInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
@@ -553,6 +582,7 @@ export type TenantUncheckedUpdateWithoutOwnerInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
@@ -568,6 +598,7 @@ export type TenantCreateWithoutStoreInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
@@ -583,6 +614,7 @@ export type TenantUncheckedCreateWithoutStoreInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
@@ -614,6 +646,7 @@ export type TenantUpdateWithoutStoreInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
@@ -629,6 +662,7 @@ export type TenantUncheckedUpdateWithoutStoreInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
@@ -644,6 +678,7 @@ export type TenantCreateWithoutEmployeesInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
@@ -659,6 +694,7 @@ export type TenantUncheckedCreateWithoutEmployeesInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
@@ -690,6 +726,7 @@ export type TenantUpdateWithoutEmployeesInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
@@ -705,6 +742,7 @@ export type TenantUncheckedUpdateWithoutEmployeesInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
@@ -720,6 +758,7 @@ export type TenantCreateWithoutDevicesInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
@@ -735,6 +774,7 @@ export type TenantUncheckedCreateWithoutDevicesInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
@@ -766,6 +806,7 @@ export type TenantUpdateWithoutDevicesInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
@@ -781,6 +822,7 @@ export type TenantUncheckedUpdateWithoutDevicesInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
@@ -796,6 +838,7 @@ export type TenantCreateWithoutEnrollmentTokensInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
@@ -811,6 +854,7 @@ export type TenantUncheckedCreateWithoutEnrollmentTokensInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
@@ -842,6 +886,7 @@ export type TenantUpdateWithoutEnrollmentTokensInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
@@ -857,6 +902,7 @@ export type TenantUncheckedUpdateWithoutEnrollmentTokensInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
@@ -872,6 +918,7 @@ export type TenantCreateWithoutOrdersInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
@@ -887,6 +934,7 @@ export type TenantUncheckedCreateWithoutOrdersInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
@@ -918,6 +966,7 @@ export type TenantUpdateWithoutOrdersInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
@@ -933,6 +982,7 @@ export type TenantUncheckedUpdateWithoutOrdersInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
@@ -948,6 +998,7 @@ export type TenantCreateWithoutSyncOpsInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutTenantInput
@@ -963,6 +1014,7 @@ export type TenantUncheckedCreateWithoutSyncOpsInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutTenantInput
@@ -994,6 +1046,7 @@ export type TenantUpdateWithoutSyncOpsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutTenantNestedInput
@@ -1009,6 +1062,7 @@ export type TenantUncheckedUpdateWithoutSyncOpsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutTenantNestedInput
@@ -1024,6 +1078,7 @@ export type TenantCreateWithoutAuditEventsInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreCreateNestedOneWithoutTenantInput
   devices?: Prisma.DeviceCreateNestedManyWithoutTenantInput
@@ -1039,6 +1094,7 @@ export type TenantUncheckedCreateWithoutAuditEventsInput = {
   country?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  suspendedAt?: Date | string | null
   owner?: Prisma.UserUncheckedCreateNestedOneWithoutTenantInput
   store?: Prisma.StoreUncheckedCreateNestedOneWithoutTenantInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutTenantInput
@@ -1070,6 +1126,7 @@ export type TenantUpdateWithoutAuditEventsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUpdateOneWithoutTenantNestedInput
   devices?: Prisma.DeviceUpdateManyWithoutTenantNestedInput
@@ -1085,6 +1142,7 @@ export type TenantUncheckedUpdateWithoutAuditEventsInput = {
   country?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  suspendedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   owner?: Prisma.UserUncheckedUpdateOneWithoutTenantNestedInput
   store?: Prisma.StoreUncheckedUpdateOneWithoutTenantNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutTenantNestedInput
@@ -1176,6 +1234,7 @@ export type TenantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  suspendedAt?: boolean
   owner?: boolean | Prisma.Tenant$ownerArgs<ExtArgs>
   store?: boolean | Prisma.Tenant$storeArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Tenant$auditEventsArgs<ExtArgs>
@@ -1193,6 +1252,7 @@ export type TenantSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  suspendedAt?: boolean
 }, ExtArgs["result"]["tenant"]>
 
 export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1201,6 +1261,7 @@ export type TenantSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  suspendedAt?: boolean
 }, ExtArgs["result"]["tenant"]>
 
 export type TenantSelectScalar = {
@@ -1209,9 +1270,10 @@ export type TenantSelectScalar = {
   country?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  suspendedAt?: boolean
 }
 
-export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessName" | "country" | "createdAt" | "updatedAt", ExtArgs["result"]["tenant"]>
+export type TenantOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "businessName" | "country" | "createdAt" | "updatedAt" | "suspendedAt", ExtArgs["result"]["tenant"]>
 export type TenantInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   owner?: boolean | Prisma.Tenant$ownerArgs<ExtArgs>
   store?: boolean | Prisma.Tenant$storeArgs<ExtArgs>
@@ -1244,6 +1306,7 @@ export type $TenantPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     country: string
     createdAt: Date
     updatedAt: Date
+    suspendedAt: Date | null
   }, ExtArgs["result"]["tenant"]>
   composites: {}
 }
@@ -1680,6 +1743,7 @@ export interface TenantFieldRefs {
   readonly country: Prisma.FieldRef<"Tenant", 'String'>
   readonly createdAt: Prisma.FieldRef<"Tenant", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
+  readonly suspendedAt: Prisma.FieldRef<"Tenant", 'DateTime'>
 }
     
 

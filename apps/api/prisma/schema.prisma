@@ -51,6 +51,7 @@ model Tenant {
   country          String                  @default("LA") @db.Char(2)
   createdAt        DateTime                @default(now())
   updatedAt        DateTime                @updatedAt
+  suspendedAt      DateTime?
   owner            User?
   store            Store?
   auditEvents      AuditEvent[]

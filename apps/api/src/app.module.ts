@@ -15,6 +15,7 @@ import { EmployeeModule } from './employees/employee.module.js';
 import { PermissionModule } from './auth/permission.module.js';
 import { ReceiptModule } from './receipts/receipt.module.js';
 import { ObservabilityModule } from './observability/observability.module.js';
+import { AdminModule } from './admin/admin.module.js';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ObservabilityModule } from './observability/observability.module.js';
     PermissionModule,
     ReceiptModule,
     ObservabilityModule,
+    AdminModule,
   ],
   controllers: [HealthController],
 })

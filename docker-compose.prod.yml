@@ -33,6 +33,11 @@ services:
       RESEND_API_KEY: ${RESEND_API_KEY:-}
       EMAIL_FROM: ${EMAIL_FROM:-onboarding@resend.dev}
       APP_BASE_URL: ${APP_BASE_URL:-http://kanghan.site}
+      INTERNAL_ADMIN_TOKEN: ${INTERNAL_ADMIN_TOKEN:-}
+      INTERNAL_ADMIN_MFA_TOKEN: ${INTERNAL_ADMIN_MFA_TOKEN:-}
+      SENTRY_DSN: ${SENTRY_DSN:-}
+      APP_RELEASE: ${APP_RELEASE:-unknown}
+      SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0}
     depends_on:
       postgres:
         condition: service_healthy
