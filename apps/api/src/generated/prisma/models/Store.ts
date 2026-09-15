@@ -20,8 +20,18 @@ export type StoreModel = runtime.Types.Result.DefaultSelection<Prisma.$StorePayl
 
 export type AggregateStore = {
   _count: StoreCountAggregateOutputType | null
+  _avg: StoreAvgAggregateOutputType | null
+  _sum: StoreSumAggregateOutputType | null
   _min: StoreMinAggregateOutputType | null
   _max: StoreMaxAggregateOutputType | null
+}
+
+export type StoreAvgAggregateOutputType = {
+  catalogVersion: number | null
+}
+
+export type StoreSumAggregateOutputType = {
+  catalogVersion: number | null
 }
 
 export type StoreMinAggregateOutputType = {
@@ -36,6 +46,7 @@ export type StoreMinAggregateOutputType = {
   language: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  catalogVersion: number | null
 }
 
 export type StoreMaxAggregateOutputType = {
@@ -50,6 +61,7 @@ export type StoreMaxAggregateOutputType = {
   language: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  catalogVersion: number | null
 }
 
 export type StoreCountAggregateOutputType = {
@@ -64,9 +76,18 @@ export type StoreCountAggregateOutputType = {
   language: number
   createdAt: number
   updatedAt: number
+  catalogVersion: number
   _all: number
 }
 
+
+export type StoreAvgAggregateInputType = {
+  catalogVersion?: true
+}
+
+export type StoreSumAggregateInputType = {
+  catalogVersion?: true
+}
 
 export type StoreMinAggregateInputType = {
   id?: true
@@ -80,6 +101,7 @@ export type StoreMinAggregateInputType = {
   language?: true
   createdAt?: true
   updatedAt?: true
+  catalogVersion?: true
 }
 
 export type StoreMaxAggregateInputType = {
@@ -94,6 +116,7 @@ export type StoreMaxAggregateInputType = {
   language?: true
   createdAt?: true
   updatedAt?: true
+  catalogVersion?: true
 }
 
 export type StoreCountAggregateInputType = {
@@ -108,6 +131,7 @@ export type StoreCountAggregateInputType = {
   language?: true
   createdAt?: true
   updatedAt?: true
+  catalogVersion?: true
   _all?: true
 }
 
@@ -149,6 +173,18 @@ export type StoreAggregateArgs<ExtArgs extends runtime.Types.Extensions.Internal
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: StoreAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: StoreSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: StoreMinAggregateInputType
@@ -179,6 +215,8 @@ export type StoreGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   _count?: StoreCountAggregateInputType | true
+  _avg?: StoreAvgAggregateInputType
+  _sum?: StoreSumAggregateInputType
   _min?: StoreMinAggregateInputType
   _max?: StoreMaxAggregateInputType
 }
@@ -195,7 +233,10 @@ export type StoreGroupByOutputType = {
   language: string
   createdAt: Date
   updatedAt: Date
+  catalogVersion: number
   _count: StoreCountAggregateOutputType | null
+  _avg: StoreAvgAggregateOutputType | null
+  _sum: StoreSumAggregateOutputType | null
   _min: StoreMinAggregateOutputType | null
   _max: StoreMaxAggregateOutputType | null
 }
@@ -230,6 +271,7 @@ export type StoreWhereInput = {
   language?: Prisma.StringFilter<"Store"> | string
   createdAt?: Prisma.DateTimeFilter<"Store"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Store"> | Date | string
+  catalogVersion?: Prisma.IntFilter<"Store"> | number
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   categories?: Prisma.CategoryListRelationFilter
   items?: Prisma.ItemListRelationFilter
@@ -253,6 +295,7 @@ export type StoreOrderByWithRelationInput = {
   language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  catalogVersion?: Prisma.SortOrder
   tenant?: Prisma.TenantOrderByWithRelationInput
   categories?: Prisma.CategoryOrderByRelationAggregateInput
   items?: Prisma.ItemOrderByRelationAggregateInput
@@ -279,6 +322,7 @@ export type StoreWhereUniqueInput = Prisma.AtLeast<{
   language?: Prisma.StringFilter<"Store"> | string
   createdAt?: Prisma.DateTimeFilter<"Store"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Store"> | Date | string
+  catalogVersion?: Prisma.IntFilter<"Store"> | number
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   categories?: Prisma.CategoryListRelationFilter
   items?: Prisma.ItemListRelationFilter
@@ -302,9 +346,12 @@ export type StoreOrderByWithAggregationInput = {
   language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  catalogVersion?: Prisma.SortOrder
   _count?: Prisma.StoreCountOrderByAggregateInput
+  _avg?: Prisma.StoreAvgOrderByAggregateInput
   _max?: Prisma.StoreMaxOrderByAggregateInput
   _min?: Prisma.StoreMinOrderByAggregateInput
+  _sum?: Prisma.StoreSumOrderByAggregateInput
 }
 
 export type StoreScalarWhereWithAggregatesInput = {
@@ -322,6 +369,7 @@ export type StoreScalarWhereWithAggregatesInput = {
   language?: Prisma.StringWithAggregatesFilter<"Store"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Store"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Store"> | Date | string
+  catalogVersion?: Prisma.IntWithAggregatesFilter<"Store"> | number
 }
 
 export type StoreCreateInput = {
@@ -335,6 +383,7 @@ export type StoreCreateInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
@@ -358,6 +407,7 @@ export type StoreUncheckedCreateInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
@@ -379,6 +429,7 @@ export type StoreUpdateInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
@@ -402,6 +453,7 @@ export type StoreUncheckedUpdateInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
@@ -424,6 +476,7 @@ export type StoreCreateManyInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
 }
 
 export type StoreUpdateManyMutationInput = {
@@ -437,6 +490,7 @@ export type StoreUpdateManyMutationInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type StoreUncheckedUpdateManyInput = {
@@ -451,6 +505,7 @@ export type StoreUncheckedUpdateManyInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type StoreNullableScalarRelationFilter = {
@@ -470,6 +525,11 @@ export type StoreCountOrderByAggregateInput = {
   language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  catalogVersion?: Prisma.SortOrder
+}
+
+export type StoreAvgOrderByAggregateInput = {
+  catalogVersion?: Prisma.SortOrder
 }
 
 export type StoreMaxOrderByAggregateInput = {
@@ -484,6 +544,7 @@ export type StoreMaxOrderByAggregateInput = {
   language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  catalogVersion?: Prisma.SortOrder
 }
 
 export type StoreMinOrderByAggregateInput = {
@@ -498,6 +559,11 @@ export type StoreMinOrderByAggregateInput = {
   language?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  catalogVersion?: Prisma.SortOrder
+}
+
+export type StoreSumOrderByAggregateInput = {
+  catalogVersion?: Prisma.SortOrder
 }
 
 export type StoreScalarRelationFilter = {
@@ -535,6 +601,14 @@ export type StoreUncheckedUpdateOneWithoutTenantNestedInput = {
   delete?: Prisma.StoreWhereInput | boolean
   connect?: Prisma.StoreWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.StoreUpdateToOneWithWhereWithoutTenantInput, Prisma.StoreUpdateWithoutTenantInput>, Prisma.StoreUncheckedUpdateWithoutTenantInput>
+}
+
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
 }
 
 export type StoreCreateNestedOneWithoutEmployeesInput = {
@@ -660,6 +734,7 @@ export type StoreCreateWithoutTenantInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
@@ -681,6 +756,7 @@ export type StoreUncheckedCreateWithoutTenantInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
@@ -718,6 +794,7 @@ export type StoreUpdateWithoutTenantInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
@@ -739,6 +816,7 @@ export type StoreUncheckedUpdateWithoutTenantInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
@@ -760,6 +838,7 @@ export type StoreCreateWithoutEmployeesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
@@ -782,6 +861,7 @@ export type StoreUncheckedCreateWithoutEmployeesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
@@ -818,6 +898,7 @@ export type StoreUpdateWithoutEmployeesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
@@ -840,6 +921,7 @@ export type StoreUncheckedUpdateWithoutEmployeesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
@@ -860,6 +942,7 @@ export type StoreCreateWithoutDevicesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
@@ -882,6 +965,7 @@ export type StoreUncheckedCreateWithoutDevicesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
@@ -918,6 +1002,7 @@ export type StoreUpdateWithoutDevicesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
@@ -940,6 +1025,7 @@ export type StoreUncheckedUpdateWithoutDevicesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
@@ -960,6 +1046,7 @@ export type StoreCreateWithoutEnrollmentTokensInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
@@ -982,6 +1069,7 @@ export type StoreUncheckedCreateWithoutEnrollmentTokensInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
@@ -1018,6 +1106,7 @@ export type StoreUpdateWithoutEnrollmentTokensInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
@@ -1040,6 +1129,7 @@ export type StoreUncheckedUpdateWithoutEnrollmentTokensInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
@@ -1060,6 +1150,7 @@ export type StoreCreateWithoutCategoriesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
@@ -1082,6 +1173,7 @@ export type StoreUncheckedCreateWithoutCategoriesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
@@ -1118,6 +1210,7 @@ export type StoreUpdateWithoutCategoriesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
@@ -1140,6 +1233,7 @@ export type StoreUncheckedUpdateWithoutCategoriesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
@@ -1160,6 +1254,7 @@ export type StoreCreateWithoutItemsInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeCreateNestedManyWithoutStoreInput
@@ -1182,6 +1277,7 @@ export type StoreUncheckedCreateWithoutItemsInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
   devices?: Prisma.DeviceUncheckedCreateNestedManyWithoutStoreInput
@@ -1218,6 +1314,7 @@ export type StoreUpdateWithoutItemsInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUpdateManyWithoutStoreNestedInput
@@ -1240,6 +1337,7 @@ export type StoreUncheckedUpdateWithoutItemsInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
   devices?: Prisma.DeviceUncheckedUpdateManyWithoutStoreNestedInput
@@ -1260,6 +1358,7 @@ export type StoreCreateWithoutModifierGroupsInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
@@ -1282,6 +1381,7 @@ export type StoreUncheckedCreateWithoutModifierGroupsInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
@@ -1318,6 +1418,7 @@ export type StoreUpdateWithoutModifierGroupsInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
@@ -1340,6 +1441,7 @@ export type StoreUncheckedUpdateWithoutModifierGroupsInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
@@ -1360,6 +1462,7 @@ export type StoreCreateWithoutTaxesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
@@ -1382,6 +1485,7 @@ export type StoreUncheckedCreateWithoutTaxesInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
@@ -1418,6 +1522,7 @@ export type StoreUpdateWithoutTaxesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
@@ -1440,6 +1545,7 @@ export type StoreUncheckedUpdateWithoutTaxesInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
@@ -1460,6 +1566,7 @@ export type StoreCreateWithoutShiftsInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   tenant: Prisma.TenantCreateNestedOneWithoutStoreInput
   categories?: Prisma.CategoryCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemCreateNestedManyWithoutStoreInput
@@ -1482,6 +1589,7 @@ export type StoreUncheckedCreateWithoutShiftsInput = {
   language?: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  catalogVersion?: number
   categories?: Prisma.CategoryUncheckedCreateNestedManyWithoutStoreInput
   items?: Prisma.ItemUncheckedCreateNestedManyWithoutStoreInput
   employees?: Prisma.EmployeeUncheckedCreateNestedManyWithoutStoreInput
@@ -1518,6 +1626,7 @@ export type StoreUpdateWithoutShiftsInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   tenant?: Prisma.TenantUpdateOneRequiredWithoutStoreNestedInput
   categories?: Prisma.CategoryUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUpdateManyWithoutStoreNestedInput
@@ -1540,6 +1649,7 @@ export type StoreUncheckedUpdateWithoutShiftsInput = {
   language?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  catalogVersion?: Prisma.IntFieldUpdateOperationsInput | number
   categories?: Prisma.CategoryUncheckedUpdateManyWithoutStoreNestedInput
   items?: Prisma.ItemUncheckedUpdateManyWithoutStoreNestedInput
   employees?: Prisma.EmployeeUncheckedUpdateManyWithoutStoreNestedInput
@@ -1655,6 +1765,7 @@ export type StoreSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   language?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  catalogVersion?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   categories?: boolean | Prisma.Store$categoriesArgs<ExtArgs>
   items?: boolean | Prisma.Store$itemsArgs<ExtArgs>
@@ -1679,6 +1790,7 @@ export type StoreSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   language?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  catalogVersion?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["store"]>
 
@@ -1694,6 +1806,7 @@ export type StoreSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   language?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  catalogVersion?: boolean
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["store"]>
 
@@ -1709,9 +1822,10 @@ export type StoreSelectScalar = {
   language?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  catalogVersion?: boolean
 }
 
-export type StoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "name" | "address" | "phone" | "taxNumber" | "currency" | "timezone" | "language" | "createdAt" | "updatedAt", ExtArgs["result"]["store"]>
+export type StoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "tenantId" | "name" | "address" | "phone" | "taxNumber" | "currency" | "timezone" | "language" | "createdAt" | "updatedAt" | "catalogVersion", ExtArgs["result"]["store"]>
 export type StoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   categories?: boolean | Prisma.Store$categoriesArgs<ExtArgs>
@@ -1756,6 +1870,7 @@ export type $StorePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     language: string
     createdAt: Date
     updatedAt: Date
+    catalogVersion: number
   }, ExtArgs["result"]["store"]>
   composites: {}
 }
@@ -2199,6 +2314,7 @@ export interface StoreFieldRefs {
   readonly language: Prisma.FieldRef<"Store", 'String'>
   readonly createdAt: Prisma.FieldRef<"Store", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Store", 'DateTime'>
+  readonly catalogVersion: Prisma.FieldRef<"Store", 'Int'>
 }
     
 

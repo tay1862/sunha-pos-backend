@@ -58,6 +58,7 @@ export const ModelName = {
   Store: 'Store',
   Employee: 'Employee',
   Device: 'Device',
+  EmployeeSession: 'EmployeeSession',
   DeviceEnrollmentToken: 'DeviceEnrollmentToken',
   DeviceEmployee: 'DeviceEmployee',
   Category: 'Category',
@@ -158,7 +159,8 @@ export const StoreScalarFieldEnum = {
   timezone: 'timezone',
   language: 'language',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  catalogVersion: 'catalogVersion'
 } as const
 
 export type StoreScalarFieldEnum = (typeof StoreScalarFieldEnum)[keyof typeof StoreScalarFieldEnum]
@@ -195,6 +197,19 @@ export const DeviceScalarFieldEnum = {
 } as const
 
 export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
+
+
+export const EmployeeSessionScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  deviceId: 'deviceId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type EmployeeSessionScalarFieldEnum = (typeof EmployeeSessionScalarFieldEnum)[keyof typeof EmployeeSessionScalarFieldEnum]
 
 
 export const DeviceEnrollmentTokenScalarFieldEnum = {
@@ -334,10 +349,12 @@ export type InventoryMovementScalarFieldEnum = (typeof InventoryMovementScalarFi
 export const OrderScalarFieldEnum = {
   id: 'id',
   clientOrderId: 'clientOrderId',
+  requestHash: 'requestHash',
   tenantId: 'tenantId',
   storeId: 'storeId',
   employeeId: 'employeeId',
   deviceId: 'deviceId',
+  shiftId: 'shiftId',
   status: 'status',
   subtotalAmount: 'subtotalAmount',
   discountAmount: 'discountAmount',
@@ -383,6 +400,7 @@ export type OrderLineModifierScalarFieldEnum = (typeof OrderLineModifierScalarFi
 export const PaymentScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
+  shiftId: 'shiftId',
   type: 'type',
   amount: 'amount',
   tenderedAmount: 'tenderedAmount',
@@ -408,6 +426,7 @@ export type ReceiptScalarFieldEnum = (typeof ReceiptScalarFieldEnum)[keyof typeo
 export const RefundScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
+  shiftId: 'shiftId',
   managerEmployeeId: 'managerEmployeeId',
   amount: 'amount',
   reason: 'reason',

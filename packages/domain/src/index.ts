@@ -147,3 +147,23 @@ export const calculateOrderTotals = (
     total: total.toString(),
   };
 };
+
+export const goldenOrderFixtures = [
+  {
+    name: 'exclusive tax with fixed discount',
+    input: {
+      lines: [{ unitPrice: '10000', quantity: '1' }],
+      discount: { type: 'FIXED' as const, amount: '1000' },
+      tax: { rateBasisPoints: 1000, mode: 'EXCLUSIVE' as const },
+    },
+    expected: { subtotal: '10000', discount: '1000', tax: '900', total: '9900' },
+  },
+  {
+    name: 'inclusive tax',
+    input: {
+      lines: [{ unitPrice: '11000', quantity: '1' }],
+      tax: { rateBasisPoints: 1000, mode: 'INCLUSIVE' as const },
+    },
+    expected: { subtotal: '11000', discount: '0', tax: '1000', total: '11000' },
+  },
+];

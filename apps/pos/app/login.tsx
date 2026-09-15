@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { FormButton, FormField, FormLink, FormScreen } from '../src/ui/form-screen';
 import { login } from '../src/auth/auth-client';
@@ -41,12 +42,12 @@ export default function LoginScreen() {
         onChangeText={setPassword}
         secureTextEntry
       />
-      {error ? <FormLink onPress={() => undefined}>⚠ {error}</FormLink> : null}
+      {error ? <FormLink onPress={() => setError('')}>⚠ {error}</FormLink> : null}
       <FormButton onPress={submit} disabled={loading} loading={loading}>
         ເຂົ້າສູ່ລະບົບ
       </FormButton>
       <FormLink onPress={() => router.push('/create-account')}>ສ້າງຮ້ານໃໝ່</FormLink>
-      <FormLink onPress={() => undefined}>ລືມລະຫັດຜ່ານ?</FormLink>
+      <FormLink onPress={() => Alert.alert('ລືມລະຫັດຜ່ານ', 'ໃຊ້ໜ້າກູ້ຄືນບັນຊີຈາກ email ຂອງທ່ານ')}>ລືມລະຫັດຜ່ານ?</FormLink>
     </FormScreen>
   );
 }

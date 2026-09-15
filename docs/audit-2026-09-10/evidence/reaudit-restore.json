@@ -1,0 +1,128 @@
+{
+  "status": "PASS",
+  "source": "sunha_full_uat_20260911_01",
+  "restored": "sunha_full_uat_restore_20260912050715",
+  "elapsedSeconds": 28.92,
+  "tables": {
+    "AuditEvent": {
+      "rows": 17,
+      "sha256": "8151462df984a3b321bef695b92bfbad7a4dc70abfc9c14815d9a796f74e9393"
+    },
+    "AuthSession": {
+      "rows": 11,
+      "sha256": "7bd22bbf12f57977ab858ccde3a67c5b2274126b640f91e95f179ab95a9bfe27"
+    },
+    "AuthToken": {
+      "rows": 11,
+      "sha256": "1c361ed33acb0697f66866c28519197f73a0813e2acf112bfca6279297481861"
+    },
+    "CashMovement": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Category": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Device": {
+      "rows": 11,
+      "sha256": "ebe8e751ed728be55d2630fe0120d4bb16b471cb44b2a76481a66231893a5334"
+    },
+    "DeviceEmployee": {
+      "rows": 11,
+      "sha256": "ae8397f3d5888a54c9d59263b474992cf72ac7d64591e3f2c9d4086e1efa2565"
+    },
+    "DeviceEnrollmentToken": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Employee": {
+      "rows": 17,
+      "sha256": "221c376d5cfed061b5b67413fbcff4124323dd13f0aa2a4f0406629b14f6e671"
+    },
+    "EmployeeSession": {
+      "rows": 6,
+      "sha256": "73709b116cb751c89e55b8baa0b6fe563dc1823d5735366e28a2fa3251768997"
+    },
+    "InventoryLevel": {
+      "rows": 5,
+      "sha256": "8fe8b62cbfc083588418a9a54f660e1460d6fde0565b7cc03120dbfa7683d198"
+    },
+    "InventoryMovement": {
+      "rows": 14,
+      "sha256": "a177f060ec93bfd2ad59c6f7c085b2e22a9b454ce6bc0ade6234ac1d9f7750c8"
+    },
+    "Item": {
+      "rows": 5,
+      "sha256": "7aeb86f84a8a42767f8fa2afa6dd46e9f8cd568809170fb5730efd7dc9b124b1"
+    },
+    "ItemModifierGroup": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ItemUnit": {
+      "rows": 5,
+      "sha256": "e6906129ffc8b56475384ae12d1ce545d12ec7abbb3717e445fd8ee1bcd0ec4e"
+    },
+    "ModifierGroup": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ModifierOption": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Order": {
+      "rows": 5,
+      "sha256": "62495216c137118bf939e7d763371d84a358e1e8a31af8532a109d686aaa885e"
+    },
+    "OrderLine": {
+      "rows": 5,
+      "sha256": "8e927901c673f9dc2827e6441db4f2c12d4dff66a73ea08a7e0827b9470a8abc"
+    },
+    "OrderLineModifier": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Payment": {
+      "rows": 9,
+      "sha256": "1cc66795b6608bddae109af3408b82be42aa09d32507f0b05877d764f98f7f9d"
+    },
+    "Receipt": {
+      "rows": 5,
+      "sha256": "6673c0337b4c470f7d2225821fa48f23c29fda023aa820064612325de2ff10d5"
+    },
+    "Refund": {
+      "rows": 4,
+      "sha256": "3d927f68738ee172adf362ab3134f3be21e1efb9222051a239a6d49d4578bdad"
+    },
+    "Shift": {
+      "rows": 5,
+      "sha256": "7bfb00077a7a44e2765028be10209b49c915d7605b839127fa849e4281e28aaf"
+    },
+    "Store": {
+      "rows": 11,
+      "sha256": "b02e7fea6b2d73a4184a07ff5e1b07bfc01a54f5aee920fc52e54428edabc27f"
+    },
+    "SyncOperation": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Tax": {
+      "rows": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "Tenant": {
+      "rows": 11,
+      "sha256": "d4633fcbf8c640b1ff45c8a8974600f7f3ab3e8538a7bd029aa959b82ff147be"
+    },
+    "User": {
+      "rows": 11,
+      "sha256": "c803a2493a7e9bc6a980bacc1f9bfc09a6df036df3468ff1fc1a52c58bf0933a"
+    },
+    "_prisma_migrations": {
+      "rows": 10,
+      "sha256": "15090d83bcb4e8aeec3514ff9ed3151e837196a120d843fe348df248001f3fd9"
+    }
+  }
+}

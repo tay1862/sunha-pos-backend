@@ -27,6 +27,18 @@ type AuthRequest = FastifyRequest & { user: AuthClaims };
 export class EmployeeController {
   constructor(private readonly employees: EmployeeService) {}
 
+  @Get('selectable')
+  @RequirePermission('SELL')
+  selectable(@Req() request: AuthRequest) {
+    return this.employees
+      .list(request.user.tenantId)
+      .then((employees) =>
+        employees
+          .filter((employee) => employee.active)
+          .map(({ id, name, role }) => ({ id, name, role })),
+      );
+  }
+
   @Get()
   @RequirePermission('MANAGE_EMPLOYEES')
   list(@Req() request: AuthRequest) {
@@ -53,7 +65,9 @@ export class EmployeeController {
   verifyPin(@Req() request: AuthRequest, @Body() body: unknown) {
     const parsed = verifyEmployeePinSchema.safeParse(body);
     if (!parsed.success) throw new BadRequestException('INVALID_EMPLOYEE_PIN');
-    return this.employees.verifyPin(request.user.tenantId, parsed.data);
+    const deviceId = request.headers['x-device-id'];
+    if (typeof deviceId !== 'string') throw new BadRequestException('DEVICE_REQUIRED');
+    return this.employees.verifyPin(request.user.tenantId, parsed.data, deviceId);
   }
 
   private actor(request: AuthRequest): string {

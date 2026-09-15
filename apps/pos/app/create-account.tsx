@@ -48,7 +48,7 @@ export default function CreateAccountScreen() {
         onChangeText={setPassword}
         secureTextEntry
       />
-      {error ? <FormLink onPress={() => undefined}>⚠ {error}</FormLink> : null}
+      {error ? <FormLink onPress={() => setError('')}>⚠ {error}</FormLink> : null}
       <FormButton onPress={submit} disabled={loading} loading={loading}>
         ສ້າງບັນຊີ
       </FormButton>

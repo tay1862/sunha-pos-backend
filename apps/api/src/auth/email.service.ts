@@ -13,17 +13,28 @@ export class ResendEmailDelivery implements EmailDelivery {
   private readonly appUrl = process.env.APP_BASE_URL ?? 'http://localhost:8081';
 
   async sendVerification(to: string, token: string) {
-    await this.send(to, 'ยืนยันอีเมล Sunha POS', `ยืนยันอีเมลของคุณ: ${this.appUrl}/verify-email?token=${encodeURIComponent(token)}`);
+    await this.send(
+      to,
+      'ยืนยันอีเมล Sunha POS',
+      `ยืนยันอีเมลของคุณ: ${this.appUrl}/verify-email?token=${encodeURIComponent(token)}`,
+    );
   }
 
   async sendPasswordReset(to: string, token: string) {
-    await this.send(to, 'รีเซ็ตรหัสผ่าน Sunha POS', `รีเซ็ตรหัสผ่านของคุณ: ${this.appUrl}/reset-password?token=${encodeURIComponent(token)}`);
+    await this.send(
+      to,
+      'รีเซ็ตรหัสผ่าน Sunha POS',
+      `รีเซ็ตรหัสผ่านของคุณ: ${this.appUrl}/reset-password?token=${encodeURIComponent(token)}`,
+    );
   }
 
   private async send(to: string, subject: string, text: string) {
     if (!this.apiKey || !this.from) {
-      if (process.env.NODE_ENV === 'production') throw new ServiceUnavailableException('EMAIL_PROVIDER_NOT_CONFIGURED');
-      this.logger.warn('Email provider is not configured; email delivery skipped in non-production');
+      if (process.env.NODE_ENV === 'production')
+        throw new ServiceUnavailableException('EMAIL_PROVIDER_NOT_CONFIGURED');
+      this.logger.warn(
+        'Email provider is not configured; email delivery skipped in non-production',
+      );
       return;
     }
     const response = await fetch('https://api.resend.com/emails', {

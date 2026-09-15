@@ -6,6 +6,7 @@ coverage
 .expo
 .env
 *.log
+*.tsbuildinfo
+.DS_Store
 apps/pos/android
 apps/pos/ios
-

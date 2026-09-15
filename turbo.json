@@ -4,7 +4,7 @@
     "dev": { "cache": false, "persistent": true },
     "lint": { "dependsOn": ["^build", "^lint"] },
     "typecheck": { "dependsOn": ["^build", "^typecheck"] },
-    "test": { "dependsOn": ["^build"] },
+    "test": { "dependsOn": ["^build"], "cache": false, "env": ["DATABASE_URL", "RUN_INTEGRATION"] },
     "build": { "dependsOn": ["^build"], "outputs": ["dist/**", ".next/**", "!.next/cache/**"] }
   }
 }

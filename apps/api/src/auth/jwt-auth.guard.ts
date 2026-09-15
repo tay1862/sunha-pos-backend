@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+  ForbiddenException,
+} from '@nestjs/common';
 import type { FastifyRequest } from 'fastify';
 import { verifyAccessToken, type AuthClaims } from './auth.service.js';
 import { PrismaService } from '../database/prisma.service.js';
@@ -14,11 +20,14 @@ export class JwtAuthGuard implements CanActivate {
     if (!header?.startsWith('Bearer ')) throw new UnauthorizedException('MISSING_ACCESS_TOKEN');
     try {
       request.user = await verifyAccessToken(header.slice(7));
-      const tenant = await this.prisma.tenant.findUnique({ where: { id: request.user.tenantId }, select: { suspendedAt: true } });
-      if (!tenant || tenant.suspendedAt) throw new ForbiddenException('STORE_SUSPENDED');
-      return true;
     } catch {
       throw new UnauthorizedException('INVALID_ACCESS_TOKEN');
     }
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: request.user.tenantId },
+      select: { suspendedAt: true },
+    });
+    if (!tenant || tenant.suspendedAt) throw new ForbiddenException('STORE_SUSPENDED');
+    return true;
   }
 }

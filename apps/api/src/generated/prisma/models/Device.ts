@@ -225,6 +225,7 @@ export type DeviceWhereInput = {
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   store?: Prisma.XOR<Prisma.StoreScalarRelationFilter, Prisma.StoreWhereInput>
   employees?: Prisma.DeviceEmployeeListRelationFilter
+  employeeSessions?: Prisma.EmployeeSessionListRelationFilter
   syncOps?: Prisma.SyncOperationListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
 }
@@ -243,6 +244,7 @@ export type DeviceOrderByWithRelationInput = {
   tenant?: Prisma.TenantOrderByWithRelationInput
   store?: Prisma.StoreOrderByWithRelationInput
   employees?: Prisma.DeviceEmployeeOrderByRelationAggregateInput
+  employeeSessions?: Prisma.EmployeeSessionOrderByRelationAggregateInput
   syncOps?: Prisma.SyncOperationOrderByRelationAggregateInput
   auditEvents?: Prisma.AuditEventOrderByRelationAggregateInput
 }
@@ -264,6 +266,7 @@ export type DeviceWhereUniqueInput = Prisma.AtLeast<{
   tenant?: Prisma.XOR<Prisma.TenantScalarRelationFilter, Prisma.TenantWhereInput>
   store?: Prisma.XOR<Prisma.StoreScalarRelationFilter, Prisma.StoreWhereInput>
   employees?: Prisma.DeviceEmployeeListRelationFilter
+  employeeSessions?: Prisma.EmployeeSessionListRelationFilter
   syncOps?: Prisma.SyncOperationListRelationFilter
   auditEvents?: Prisma.AuditEventListRelationFilter
 }, "id">
@@ -312,6 +315,7 @@ export type DeviceCreateInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutDevicesInput
   store: Prisma.StoreCreateNestedOneWithoutDevicesInput
   employees?: Prisma.DeviceEmployeeCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutDeviceInput
 }
@@ -328,6 +332,7 @@ export type DeviceUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   employees?: Prisma.DeviceEmployeeUncheckedCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutDeviceInput
 }
@@ -344,6 +349,7 @@ export type DeviceUpdateInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDevicesNestedInput
   store?: Prisma.StoreUpdateOneRequiredWithoutDevicesNestedInput
   employees?: Prisma.DeviceEmployeeUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutDeviceNestedInput
 }
@@ -360,6 +366,7 @@ export type DeviceUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.DeviceEmployeeUncheckedUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutDeviceNestedInput
 }
@@ -552,6 +559,20 @@ export type EnumDeviceStatusFieldUpdateOperationsInput = {
   set?: $Enums.DeviceStatus
 }
 
+export type DeviceCreateNestedOneWithoutEmployeeSessionsInput = {
+  create?: Prisma.XOR<Prisma.DeviceCreateWithoutEmployeeSessionsInput, Prisma.DeviceUncheckedCreateWithoutEmployeeSessionsInput>
+  connectOrCreate?: Prisma.DeviceCreateOrConnectWithoutEmployeeSessionsInput
+  connect?: Prisma.DeviceWhereUniqueInput
+}
+
+export type DeviceUpdateOneRequiredWithoutEmployeeSessionsNestedInput = {
+  create?: Prisma.XOR<Prisma.DeviceCreateWithoutEmployeeSessionsInput, Prisma.DeviceUncheckedCreateWithoutEmployeeSessionsInput>
+  connectOrCreate?: Prisma.DeviceCreateOrConnectWithoutEmployeeSessionsInput
+  upsert?: Prisma.DeviceUpsertWithoutEmployeeSessionsInput
+  connect?: Prisma.DeviceWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.DeviceUpdateToOneWithWhereWithoutEmployeeSessionsInput, Prisma.DeviceUpdateWithoutEmployeeSessionsInput>, Prisma.DeviceUncheckedUpdateWithoutEmployeeSessionsInput>
+}
+
 export type DeviceCreateNestedOneWithoutEmployeesInput = {
   create?: Prisma.XOR<Prisma.DeviceCreateWithoutEmployeesInput, Prisma.DeviceUncheckedCreateWithoutEmployeesInput>
   connectOrCreate?: Prisma.DeviceCreateOrConnectWithoutEmployeesInput
@@ -607,6 +628,7 @@ export type DeviceCreateWithoutTenantInput = {
   updatedAt?: Date | string
   store: Prisma.StoreCreateNestedOneWithoutDevicesInput
   employees?: Prisma.DeviceEmployeeCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutDeviceInput
 }
@@ -622,6 +644,7 @@ export type DeviceUncheckedCreateWithoutTenantInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   employees?: Prisma.DeviceEmployeeUncheckedCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutDeviceInput
 }
@@ -679,6 +702,7 @@ export type DeviceCreateWithoutStoreInput = {
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutDevicesInput
   employees?: Prisma.DeviceEmployeeCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutDeviceInput
 }
@@ -694,6 +718,7 @@ export type DeviceUncheckedCreateWithoutStoreInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   employees?: Prisma.DeviceEmployeeUncheckedCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutDeviceInput
 }
@@ -724,6 +749,86 @@ export type DeviceUpdateManyWithWhereWithoutStoreInput = {
   data: Prisma.XOR<Prisma.DeviceUpdateManyMutationInput, Prisma.DeviceUncheckedUpdateManyWithoutStoreInput>
 }
 
+export type DeviceCreateWithoutEmployeeSessionsInput = {
+  id?: string
+  name: string
+  publicKey?: string | null
+  status?: $Enums.DeviceStatus
+  offlineLeaseExpiresAt?: Date | string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  tenant: Prisma.TenantCreateNestedOneWithoutDevicesInput
+  store: Prisma.StoreCreateNestedOneWithoutDevicesInput
+  employees?: Prisma.DeviceEmployeeCreateNestedManyWithoutDeviceInput
+  syncOps?: Prisma.SyncOperationCreateNestedManyWithoutDeviceInput
+  auditEvents?: Prisma.AuditEventCreateNestedManyWithoutDeviceInput
+}
+
+export type DeviceUncheckedCreateWithoutEmployeeSessionsInput = {
+  id?: string
+  tenantId: string
+  storeId: string
+  name: string
+  publicKey?: string | null
+  status?: $Enums.DeviceStatus
+  offlineLeaseExpiresAt?: Date | string | null
+  lastSeenAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  employees?: Prisma.DeviceEmployeeUncheckedCreateNestedManyWithoutDeviceInput
+  syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutDeviceInput
+  auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutDeviceInput
+}
+
+export type DeviceCreateOrConnectWithoutEmployeeSessionsInput = {
+  where: Prisma.DeviceWhereUniqueInput
+  create: Prisma.XOR<Prisma.DeviceCreateWithoutEmployeeSessionsInput, Prisma.DeviceUncheckedCreateWithoutEmployeeSessionsInput>
+}
+
+export type DeviceUpsertWithoutEmployeeSessionsInput = {
+  update: Prisma.XOR<Prisma.DeviceUpdateWithoutEmployeeSessionsInput, Prisma.DeviceUncheckedUpdateWithoutEmployeeSessionsInput>
+  create: Prisma.XOR<Prisma.DeviceCreateWithoutEmployeeSessionsInput, Prisma.DeviceUncheckedCreateWithoutEmployeeSessionsInput>
+  where?: Prisma.DeviceWhereInput
+}
+
+export type DeviceUpdateToOneWithWhereWithoutEmployeeSessionsInput = {
+  where?: Prisma.DeviceWhereInput
+  data: Prisma.XOR<Prisma.DeviceUpdateWithoutEmployeeSessionsInput, Prisma.DeviceUncheckedUpdateWithoutEmployeeSessionsInput>
+}
+
+export type DeviceUpdateWithoutEmployeeSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  publicKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeviceStatusFieldUpdateOperationsInput | $Enums.DeviceStatus
+  offlineLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  tenant?: Prisma.TenantUpdateOneRequiredWithoutDevicesNestedInput
+  store?: Prisma.StoreUpdateOneRequiredWithoutDevicesNestedInput
+  employees?: Prisma.DeviceEmployeeUpdateManyWithoutDeviceNestedInput
+  syncOps?: Prisma.SyncOperationUpdateManyWithoutDeviceNestedInput
+  auditEvents?: Prisma.AuditEventUpdateManyWithoutDeviceNestedInput
+}
+
+export type DeviceUncheckedUpdateWithoutEmployeeSessionsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  tenantId?: Prisma.StringFieldUpdateOperationsInput | string
+  storeId?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  publicKey?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumDeviceStatusFieldUpdateOperationsInput | $Enums.DeviceStatus
+  offlineLeaseExpiresAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employees?: Prisma.DeviceEmployeeUncheckedUpdateManyWithoutDeviceNestedInput
+  syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutDeviceNestedInput
+  auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutDeviceNestedInput
+}
+
 export type DeviceCreateWithoutEmployeesInput = {
   id?: string
   name: string
@@ -735,6 +840,7 @@ export type DeviceCreateWithoutEmployeesInput = {
   updatedAt?: Date | string
   tenant: Prisma.TenantCreateNestedOneWithoutDevicesInput
   store: Prisma.StoreCreateNestedOneWithoutDevicesInput
+  employeeSessions?: Prisma.EmployeeSessionCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutDeviceInput
 }
@@ -750,6 +856,7 @@ export type DeviceUncheckedCreateWithoutEmployeesInput = {
   lastSeenAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  employeeSessions?: Prisma.EmployeeSessionUncheckedCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutDeviceInput
 }
@@ -781,6 +888,7 @@ export type DeviceUpdateWithoutEmployeesInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDevicesNestedInput
   store?: Prisma.StoreUpdateOneRequiredWithoutDevicesNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutDeviceNestedInput
 }
@@ -796,6 +904,7 @@ export type DeviceUncheckedUpdateWithoutEmployeesInput = {
   lastSeenAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  employeeSessions?: Prisma.EmployeeSessionUncheckedUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutDeviceNestedInput
 }
@@ -812,6 +921,7 @@ export type DeviceCreateWithoutSyncOpsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutDevicesInput
   store: Prisma.StoreCreateNestedOneWithoutDevicesInput
   employees?: Prisma.DeviceEmployeeCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventCreateNestedManyWithoutDeviceInput
 }
 
@@ -827,6 +937,7 @@ export type DeviceUncheckedCreateWithoutSyncOpsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   employees?: Prisma.DeviceEmployeeUncheckedCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedCreateNestedManyWithoutDeviceInput
   auditEvents?: Prisma.AuditEventUncheckedCreateNestedManyWithoutDeviceInput
 }
 
@@ -858,6 +969,7 @@ export type DeviceUpdateWithoutSyncOpsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDevicesNestedInput
   store?: Prisma.StoreUpdateOneRequiredWithoutDevicesNestedInput
   employees?: Prisma.DeviceEmployeeUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutDeviceNestedInput
 }
 
@@ -873,6 +985,7 @@ export type DeviceUncheckedUpdateWithoutSyncOpsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.DeviceEmployeeUncheckedUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutDeviceNestedInput
 }
 
@@ -888,6 +1001,7 @@ export type DeviceCreateWithoutAuditEventsInput = {
   tenant: Prisma.TenantCreateNestedOneWithoutDevicesInput
   store: Prisma.StoreCreateNestedOneWithoutDevicesInput
   employees?: Prisma.DeviceEmployeeCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationCreateNestedManyWithoutDeviceInput
 }
 
@@ -903,6 +1017,7 @@ export type DeviceUncheckedCreateWithoutAuditEventsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   employees?: Prisma.DeviceEmployeeUncheckedCreateNestedManyWithoutDeviceInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedCreateNestedManyWithoutDeviceInput
   syncOps?: Prisma.SyncOperationUncheckedCreateNestedManyWithoutDeviceInput
 }
 
@@ -934,6 +1049,7 @@ export type DeviceUpdateWithoutAuditEventsInput = {
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDevicesNestedInput
   store?: Prisma.StoreUpdateOneRequiredWithoutDevicesNestedInput
   employees?: Prisma.DeviceEmployeeUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutDeviceNestedInput
 }
 
@@ -949,6 +1065,7 @@ export type DeviceUncheckedUpdateWithoutAuditEventsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.DeviceEmployeeUncheckedUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutDeviceNestedInput
 }
 
@@ -975,6 +1092,7 @@ export type DeviceUpdateWithoutTenantInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   store?: Prisma.StoreUpdateOneRequiredWithoutDevicesNestedInput
   employees?: Prisma.DeviceEmployeeUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutDeviceNestedInput
 }
@@ -990,6 +1108,7 @@ export type DeviceUncheckedUpdateWithoutTenantInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.DeviceEmployeeUncheckedUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutDeviceNestedInput
 }
@@ -1029,6 +1148,7 @@ export type DeviceUpdateWithoutStoreInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   tenant?: Prisma.TenantUpdateOneRequiredWithoutDevicesNestedInput
   employees?: Prisma.DeviceEmployeeUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUpdateManyWithoutDeviceNestedInput
 }
@@ -1044,6 +1164,7 @@ export type DeviceUncheckedUpdateWithoutStoreInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   employees?: Prisma.DeviceEmployeeUncheckedUpdateManyWithoutDeviceNestedInput
+  employeeSessions?: Prisma.EmployeeSessionUncheckedUpdateManyWithoutDeviceNestedInput
   syncOps?: Prisma.SyncOperationUncheckedUpdateManyWithoutDeviceNestedInput
   auditEvents?: Prisma.AuditEventUncheckedUpdateManyWithoutDeviceNestedInput
 }
@@ -1067,12 +1188,14 @@ export type DeviceUncheckedUpdateManyWithoutStoreInput = {
 
 export type DeviceCountOutputType = {
   employees: number
+  employeeSessions: number
   syncOps: number
   auditEvents: number
 }
 
 export type DeviceCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   employees?: boolean | DeviceCountOutputTypeCountEmployeesArgs
+  employeeSessions?: boolean | DeviceCountOutputTypeCountEmployeeSessionsArgs
   syncOps?: boolean | DeviceCountOutputTypeCountSyncOpsArgs
   auditEvents?: boolean | DeviceCountOutputTypeCountAuditEventsArgs
 }
@@ -1092,6 +1215,13 @@ export type DeviceCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Exten
  */
 export type DeviceCountOutputTypeCountEmployeesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.DeviceEmployeeWhereInput
+}
+
+/**
+ * DeviceCountOutputType without action
+ */
+export type DeviceCountOutputTypeCountEmployeeSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EmployeeSessionWhereInput
 }
 
 /**
@@ -1123,6 +1253,7 @@ export type DeviceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   store?: boolean | Prisma.StoreDefaultArgs<ExtArgs>
   employees?: boolean | Prisma.Device$employeesArgs<ExtArgs>
+  employeeSessions?: boolean | Prisma.Device$employeeSessionsArgs<ExtArgs>
   syncOps?: boolean | Prisma.Device$syncOpsArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Device$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.DeviceCountOutputTypeDefaultArgs<ExtArgs>
@@ -1176,6 +1307,7 @@ export type DeviceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   tenant?: boolean | Prisma.TenantDefaultArgs<ExtArgs>
   store?: boolean | Prisma.StoreDefaultArgs<ExtArgs>
   employees?: boolean | Prisma.Device$employeesArgs<ExtArgs>
+  employeeSessions?: boolean | Prisma.Device$employeeSessionsArgs<ExtArgs>
   syncOps?: boolean | Prisma.Device$syncOpsArgs<ExtArgs>
   auditEvents?: boolean | Prisma.Device$auditEventsArgs<ExtArgs>
   _count?: boolean | Prisma.DeviceCountOutputTypeDefaultArgs<ExtArgs>
@@ -1195,6 +1327,7 @@ export type $DevicePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
     tenant: Prisma.$TenantPayload<ExtArgs>
     store: Prisma.$StorePayload<ExtArgs>
     employees: Prisma.$DeviceEmployeePayload<ExtArgs>[]
+    employeeSessions: Prisma.$EmployeeSessionPayload<ExtArgs>[]
     syncOps: Prisma.$SyncOperationPayload<ExtArgs>[]
     auditEvents: Prisma.$AuditEventPayload<ExtArgs>[]
   }
@@ -1606,6 +1739,7 @@ export interface Prisma__DeviceClient<T, Null = never, ExtArgs extends runtime.T
   tenant<T extends Prisma.TenantDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.TenantDefaultArgs<ExtArgs>>): Prisma.Prisma__TenantClient<runtime.Types.Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   store<T extends Prisma.StoreDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoreDefaultArgs<ExtArgs>>): Prisma.Prisma__StoreClient<runtime.Types.Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   employees<T extends Prisma.Device$employeesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Device$employeesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$DeviceEmployeePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  employeeSessions<T extends Prisma.Device$employeeSessionsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Device$employeeSessionsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EmployeeSessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   syncOps<T extends Prisma.Device$syncOpsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Device$syncOpsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SyncOperationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   auditEvents<T extends Prisma.Device$auditEventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Device$auditEventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AuditEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -2069,6 +2203,30 @@ export type Device$employeesArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.DeviceEmployeeScalarFieldEnum | Prisma.DeviceEmployeeScalarFieldEnum[]
+}
+
+/**
+ * Device.employeeSessions
+ */
+export type Device$employeeSessionsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EmployeeSession
+   */
+  select?: Prisma.EmployeeSessionSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EmployeeSession
+   */
+  omit?: Prisma.EmployeeSessionOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EmployeeSessionInclude<ExtArgs> | null
+  where?: Prisma.EmployeeSessionWhereInput
+  orderBy?: Prisma.EmployeeSessionOrderByWithRelationInput | Prisma.EmployeeSessionOrderByWithRelationInput[]
+  cursor?: Prisma.EmployeeSessionWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EmployeeSessionScalarFieldEnum | Prisma.EmployeeSessionScalarFieldEnum[]
 }
 
 /**

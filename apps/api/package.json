@@ -8,7 +8,8 @@
     "start": "node dist/main.js",
     "lint": "eslint src",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run",
+    "test:integration": "RUN_INTEGRATION=true vitest run src/orders/checkout.concurrent.int.spec.ts"
   },
   "dependencies": {
     "@fastify/helmet": "^13.1.1",

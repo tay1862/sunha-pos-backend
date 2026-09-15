@@ -1,3 +1,4 @@
+import { saleTotals, cashChange, formatLak, type CatalogTax } from '../src/sale/pricing';
 import { FlashList, type ListRenderItem } from '@shopify/flash-list';
 import { StatusBar } from 'expo-status-bar';
 import {
@@ -43,7 +44,7 @@ import type { CheckoutOrderInput } from '@sunha/contracts';
 import { checkoutOrder, getCatalogSnapshot, getSellingPolicy } from '../src/auth/auth-client';
 import { ApiError } from '../src/api/client';
 import { getSessionContext } from '../src/auth/token-storage';
-import { enqueueOperation, canChargeOffline } from '../src/offline/outbox';
+import { enqueueOperation, canChargeOffline, markOperation } from '../src/offline/outbox';
 import { syncPending } from '../src/offline/sync-client';
 import { readLocalCart, saveLocalCart } from '../src/offline/local-db';
 import { listPrinterProfiles, printReceipt } from '../src/hardware/printer';
@@ -53,7 +54,7 @@ type Product = {
   itemId: string;
   unitId: string;
   name: string;
-  price: number;
+  price: string;
   category: string;
   color: string;
   abbreviation: string;
@@ -71,7 +72,7 @@ const demoProducts: Product[] = [
     itemId: '1',
     unitId: '1',
     name: 'ກາເຟດຳ',
-    price: 18000,
+    price: '18000',
     category: 'ກາເຟ',
     color: '#D8B58C',
     abbreviation: 'ດຳ',
@@ -83,7 +84,7 @@ const demoProducts: Product[] = [
     itemId: '2',
     unitId: '2',
     name: 'ກາເຟນົມ',
-    price: 22000,
+    price: '22000',
     category: 'ກາເຟ',
     color: '#D7C39E',
     abbreviation: 'ນົມ',
@@ -95,7 +96,7 @@ const demoProducts: Product[] = [
     itemId: '3',
     unitId: '3',
     name: 'ລາເຕ້ເຢັນ',
-    price: 25000,
+    price: '25000',
     category: 'ກາເຟ',
     color: '#C9A36F',
     abbreviation: 'LT',
@@ -107,7 +108,7 @@ const demoProducts: Product[] = [
     itemId: '4',
     unitId: '4',
     name: 'ຊາຂຽວນົມ',
-    price: 24000,
+    price: '24000',
     category: 'ຊາ',
     color: '#AFC8A2',
     abbreviation: 'ຊາ',
@@ -119,7 +120,7 @@ const demoProducts: Product[] = [
     itemId: '5',
     unitId: '5',
     name: 'ຊາໝາກນາວ',
-    price: 20000,
+    price: '20000',
     category: 'ຊາ',
     color: '#D8D997',
     abbreviation: 'ຊນ',
@@ -131,7 +132,7 @@ const demoProducts: Product[] = [
     itemId: '6',
     unitId: '6',
     name: 'ນ້ຳສົ້ມ',
-    price: 18000,
+    price: '18000',
     category: 'ນ້ຳດື່ມ',
     color: '#F0B477',
     abbreviation: 'ສົ້ມ',
@@ -143,7 +144,7 @@ const demoProducts: Product[] = [
     itemId: '7',
     unitId: '7',
     name: 'ຄຣົວຊອງ',
-    price: 19000,
+    price: '19000',
     category: 'ເຂົ້າໜົມ',
     color: '#D8A46F',
     abbreviation: 'CR',
@@ -155,7 +156,7 @@ const demoProducts: Product[] = [
     itemId: '8',
     unitId: '8',
     name: 'ເຄັກຊັອກໂກແລັດ',
-    price: 28000,
+    price: '28000',
     category: 'ເຂົ້າໜົມ',
     color: '#A98273',
     abbreviation: 'CK',
@@ -167,7 +168,7 @@ const demoProducts: Product[] = [
     itemId: '9',
     unitId: '9',
     name: 'ນ້ຳດື່ມ',
-    price: 7000,
+    price: '7000',
     category: 'ນ້ຳດື່ມ',
     color: '#A7C9D9',
     abbreviation: 'H₂O',
@@ -178,7 +179,7 @@ const demoProducts: Product[] = [
 void demoProducts;
 
 const categories = ['ທັງໝົດ'];
-const navigationItems = [
+const navigationItems: Array<{ label: string; icon: typeof ShoppingBag; route: Href }> = [
   { label: 'ຂາຍ', icon: ShoppingBag, route: '/' },
   { label: 'ໃບເສັດ', icon: ReceiptText, route: '/receipts' },
   { label: 'ສິນຄ້າ', icon: Package, route: '/items' },
@@ -193,8 +194,6 @@ const navigationItems = [
   { label: 'Barcode', icon: Search, route: '/barcode' },
   { label: 'Printer', icon: ReceiptText, route: '/printers' },
 ];
-
-const formatLak = (amount: number) => `${amount.toLocaleString('en-US')} ₭`;
 
 type ProductTileProps = Product & {
   colors: SunhaColors;
@@ -307,7 +306,7 @@ const CartRow = memo(function CartRow({
         </Pressable>
       </View>
       <Text style={[styles.cartLineTotal, { color: colors.text }]}>
-        {formatLak(price * quantity)}
+        {formatLak(BigInt(price) * BigInt(quantity))}
       </Text>
     </View>
   );
@@ -352,7 +351,7 @@ function Sidebar({
             key={label}
             accessibilityRole="button"
             accessibilityLabel={label}
-            onPress={() => onNavigate(route as Href)}
+            onPress={() => onNavigate(route)}
             style={[
               styles.sidebarItem,
               index === 0 && { backgroundColor: colors.soft },
@@ -420,6 +419,8 @@ export default function SaleScreen() {
   const [tendered, setTendered] = useState('');
   const [paymentReference, setPaymentReference] = useState('');
   const [discountAmount, setDiscountAmount] = useState('');
+  const [taxes, setTaxes] = useState<CatalogTax[]>([]);
+  const [catalogVersion, setCatalogVersion] = useState<string | undefined>();
   const [checkingOut, setCheckingOut] = useState(false);
   const [cartHydrated, setCartHydrated] = useState(false);
   const [offlinePolicy, setOfflinePolicy] = useState<{
@@ -445,12 +446,12 @@ export default function SaleScreen() {
     getCatalogSnapshot()
       .then((snapshot) => {
         const mapped = snapshot.items.flatMap((item) =>
-          item.units.slice(0, 1).map((unit) => ({
+          item.units.map((unit) => ({
             id: unit.id,
             itemId: item.id,
             unitId: unit.id,
-            name: item.name,
-            price: Number(unit.priceAmount),
+            name: item.units.length > 1 ? `${item.name} · ${unit.name}` : item.name,
+            price: String(unit.priceAmount),
             category: item.category?.name ?? 'ອື່ນໆ',
             color: item.category?.color ?? '#0F8B99',
             abbreviation: item.name.slice(0, 2),
@@ -461,6 +462,8 @@ export default function SaleScreen() {
           })),
         );
         setProducts(mapped);
+        setTaxes(snapshot.taxes);
+        setCatalogVersion(snapshot.catalogVersion ?? snapshot.version);
         setCategoryNames([
           categories[0] ?? 'ທັງໝົດ',
           ...[...new Set(mapped.map((item) => item.category))],
@@ -511,7 +514,16 @@ export default function SaleScreen() {
     [cart, products],
   );
   const itemCount = cartLines.reduce((sum, line) => sum + line.quantity, 0);
-  const subtotal = cartLines.reduce((sum, line) => sum + line.price * line.quantity, 0);
+  const pricing = useMemo(() => {
+    try {
+      return { totals: saleTotals(cartLines, taxes, discountAmount), error: null };
+    } catch {
+      return { totals: saleTotals([], [], ''), error: 'ກວດສອບສ່ວນຫຼຸດ ແລະ ການຕັ້ງຄ່າພາສີ' };
+    }
+  }, [cartLines, taxes, discountAmount]);
+  const total = pricing.totals.total;
+  const change = cashChange(total, tendered);
+  const paymentValid = !pricing.error && (paymentType !== 'CASH' || change !== null);
 
   const addItem = useCallback((id: string) => {
     setCart((current) => ({ ...current, [id]: (current[id] ?? 0) + 1 }));
@@ -527,7 +539,7 @@ export default function SaleScreen() {
   }, []);
 
   const checkout = useCallback(async () => {
-    if (!cartLines.length || checkingOut) return;
+    if (!cartLines.length || checkingOut || !paymentValid) return;
     setCheckingOut(true);
     const uuid = () =>
       'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
@@ -549,10 +561,18 @@ export default function SaleScreen() {
         paymentType === 'CASH' ? { amount: tendered || '0', currency: 'LAK' } : undefined,
       paymentReference: paymentType === 'CASH' ? undefined : paymentReference || undefined,
       taxRateBasisPoints: 0,
+      catalogVersion,
       offline: false,
     };
     try {
+      await enqueueOperation({
+        operationId: input.clientOrderId,
+        type: 'CHECKOUT_ORDER',
+        payload: { ...input, offlineLeaseExpiresAt: offlinePolicy.leaseExpiresAt },
+        occurredAtDevice: new Date().toISOString(),
+      });
       const result = await checkoutOrder(input);
+      await markOperation(input.clientOrderId, 'ACKED');
       void listPrinterProfiles()
         .then((profiles) => {
           const profile = profiles.find((candidate) => candidate.autoPrint);
@@ -565,38 +585,44 @@ export default function SaleScreen() {
       setPaymentVisible(false);
       setCartVisible(false);
       setTendered('');
+      setDiscountAmount('');
       setPaymentReference('');
       Alert.alert('ຮັບຊຳລະສຳເລັດ', `ເລກໃບເສັດ: ${result.receipts?.[0]?.number ?? 'ສຳເລັດ'}`);
     } catch (error) {
       if (
-        !(error instanceof ApiError) &&
+        error instanceof ApiError &&
+        (error.status === 0 || error.status >= 500) &&
         canChargeOffline(offlinePolicy.sellingDeviceCount, offlinePolicy.leaseExpiresAt)
       ) {
-        await enqueueOperation({
-          operationId: input.clientOrderId,
-          type: 'CHECKOUT_ORDER',
-          payload: { ...input, offline: true },
-          occurredAtDevice: new Date().toISOString(),
-        });
+        await markOperation(input.clientOrderId, 'PENDING', error.message);
         setCart({});
         setPaymentVisible(false);
         setCartVisible(false);
         setTendered('');
+        setDiscountAmount('');
         setPaymentReference('');
         Alert.alert('ບັນທຶກການຂາຍອອບລາຍແລ້ວ', 'ລະບົບຈະ sync ໃຫ້ອັດຕະໂນມັດເມື່ອອອນລາຍ');
-      } else
+      } else {
+        await markOperation(
+          input.clientOrderId,
+          'FAILED_REVIEW',
+          error instanceof Error ? error.message : 'CHECKOUT_FAILED',
+        );
         Alert.alert('ຮັບຊຳລະບໍ່ສຳເລັດ', error instanceof Error ? error.message : 'ກະລຸນາລອງໃໝ່');
+      }
     } finally {
       setCheckingOut(false);
     }
   }, [
     cartLines,
     checkingOut,
+    paymentValid,
     discountAmount,
     offlinePolicy,
     paymentReference,
     paymentType,
     tendered,
+    catalogVersion,
   ]);
 
   const renderProduct: ListRenderItem<Product> = useCallback(
@@ -660,7 +686,7 @@ export default function SaleScreen() {
       <View style={[styles.cartSummary, { borderTopColor: colors.border }]}>
         <View style={styles.summaryRow}>
           <Text style={[styles.summaryLabel, { color: colors.textMuted }]}>ຍອດລວມ</Text>
-          <Text style={[styles.summaryValue, { color: colors.text }]}>{formatLak(subtotal)}</Text>
+          <Text style={[styles.summaryValue, { color: colors.text }]}>{formatLak(total)}</Text>
         </View>
         <SunhaButton
           colors={colors}
@@ -668,7 +694,7 @@ export default function SaleScreen() {
           style={styles.chargeButton}
           onPress={() => setPaymentVisible(true)}
         >
-          ຮັບຊຳລະ · {formatLak(subtotal)}
+          ຮັບຊຳລະ · {formatLak(total)}
         </SunhaButton>
       </View>
     </View>
@@ -849,7 +875,7 @@ export default function SaleScreen() {
             </View>
             <Text style={[styles.mobileCartLabel, { color: colors.onPrimary }]}>ເບິ່ງບິນ</Text>
             <Text style={[styles.mobileCartTotal, { color: colors.onPrimary }]}>
-              {formatLak(subtotal)}
+              {formatLak(total)}
             </Text>
           </Pressable>
         </View>
@@ -886,8 +912,17 @@ export default function SaleScreen() {
         />
         <View style={[styles.paymentSheet, { backgroundColor: colors.surface }]}>
           <Text style={[styles.paymentTitle, { color: colors.text }]}>
-            ຮັບຊຳລະ · {formatLak(subtotal)}
+            ຮັບຊຳລະ · {formatLak(total)}
           </Text>
+          <Text style={{ color: colors.textMuted }}>
+            ລາຄາສິນຄ້າ: {formatLak(pricing.totals.subtotal)} · ສ່ວນຫຼຸດ:{' '}
+            {formatLak(pricing.totals.discount)} · ພາສີ: {formatLak(pricing.totals.tax)}
+          </Text>
+          {pricing.error ? (
+            <Text accessibilityRole="alert" style={{ color: colors.danger }}>
+              {pricing.error}
+            </Text>
+          ) : null}
           <View style={styles.paymentTypes}>
             {(['CASH', 'MANUAL_QR', 'BANK_TRANSFER', 'CARD_MANUAL'] as const).map((type) => (
               <Pressable
@@ -941,10 +976,10 @@ export default function SaleScreen() {
           )}
           {paymentType === 'CASH' && tendered ? (
             <Text style={[styles.changeText, { color: colors.primary }]}>
-              ເງິນທອນ: {formatLak(Math.max(0, Number(tendered) - subtotal))}
+              {change === null ? 'ກະລຸນາໃສ່ເງິນຮັບໃຫ້ພຽງພໍ' : `ເງິນທອນ: ${formatLak(change)}`}
             </Text>
           ) : null}
-          <SunhaButton colors={colors} disabled={checkingOut} onPress={checkout}>
+          <SunhaButton colors={colors} disabled={checkingOut || !paymentValid} onPress={checkout}>
             {checkingOut ? 'ກຳລັງບັນທຶກ...' : 'ຢືນຢັນຮັບຊຳລະ'}
           </SunhaButton>
         </View>
@@ -995,7 +1030,7 @@ export default function SaleScreen() {
                   accessibilityLabel={label}
                   onPress={() => {
                     setDrawerVisible(false);
-                    router.push(route as Href);
+                    router.push(route);
                   }}
                   style={[
                     styles.sidebarItem,

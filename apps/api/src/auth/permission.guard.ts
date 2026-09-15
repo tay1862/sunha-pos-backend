@@ -8,6 +8,7 @@ import {
 import { Reflector } from '@nestjs/core';
 import type { FastifyRequest } from 'fastify';
 import { PrismaService } from '../database/prisma.service.js';
+import { createHash } from 'node:crypto';
 
 export const PERMISSION_KEY = 'sunha_permission';
 export type Permission =
@@ -79,12 +80,32 @@ export class PermissionGuard implements CanActivate {
     });
     if (!employee || !ROLE_PERMISSIONS[employee.role]?.includes(permission))
       throw new ForbiddenException('PERMISSION_DENIED');
+    const employeeSession = request.headers['x-employee-session'];
+    if (typeof employeeSession !== 'string' || !employeeSession)
+      throw new ForbiddenException('EMPLOYEE_SESSION_REQUIRED');
+    if (typeof employeeSession === 'string') {
+      const session = await this.prisma.employeeSession.findFirst({
+        where: {
+          tokenHash: createHash('sha256').update(employeeSession).digest('hex'),
+          employeeId: employee.id,
+          revokedAt: null,
+          expiresAt: { gt: new Date() },
+          deviceId: String(request.headers['x-device-id'] ?? ''),
+        },
+      });
+      if (!session) throw new ForbiddenException('EMPLOYEE_SESSION_INVALID');
+    }
     request.employee = employee;
     const deviceId = request.headers['x-device-id'];
-    if (permission !== 'MANAGE_DEVICES') {
+    {
       if (typeof deviceId !== 'string') throw new ForbiddenException('DEVICE_REQUIRED');
       const device = await this.prisma.device.findFirst({
-        where: { id: deviceId, tenantId: request.user.tenantId, storeId: employee.storeId, status: 'ACTIVE' },
+        where: {
+          id: deviceId,
+          tenantId: request.user.tenantId,
+          storeId: employee.storeId,
+          status: 'ACTIVE',
+        },
         select: { id: true, storeId: true, status: true },
       });
       if (!device) throw new ForbiddenException('DEVICE_NOT_ENROLLED');

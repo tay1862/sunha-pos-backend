@@ -146,7 +146,11 @@ export const createItemSchema = z.object({
 });
 
 export const updateItemSchema = createItemSchema.partial().extend({
-  units: z.array(itemUnitInputSchema.extend({ id: idSchema.optional() })).min(1).max(20).optional(),
+  units: z
+    .array(itemUnitInputSchema.extend({ id: idSchema.optional() }))
+    .min(1)
+    .max(20)
+    .optional(),
 });
 export const updateCategorySchema = createCategorySchema.partial();
 
@@ -171,7 +175,11 @@ export const createModifierGroupSchema = z.object({
   options: z.array(modifierOptionSchema).min(1).max(50),
 });
 export const updateModifierGroupSchema = createModifierGroupSchema.partial().extend({
-  options: z.array(modifierOptionSchema.extend({ id: idSchema.optional() })).min(1).max(50).optional(),
+  options: z
+    .array(modifierOptionSchema.extend({ id: idSchema.optional() }))
+    .min(1)
+    .max(50)
+    .optional(),
 });
 export const assignModifierGroupSchema = z.object({ groupId: idSchema });
 
@@ -204,6 +212,13 @@ export const checkoutOrderSchema = z.object({
   paymentReference: z.string().trim().max(160).optional(),
   taxRateBasisPoints: z.number().int().min(0).max(10_000).default(0),
   offline: z.boolean().default(false),
+  catalogVersion: z.string().regex(/^\d+$/).optional(),
+});
+
+export const orderQuoteSchema = checkoutOrderSchema.pick({
+  lines: true,
+  discount: true,
+  catalogVersion: true,
 });
 
 export const createTaxSchema = z.object({
@@ -261,6 +276,7 @@ export type CreateModifierGroupInput = z.infer<typeof createModifierGroupSchema>
 export type UpdateModifierGroupInput = z.infer<typeof updateModifierGroupSchema>;
 export type AssignModifierGroupInput = z.infer<typeof assignModifierGroupSchema>;
 export type CheckoutOrderInput = z.infer<typeof checkoutOrderSchema>;
+export type OrderQuoteInput = z.infer<typeof orderQuoteSchema>;
 export type CreateTaxInput = z.infer<typeof createTaxSchema>;
 export type UpdateTaxInput = z.infer<typeof updateTaxSchema>;
 export type OpenShiftInput = z.infer<typeof openShiftSchema>;

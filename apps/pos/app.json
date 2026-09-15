@@ -7,12 +7,29 @@
     "orientation": "default",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "plugins": ["expo-router", "expo-localization"],
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      [
+        "@sentry/react-native/expo",
+        {
+          "url": "https://sentry.io/",
+          "project": "sunha-pos",
+          "organization": "lumluay-pos"
+        }
+      ]
+    ],
     "android": {
       "package": "com.sunha.pos",
-      "adaptiveIcon": { "backgroundColor": "#087F8C" }
+      "adaptiveIcon": {
+        "backgroundColor": "#087F8C"
+      }
     },
-    "extra": { "router": {} },
-    "experiments": { "typedRoutes": true }
+    "extra": {
+      "router": {}
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

@@ -247,6 +247,9 @@ export type ShiftWhereInput = {
   store?: Prisma.XOR<Prisma.StoreScalarRelationFilter, Prisma.StoreWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   cashMovements?: Prisma.CashMovementListRelationFilter
+  orders?: Prisma.OrderListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
+  refunds?: Prisma.RefundListRelationFilter
 }
 
 export type ShiftOrderByWithRelationInput = {
@@ -261,11 +264,13 @@ export type ShiftOrderByWithRelationInput = {
   store?: Prisma.StoreOrderByWithRelationInput
   employee?: Prisma.EmployeeOrderByWithRelationInput
   cashMovements?: Prisma.CashMovementOrderByRelationAggregateInput
+  orders?: Prisma.OrderOrderByRelationAggregateInput
+  payments?: Prisma.PaymentOrderByRelationAggregateInput
+  refunds?: Prisma.RefundOrderByRelationAggregateInput
 }
 
 export type ShiftWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  storeId_isOpen?: Prisma.ShiftStoreIdIsOpenCompoundUniqueInput
   AND?: Prisma.ShiftWhereInput | Prisma.ShiftWhereInput[]
   OR?: Prisma.ShiftWhereInput[]
   NOT?: Prisma.ShiftWhereInput | Prisma.ShiftWhereInput[]
@@ -279,7 +284,10 @@ export type ShiftWhereUniqueInput = Prisma.AtLeast<{
   store?: Prisma.XOR<Prisma.StoreScalarRelationFilter, Prisma.StoreWhereInput>
   employee?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
   cashMovements?: Prisma.CashMovementListRelationFilter
-}, "id" | "storeId_isOpen">
+  orders?: Prisma.OrderListRelationFilter
+  payments?: Prisma.PaymentListRelationFilter
+  refunds?: Prisma.RefundListRelationFilter
+}, "id">
 
 export type ShiftOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -321,6 +329,9 @@ export type ShiftCreateInput = {
   store: Prisma.StoreCreateNestedOneWithoutShiftsInput
   employee: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
   cashMovements?: Prisma.CashMovementCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftUncheckedCreateInput = {
@@ -333,6 +344,9 @@ export type ShiftUncheckedCreateInput = {
   closedAt?: Date | string | null
   isOpen?: boolean
   cashMovements?: Prisma.CashMovementUncheckedCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftUpdateInput = {
@@ -345,6 +359,9 @@ export type ShiftUpdateInput = {
   store?: Prisma.StoreUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutShiftsNestedInput
   cashMovements?: Prisma.CashMovementUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftUncheckedUpdateInput = {
@@ -357,6 +374,9 @@ export type ShiftUncheckedUpdateInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cashMovements?: Prisma.CashMovementUncheckedUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftCreateManyInput = {
@@ -400,9 +420,9 @@ export type ShiftOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
 }
 
-export type ShiftStoreIdIsOpenCompoundUniqueInput = {
-  storeId: string
-  isOpen: boolean
+export type ShiftNullableScalarRelationFilter = {
+  is?: Prisma.ShiftWhereInput | null
+  isNot?: Prisma.ShiftWhereInput | null
 }
 
 export type ShiftCountOrderByAggregateInput = {
@@ -537,6 +557,54 @@ export type ShiftUncheckedUpdateManyWithoutEmployeeNestedInput = {
   deleteMany?: Prisma.ShiftScalarWhereInput | Prisma.ShiftScalarWhereInput[]
 }
 
+export type ShiftCreateNestedOneWithoutOrdersInput = {
+  create?: Prisma.XOR<Prisma.ShiftCreateWithoutOrdersInput, Prisma.ShiftUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.ShiftCreateOrConnectWithoutOrdersInput
+  connect?: Prisma.ShiftWhereUniqueInput
+}
+
+export type ShiftUpdateOneWithoutOrdersNestedInput = {
+  create?: Prisma.XOR<Prisma.ShiftCreateWithoutOrdersInput, Prisma.ShiftUncheckedCreateWithoutOrdersInput>
+  connectOrCreate?: Prisma.ShiftCreateOrConnectWithoutOrdersInput
+  upsert?: Prisma.ShiftUpsertWithoutOrdersInput
+  disconnect?: Prisma.ShiftWhereInput | boolean
+  delete?: Prisma.ShiftWhereInput | boolean
+  connect?: Prisma.ShiftWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ShiftUpdateToOneWithWhereWithoutOrdersInput, Prisma.ShiftUpdateWithoutOrdersInput>, Prisma.ShiftUncheckedUpdateWithoutOrdersInput>
+}
+
+export type ShiftCreateNestedOneWithoutPaymentsInput = {
+  create?: Prisma.XOR<Prisma.ShiftCreateWithoutPaymentsInput, Prisma.ShiftUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.ShiftCreateOrConnectWithoutPaymentsInput
+  connect?: Prisma.ShiftWhereUniqueInput
+}
+
+export type ShiftUpdateOneWithoutPaymentsNestedInput = {
+  create?: Prisma.XOR<Prisma.ShiftCreateWithoutPaymentsInput, Prisma.ShiftUncheckedCreateWithoutPaymentsInput>
+  connectOrCreate?: Prisma.ShiftCreateOrConnectWithoutPaymentsInput
+  upsert?: Prisma.ShiftUpsertWithoutPaymentsInput
+  disconnect?: Prisma.ShiftWhereInput | boolean
+  delete?: Prisma.ShiftWhereInput | boolean
+  connect?: Prisma.ShiftWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ShiftUpdateToOneWithWhereWithoutPaymentsInput, Prisma.ShiftUpdateWithoutPaymentsInput>, Prisma.ShiftUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type ShiftCreateNestedOneWithoutRefundsInput = {
+  create?: Prisma.XOR<Prisma.ShiftCreateWithoutRefundsInput, Prisma.ShiftUncheckedCreateWithoutRefundsInput>
+  connectOrCreate?: Prisma.ShiftCreateOrConnectWithoutRefundsInput
+  connect?: Prisma.ShiftWhereUniqueInput
+}
+
+export type ShiftUpdateOneWithoutRefundsNestedInput = {
+  create?: Prisma.XOR<Prisma.ShiftCreateWithoutRefundsInput, Prisma.ShiftUncheckedCreateWithoutRefundsInput>
+  connectOrCreate?: Prisma.ShiftCreateOrConnectWithoutRefundsInput
+  upsert?: Prisma.ShiftUpsertWithoutRefundsInput
+  disconnect?: Prisma.ShiftWhereInput | boolean
+  delete?: Prisma.ShiftWhereInput | boolean
+  connect?: Prisma.ShiftWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ShiftUpdateToOneWithWhereWithoutRefundsInput, Prisma.ShiftUpdateWithoutRefundsInput>, Prisma.ShiftUncheckedUpdateWithoutRefundsInput>
+}
+
 export type ShiftCreateNestedOneWithoutCashMovementsInput = {
   create?: Prisma.XOR<Prisma.ShiftCreateWithoutCashMovementsInput, Prisma.ShiftUncheckedCreateWithoutCashMovementsInput>
   connectOrCreate?: Prisma.ShiftCreateOrConnectWithoutCashMovementsInput
@@ -560,6 +628,9 @@ export type ShiftCreateWithoutStoreInput = {
   isOpen?: boolean
   employee: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
   cashMovements?: Prisma.CashMovementCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftUncheckedCreateWithoutStoreInput = {
@@ -571,6 +642,9 @@ export type ShiftUncheckedCreateWithoutStoreInput = {
   closedAt?: Date | string | null
   isOpen?: boolean
   cashMovements?: Prisma.CashMovementUncheckedCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftCreateOrConnectWithoutStoreInput = {
@@ -622,6 +696,9 @@ export type ShiftCreateWithoutEmployeeInput = {
   isOpen?: boolean
   store: Prisma.StoreCreateNestedOneWithoutShiftsInput
   cashMovements?: Prisma.CashMovementCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftUncheckedCreateWithoutEmployeeInput = {
@@ -633,6 +710,9 @@ export type ShiftUncheckedCreateWithoutEmployeeInput = {
   closedAt?: Date | string | null
   isOpen?: boolean
   cashMovements?: Prisma.CashMovementUncheckedCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftCreateOrConnectWithoutEmployeeInput = {
@@ -661,6 +741,222 @@ export type ShiftUpdateManyWithWhereWithoutEmployeeInput = {
   data: Prisma.XOR<Prisma.ShiftUpdateManyMutationInput, Prisma.ShiftUncheckedUpdateManyWithoutEmployeeInput>
 }
 
+export type ShiftCreateWithoutOrdersInput = {
+  id?: string
+  openingAmount: bigint | number
+  closingAmount?: bigint | number | null
+  openedAt?: Date | string
+  closedAt?: Date | string | null
+  isOpen?: boolean
+  store: Prisma.StoreCreateNestedOneWithoutShiftsInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
+  cashMovements?: Prisma.CashMovementCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutShiftInput
+}
+
+export type ShiftUncheckedCreateWithoutOrdersInput = {
+  id?: string
+  storeId: string
+  employeeId: string
+  openingAmount: bigint | number
+  closingAmount?: bigint | number | null
+  openedAt?: Date | string
+  closedAt?: Date | string | null
+  isOpen?: boolean
+  cashMovements?: Prisma.CashMovementUncheckedCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutShiftInput
+}
+
+export type ShiftCreateOrConnectWithoutOrdersInput = {
+  where: Prisma.ShiftWhereUniqueInput
+  create: Prisma.XOR<Prisma.ShiftCreateWithoutOrdersInput, Prisma.ShiftUncheckedCreateWithoutOrdersInput>
+}
+
+export type ShiftUpsertWithoutOrdersInput = {
+  update: Prisma.XOR<Prisma.ShiftUpdateWithoutOrdersInput, Prisma.ShiftUncheckedUpdateWithoutOrdersInput>
+  create: Prisma.XOR<Prisma.ShiftCreateWithoutOrdersInput, Prisma.ShiftUncheckedCreateWithoutOrdersInput>
+  where?: Prisma.ShiftWhereInput
+}
+
+export type ShiftUpdateToOneWithWhereWithoutOrdersInput = {
+  where?: Prisma.ShiftWhereInput
+  data: Prisma.XOR<Prisma.ShiftUpdateWithoutOrdersInput, Prisma.ShiftUncheckedUpdateWithoutOrdersInput>
+}
+
+export type ShiftUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  openingAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  closingAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  store?: Prisma.StoreUpdateOneRequiredWithoutShiftsNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutShiftsNestedInput
+  cashMovements?: Prisma.CashMovementUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutShiftNestedInput
+}
+
+export type ShiftUncheckedUpdateWithoutOrdersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  storeId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  openingAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  closingAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cashMovements?: Prisma.CashMovementUncheckedUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutShiftNestedInput
+}
+
+export type ShiftCreateWithoutPaymentsInput = {
+  id?: string
+  openingAmount: bigint | number
+  closingAmount?: bigint | number | null
+  openedAt?: Date | string
+  closedAt?: Date | string | null
+  isOpen?: boolean
+  store: Prisma.StoreCreateNestedOneWithoutShiftsInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
+  cashMovements?: Prisma.CashMovementCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutShiftInput
+}
+
+export type ShiftUncheckedCreateWithoutPaymentsInput = {
+  id?: string
+  storeId: string
+  employeeId: string
+  openingAmount: bigint | number
+  closingAmount?: bigint | number | null
+  openedAt?: Date | string
+  closedAt?: Date | string | null
+  isOpen?: boolean
+  cashMovements?: Prisma.CashMovementUncheckedCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutShiftInput
+}
+
+export type ShiftCreateOrConnectWithoutPaymentsInput = {
+  where: Prisma.ShiftWhereUniqueInput
+  create: Prisma.XOR<Prisma.ShiftCreateWithoutPaymentsInput, Prisma.ShiftUncheckedCreateWithoutPaymentsInput>
+}
+
+export type ShiftUpsertWithoutPaymentsInput = {
+  update: Prisma.XOR<Prisma.ShiftUpdateWithoutPaymentsInput, Prisma.ShiftUncheckedUpdateWithoutPaymentsInput>
+  create: Prisma.XOR<Prisma.ShiftCreateWithoutPaymentsInput, Prisma.ShiftUncheckedCreateWithoutPaymentsInput>
+  where?: Prisma.ShiftWhereInput
+}
+
+export type ShiftUpdateToOneWithWhereWithoutPaymentsInput = {
+  where?: Prisma.ShiftWhereInput
+  data: Prisma.XOR<Prisma.ShiftUpdateWithoutPaymentsInput, Prisma.ShiftUncheckedUpdateWithoutPaymentsInput>
+}
+
+export type ShiftUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  openingAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  closingAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  store?: Prisma.StoreUpdateOneRequiredWithoutShiftsNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutShiftsNestedInput
+  cashMovements?: Prisma.CashMovementUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutShiftNestedInput
+}
+
+export type ShiftUncheckedUpdateWithoutPaymentsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  storeId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  openingAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  closingAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cashMovements?: Prisma.CashMovementUncheckedUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutShiftNestedInput
+}
+
+export type ShiftCreateWithoutRefundsInput = {
+  id?: string
+  openingAmount: bigint | number
+  closingAmount?: bigint | number | null
+  openedAt?: Date | string
+  closedAt?: Date | string | null
+  isOpen?: boolean
+  store: Prisma.StoreCreateNestedOneWithoutShiftsInput
+  employee: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
+  cashMovements?: Prisma.CashMovementCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutShiftInput
+}
+
+export type ShiftUncheckedCreateWithoutRefundsInput = {
+  id?: string
+  storeId: string
+  employeeId: string
+  openingAmount: bigint | number
+  closingAmount?: bigint | number | null
+  openedAt?: Date | string
+  closedAt?: Date | string | null
+  isOpen?: boolean
+  cashMovements?: Prisma.CashMovementUncheckedCreateNestedManyWithoutShiftInput
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutShiftInput
+}
+
+export type ShiftCreateOrConnectWithoutRefundsInput = {
+  where: Prisma.ShiftWhereUniqueInput
+  create: Prisma.XOR<Prisma.ShiftCreateWithoutRefundsInput, Prisma.ShiftUncheckedCreateWithoutRefundsInput>
+}
+
+export type ShiftUpsertWithoutRefundsInput = {
+  update: Prisma.XOR<Prisma.ShiftUpdateWithoutRefundsInput, Prisma.ShiftUncheckedUpdateWithoutRefundsInput>
+  create: Prisma.XOR<Prisma.ShiftCreateWithoutRefundsInput, Prisma.ShiftUncheckedCreateWithoutRefundsInput>
+  where?: Prisma.ShiftWhereInput
+}
+
+export type ShiftUpdateToOneWithWhereWithoutRefundsInput = {
+  where?: Prisma.ShiftWhereInput
+  data: Prisma.XOR<Prisma.ShiftUpdateWithoutRefundsInput, Prisma.ShiftUncheckedUpdateWithoutRefundsInput>
+}
+
+export type ShiftUpdateWithoutRefundsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  openingAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  closingAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  store?: Prisma.StoreUpdateOneRequiredWithoutShiftsNestedInput
+  employee?: Prisma.EmployeeUpdateOneRequiredWithoutShiftsNestedInput
+  cashMovements?: Prisma.CashMovementUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutShiftNestedInput
+}
+
+export type ShiftUncheckedUpdateWithoutRefundsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  storeId?: Prisma.StringFieldUpdateOperationsInput | string
+  employeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  openingAmount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  closingAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cashMovements?: Prisma.CashMovementUncheckedUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutShiftNestedInput
+}
+
 export type ShiftCreateWithoutCashMovementsInput = {
   id?: string
   openingAmount: bigint | number
@@ -670,6 +966,9 @@ export type ShiftCreateWithoutCashMovementsInput = {
   isOpen?: boolean
   store: Prisma.StoreCreateNestedOneWithoutShiftsInput
   employee: Prisma.EmployeeCreateNestedOneWithoutShiftsInput
+  orders?: Prisma.OrderCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftUncheckedCreateWithoutCashMovementsInput = {
@@ -681,6 +980,9 @@ export type ShiftUncheckedCreateWithoutCashMovementsInput = {
   openedAt?: Date | string
   closedAt?: Date | string | null
   isOpen?: boolean
+  orders?: Prisma.OrderUncheckedCreateNestedManyWithoutShiftInput
+  payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutShiftInput
+  refunds?: Prisma.RefundUncheckedCreateNestedManyWithoutShiftInput
 }
 
 export type ShiftCreateOrConnectWithoutCashMovementsInput = {
@@ -708,6 +1010,9 @@ export type ShiftUpdateWithoutCashMovementsInput = {
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   store?: Prisma.StoreUpdateOneRequiredWithoutShiftsNestedInput
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutShiftsNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftUncheckedUpdateWithoutCashMovementsInput = {
@@ -719,6 +1024,9 @@ export type ShiftUncheckedUpdateWithoutCashMovementsInput = {
   openedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftCreateManyStoreInput = {
@@ -740,6 +1048,9 @@ export type ShiftUpdateWithoutStoreInput = {
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   employee?: Prisma.EmployeeUpdateOneRequiredWithoutShiftsNestedInput
   cashMovements?: Prisma.CashMovementUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftUncheckedUpdateWithoutStoreInput = {
@@ -751,6 +1062,9 @@ export type ShiftUncheckedUpdateWithoutStoreInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cashMovements?: Prisma.CashMovementUncheckedUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftUncheckedUpdateManyWithoutStoreInput = {
@@ -782,6 +1096,9 @@ export type ShiftUpdateWithoutEmployeeInput = {
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   store?: Prisma.StoreUpdateOneRequiredWithoutShiftsNestedInput
   cashMovements?: Prisma.CashMovementUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftUncheckedUpdateWithoutEmployeeInput = {
@@ -793,6 +1110,9 @@ export type ShiftUncheckedUpdateWithoutEmployeeInput = {
   closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   isOpen?: Prisma.BoolFieldUpdateOperationsInput | boolean
   cashMovements?: Prisma.CashMovementUncheckedUpdateManyWithoutShiftNestedInput
+  orders?: Prisma.OrderUncheckedUpdateManyWithoutShiftNestedInput
+  payments?: Prisma.PaymentUncheckedUpdateManyWithoutShiftNestedInput
+  refunds?: Prisma.RefundUncheckedUpdateManyWithoutShiftNestedInput
 }
 
 export type ShiftUncheckedUpdateManyWithoutEmployeeInput = {
@@ -812,10 +1132,16 @@ export type ShiftUncheckedUpdateManyWithoutEmployeeInput = {
 
 export type ShiftCountOutputType = {
   cashMovements: number
+  orders: number
+  payments: number
+  refunds: number
 }
 
 export type ShiftCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cashMovements?: boolean | ShiftCountOutputTypeCountCashMovementsArgs
+  orders?: boolean | ShiftCountOutputTypeCountOrdersArgs
+  payments?: boolean | ShiftCountOutputTypeCountPaymentsArgs
+  refunds?: boolean | ShiftCountOutputTypeCountRefundsArgs
 }
 
 /**
@@ -835,6 +1161,27 @@ export type ShiftCountOutputTypeCountCashMovementsArgs<ExtArgs extends runtime.T
   where?: Prisma.CashMovementWhereInput
 }
 
+/**
+ * ShiftCountOutputType without action
+ */
+export type ShiftCountOutputTypeCountOrdersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.OrderWhereInput
+}
+
+/**
+ * ShiftCountOutputType without action
+ */
+export type ShiftCountOutputTypeCountPaymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PaymentWhereInput
+}
+
+/**
+ * ShiftCountOutputType without action
+ */
+export type ShiftCountOutputTypeCountRefundsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RefundWhereInput
+}
+
 
 export type ShiftSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -848,6 +1195,9 @@ export type ShiftSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   store?: boolean | Prisma.StoreDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   cashMovements?: boolean | Prisma.Shift$cashMovementsArgs<ExtArgs>
+  orders?: boolean | Prisma.Shift$ordersArgs<ExtArgs>
+  payments?: boolean | Prisma.Shift$paymentsArgs<ExtArgs>
+  refunds?: boolean | Prisma.Shift$refundsArgs<ExtArgs>
   _count?: boolean | Prisma.ShiftCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["shift"]>
 
@@ -893,6 +1243,9 @@ export type ShiftInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   store?: boolean | Prisma.StoreDefaultArgs<ExtArgs>
   employee?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
   cashMovements?: boolean | Prisma.Shift$cashMovementsArgs<ExtArgs>
+  orders?: boolean | Prisma.Shift$ordersArgs<ExtArgs>
+  payments?: boolean | Prisma.Shift$paymentsArgs<ExtArgs>
+  refunds?: boolean | Prisma.Shift$refundsArgs<ExtArgs>
   _count?: boolean | Prisma.ShiftCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ShiftIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -910,6 +1263,9 @@ export type $ShiftPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     store: Prisma.$StorePayload<ExtArgs>
     employee: Prisma.$EmployeePayload<ExtArgs>
     cashMovements: Prisma.$CashMovementPayload<ExtArgs>[]
+    orders: Prisma.$OrderPayload<ExtArgs>[]
+    payments: Prisma.$PaymentPayload<ExtArgs>[]
+    refunds: Prisma.$RefundPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1317,6 +1673,9 @@ export interface Prisma__ShiftClient<T, Null = never, ExtArgs extends runtime.Ty
   store<T extends Prisma.StoreDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.StoreDefaultArgs<ExtArgs>>): Prisma.Prisma__StoreClient<runtime.Types.Result.GetResult<Prisma.$StorePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   employee<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   cashMovements<T extends Prisma.Shift$cashMovementsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Shift$cashMovementsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CashMovementPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  orders<T extends Prisma.Shift$ordersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Shift$ordersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  payments<T extends Prisma.Shift$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Shift$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  refunds<T extends Prisma.Shift$refundsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Shift$refundsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefundPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1776,6 +2135,78 @@ export type Shift$cashMovementsArgs<ExtArgs extends runtime.Types.Extensions.Int
   take?: number
   skip?: number
   distinct?: Prisma.CashMovementScalarFieldEnum | Prisma.CashMovementScalarFieldEnum[]
+}
+
+/**
+ * Shift.orders
+ */
+export type Shift$ordersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Order
+   */
+  select?: Prisma.OrderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Order
+   */
+  omit?: Prisma.OrderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.OrderInclude<ExtArgs> | null
+  where?: Prisma.OrderWhereInput
+  orderBy?: Prisma.OrderOrderByWithRelationInput | Prisma.OrderOrderByWithRelationInput[]
+  cursor?: Prisma.OrderWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.OrderScalarFieldEnum | Prisma.OrderScalarFieldEnum[]
+}
+
+/**
+ * Shift.payments
+ */
+export type Shift$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Payment
+   */
+  select?: Prisma.PaymentSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Payment
+   */
+  omit?: Prisma.PaymentOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentInclude<ExtArgs> | null
+  where?: Prisma.PaymentWhereInput
+  orderBy?: Prisma.PaymentOrderByWithRelationInput | Prisma.PaymentOrderByWithRelationInput[]
+  cursor?: Prisma.PaymentWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PaymentScalarFieldEnum | Prisma.PaymentScalarFieldEnum[]
+}
+
+/**
+ * Shift.refunds
+ */
+export type Shift$refundsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Refund
+   */
+  select?: Prisma.RefundSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Refund
+   */
+  omit?: Prisma.RefundOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RefundInclude<ExtArgs> | null
+  where?: Prisma.RefundWhereInput
+  orderBy?: Prisma.RefundOrderByWithRelationInput | Prisma.RefundOrderByWithRelationInput[]
+  cursor?: Prisma.RefundWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RefundScalarFieldEnum | Prisma.RefundScalarFieldEnum[]
 }
 
 /**

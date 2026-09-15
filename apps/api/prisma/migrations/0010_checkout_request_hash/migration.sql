@@ -1,0 +1,1 @@
+ALTER TABLE "Order" ADD COLUMN "requestHash" VARCHAR(128);

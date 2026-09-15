@@ -35,7 +35,7 @@ export default function SetupStoreScreen() {
         onChangeText={setAddress}
       />
       <FormField label="ສະກຸນເງິນ" value="LAK · ກີບລາວ" onChangeText={() => undefined} />
-      {error ? <FormLink onPress={() => undefined}>⚠ {error}</FormLink> : null}
+      {error ? <FormLink onPress={() => setError('')}>⚠ {error}</FormLink> : null}
       <FormButton onPress={submit} disabled={loading} loading={loading}>
         ເຂົ້າສູ່ໜ້າຂາຍ
       </FormButton>

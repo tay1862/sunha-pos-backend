@@ -72,6 +72,8 @@ export function FormField({
   value,
   onChangeText,
   secureTextEntry = false,
+  editable = true,
+  keyboardType,
   colors = lightColors,
 }: {
   label: string;
@@ -79,17 +81,23 @@ export function FormField({
   value: string;
   onChangeText: (value: string) => void;
   secureTextEntry?: boolean;
+  editable?: boolean;
+  keyboardType?: 'default' | 'phone-pad' | 'numeric' | 'email-address';
   colors?: SunhaColors;
 }) {
   return (
     <View style={styles.field}>
       <Text style={[styles.label, { color: colors.text }]}>{label}</Text>
       <TextInput
+        accessibilityLabel={label}
+        autoCapitalize="none"
         value={value}
         onChangeText={onChangeText}
         placeholder={placeholder}
         placeholderTextColor={colors.textMuted}
         secureTextEntry={secureTextEntry}
+        editable={editable}
+        keyboardType={keyboardType}
         style={[
           styles.input,
           { backgroundColor: colors.surface, borderColor: colors.border, color: colors.text },
@@ -140,7 +148,7 @@ const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: { width: '100%', maxWidth: 520, alignSelf: 'center', padding: 22, paddingBottom: 44 },
   back: {
-    minHeight: 40,
+    minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,

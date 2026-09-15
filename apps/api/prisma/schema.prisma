@@ -115,6 +115,7 @@ model Store {
   language         String                  @default("lo") @db.VarChar(5)
   createdAt        DateTime                @default(now())
   updatedAt        DateTime                @updatedAt
+  catalogVersion   Int                     @default(1)
   tenant           Tenant                  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   categories       Category[]
   items            Item[]
@@ -147,6 +148,7 @@ model Employee {
   auditEvents       AuditEvent[]
   syncOps           SyncOperation[]
   devices           DeviceEmployee[]
+  sessions          EmployeeSession[]
   refunds           Refund[]
 
   @@index([tenantId, active])
@@ -167,10 +169,26 @@ model Device {
   tenant                Tenant           @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   store                 Store            @relation(fields: [storeId], references: [id], onDelete: Cascade)
   employees             DeviceEmployee[]
+  employeeSessions      EmployeeSession[]
   syncOps               SyncOperation[]
   auditEvents           AuditEvent[]
 
   @@index([storeId, status])
+}
+
+model EmployeeSession {
+  id         String    @id @default(uuid()) @db.Uuid
+  employeeId String    @db.Uuid
+  deviceId   String    @db.Uuid
+  tokenHash  String    @unique @db.VarChar(128)
+  expiresAt  DateTime
+  revokedAt  DateTime?
+  createdAt  DateTime  @default(now())
+  employee   Employee  @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  device     Device    @relation(fields: [deviceId], references: [id], onDelete: Cascade)
+
+  @@index([employeeId, revokedAt, expiresAt])
+  @@index([deviceId, revokedAt, expiresAt])
 }
 
 model DeviceEnrollmentToken {
@@ -321,10 +339,12 @@ model InventoryMovement {
 model Order {
   id             String      @id @default(uuid()) @db.Uuid
   clientOrderId  String      @unique @db.Uuid
+  requestHash    String?     @db.VarChar(128)
   tenantId       String      @db.Uuid
   storeId        String      @db.Uuid
   employeeId     String      @db.Uuid
   deviceId       String?     @db.Uuid
+  shiftId        String?     @db.Uuid
   status         OrderStatus @default(HELD)
   subtotalAmount BigInt
   discountAmount BigInt      @default(0)
@@ -336,6 +356,7 @@ model Order {
   completedAt    DateTime?
   tenant         Tenant      @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   employee       Employee    @relation(fields: [employeeId], references: [id])
+  shift          Shift?      @relation(fields: [shiftId], references: [id])
   lines          OrderLine[]
   payments       Payment[]
   receipts       Receipt[]
@@ -343,6 +364,7 @@ model Order {
 
   @@index([tenantId, createdAt])
   @@index([storeId, status, createdAt])
+  @@index([shiftId, createdAt])
 }
 
 model OrderLine {
@@ -381,6 +403,7 @@ model OrderLineModifier {
 model Payment {
   id             String      @id @default(uuid()) @db.Uuid
   orderId        String      @db.Uuid
+  shiftId        String?     @db.Uuid
   type           PaymentType
   amount         BigInt
   tenderedAmount BigInt?
@@ -389,8 +412,10 @@ model Payment {
   unverified     Boolean     @default(false)
   createdAt      DateTime    @default(now())
   order          Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  shift          Shift?      @relation(fields: [shiftId], references: [id])
 
   @@index([orderId])
+  @@index([shiftId, createdAt])
 }
 
 model Receipt {
@@ -404,15 +429,18 @@ model Receipt {
 model Refund {
   id                String   @id @default(uuid()) @db.Uuid
   orderId           String   @db.Uuid
+  shiftId           String?  @db.Uuid
   managerEmployeeId String   @db.Uuid
   amount            BigInt
   reason            String   @db.VarChar(300)
   createdAt         DateTime @default(now())
   order             Order    @relation(fields: [orderId], references: [id])
   manager           Employee @relation(fields: [managerEmployeeId], references: [id])
+  shift             Shift?   @relation(fields: [shiftId], references: [id])
 
   @@unique([orderId])
   @@index([managerEmployeeId, createdAt])
+  @@index([shiftId, createdAt])
 }
 
 model Shift {
@@ -427,8 +455,11 @@ model Shift {
   store         Store          @relation(fields: [storeId], references: [id], onDelete: Cascade)
   employee      Employee       @relation(fields: [employeeId], references: [id])
   cashMovements CashMovement[]
+  orders        Order[]
+  payments      Payment[]
+  refunds       Refund[]
 
-  @@unique([storeId, isOpen])
+  // Only open shifts are unique per store; partial index lives in migration 0006.
   @@index([storeId, openedAt])
 }
 
