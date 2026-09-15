@@ -404,6 +404,7 @@ export const ModelName = {
   Store: 'Store',
   Employee: 'Employee',
   Device: 'Device',
+  EmployeeSession: 'EmployeeSession',
   DeviceEnrollmentToken: 'DeviceEnrollmentToken',
   DeviceEmployee: 'DeviceEmployee',
   Category: 'Category',
@@ -440,7 +441,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "tenant" | "user" | "authSession" | "authToken" | "store" | "employee" | "device" | "deviceEnrollmentToken" | "deviceEmployee" | "category" | "item" | "modifierGroup" | "tax" | "modifierOption" | "itemModifierGroup" | "itemUnit" | "inventoryLevel" | "inventoryMovement" | "order" | "orderLine" | "orderLineModifier" | "payment" | "receipt" | "refund" | "shift" | "cashMovement" | "syncOperation" | "auditEvent"
+    modelProps: "tenant" | "user" | "authSession" | "authToken" | "store" | "employee" | "device" | "employeeSession" | "deviceEnrollmentToken" | "deviceEmployee" | "category" | "item" | "modifierGroup" | "tax" | "modifierOption" | "itemModifierGroup" | "itemUnit" | "inventoryLevel" | "inventoryMovement" | "order" | "orderLine" | "orderLineModifier" | "payment" | "receipt" | "refund" | "shift" | "cashMovement" | "syncOperation" | "auditEvent"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -959,6 +960,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.DeviceCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.DeviceCountAggregateOutputType> | number
+        }
+      }
+    }
+    EmployeeSession: {
+      payload: Prisma.$EmployeeSessionPayload<ExtArgs>
+      fields: Prisma.EmployeeSessionFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.EmployeeSessionFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.EmployeeSessionFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+        }
+        findFirst: {
+          args: Prisma.EmployeeSessionFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.EmployeeSessionFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+        }
+        findMany: {
+          args: Prisma.EmployeeSessionFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>[]
+        }
+        create: {
+          args: Prisma.EmployeeSessionCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+        }
+        createMany: {
+          args: Prisma.EmployeeSessionCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.EmployeeSessionCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>[]
+        }
+        delete: {
+          args: Prisma.EmployeeSessionDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+        }
+        update: {
+          args: Prisma.EmployeeSessionUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+        }
+        deleteMany: {
+          args: Prisma.EmployeeSessionDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.EmployeeSessionUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.EmployeeSessionUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>[]
+        }
+        upsert: {
+          args: Prisma.EmployeeSessionUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$EmployeeSessionPayload>
+        }
+        aggregate: {
+          args: Prisma.EmployeeSessionAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateEmployeeSession>
+        }
+        groupBy: {
+          args: Prisma.EmployeeSessionGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeSessionGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.EmployeeSessionCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.EmployeeSessionCountAggregateOutputType> | number
         }
       }
     }
@@ -2616,7 +2691,8 @@ export const StoreScalarFieldEnum = {
   timezone: 'timezone',
   language: 'language',
   createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
+  updatedAt: 'updatedAt',
+  catalogVersion: 'catalogVersion'
 } as const
 
 export type StoreScalarFieldEnum = (typeof StoreScalarFieldEnum)[keyof typeof StoreScalarFieldEnum]
@@ -2653,6 +2729,19 @@ export const DeviceScalarFieldEnum = {
 } as const
 
 export type DeviceScalarFieldEnum = (typeof DeviceScalarFieldEnum)[keyof typeof DeviceScalarFieldEnum]
+
+
+export const EmployeeSessionScalarFieldEnum = {
+  id: 'id',
+  employeeId: 'employeeId',
+  deviceId: 'deviceId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type EmployeeSessionScalarFieldEnum = (typeof EmployeeSessionScalarFieldEnum)[keyof typeof EmployeeSessionScalarFieldEnum]
 
 
 export const DeviceEnrollmentTokenScalarFieldEnum = {
@@ -2792,10 +2881,12 @@ export type InventoryMovementScalarFieldEnum = (typeof InventoryMovementScalarFi
 export const OrderScalarFieldEnum = {
   id: 'id',
   clientOrderId: 'clientOrderId',
+  requestHash: 'requestHash',
   tenantId: 'tenantId',
   storeId: 'storeId',
   employeeId: 'employeeId',
   deviceId: 'deviceId',
+  shiftId: 'shiftId',
   status: 'status',
   subtotalAmount: 'subtotalAmount',
   discountAmount: 'discountAmount',
@@ -2841,6 +2932,7 @@ export type OrderLineModifierScalarFieldEnum = (typeof OrderLineModifierScalarFi
 export const PaymentScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
+  shiftId: 'shiftId',
   type: 'type',
   amount: 'amount',
   tenderedAmount: 'tenderedAmount',
@@ -2866,6 +2958,7 @@ export type ReceiptScalarFieldEnum = (typeof ReceiptScalarFieldEnum)[keyof typeo
 export const RefundScalarFieldEnum = {
   id: 'id',
   orderId: 'orderId',
+  shiftId: 'shiftId',
   managerEmployeeId: 'managerEmployeeId',
   amount: 'amount',
   reason: 'reason',
@@ -3026,20 +3119,6 @@ export type ListEnumAuthTokenTypeFieldRefInput<$PrismaModel> = FieldRefInputType
 
 
 /**
- * Reference to a field of type 'EmployeeRole'
- */
-export type EnumEmployeeRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeRole'>
-    
-
-
-/**
- * Reference to a field of type 'EmployeeRole[]'
- */
-export type ListEnumEmployeeRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeRole[]'>
-    
-
-
-/**
  * Reference to a field of type 'Int'
  */
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
@@ -3050,6 +3129,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeRole'
+ */
+export type EnumEmployeeRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeRole'>
+    
+
+
+/**
+ * Reference to a field of type 'EmployeeRole[]'
+ */
+export type ListEnumEmployeeRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'EmployeeRole[]'>
     
 
 
@@ -3329,6 +3422,7 @@ export type GlobalOmitConfig = {
   store?: Prisma.StoreOmit
   employee?: Prisma.EmployeeOmit
   device?: Prisma.DeviceOmit
+  employeeSession?: Prisma.EmployeeSessionOmit
   deviceEnrollmentToken?: Prisma.DeviceEnrollmentTokenOmit
   deviceEmployee?: Prisma.DeviceEmployeeOmit
   category?: Prisma.CategoryOmit

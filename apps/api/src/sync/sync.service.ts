@@ -1,4 +1,5 @@
 import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { isDeepStrictEqual } from 'node:util';
 import {
   checkoutOrderSchema,
   cashMovementSchema,
@@ -35,6 +36,24 @@ export class SyncService {
         where: { operationId: operation.operationId },
       });
       if (existing) {
+        if (
+          existing.tenantId !== tenantId ||
+          existing.deviceId !== input.deviceId ||
+          existing.employeeId !== input.employeeId
+        ) {
+          throw new ConflictException('OPERATION_ID_CONFLICT');
+        }
+        if (
+          existing.type !== operation.type ||
+          !isDeepStrictEqual(existing.payload, operation.payload)
+        ) {
+          results.push({
+            operationId: operation.operationId,
+            status: 'FAILED_REVIEW',
+            error: 'OPERATION_PAYLOAD_CONFLICT',
+          });
+          continue;
+        }
         results.push({
           operationId: operation.operationId,
           status: existing.status === 'ACKED' ? 'ACKED' : 'FAILED_REVIEW',
@@ -47,7 +66,12 @@ export class SyncService {
       let errorCode: string | undefined;
       try {
         if (operation.type === 'CHECKOUT_ORDER' && operation.payload.offline === true)
-          await this.requireOfflinePolicy(device.id, device.storeId);
+          await this.requireOfflinePolicy(
+            device.id,
+            device.storeId,
+            new Date(operation.occurredAtDevice),
+            operation.payload,
+          );
         await this.applyOperation(tenantId, input.employeeId, input.deviceId, operation);
       } catch (error) {
         status = 'FAILED_REVIEW';
@@ -123,6 +147,28 @@ export class SyncService {
     });
   }
 
+  async reconcile(tenantId: string, operationId: string) {
+    const operation = await this.prisma.syncOperation.findFirst({
+      where: { tenantId, operationId },
+    });
+    if (!operation) throw new ConflictException('SYNC_OPERATION_NOT_FOUND');
+    const payload = operation.payload as { clientOrderId?: unknown };
+    const order =
+      typeof payload.clientOrderId === 'string'
+        ? await this.prisma.order.findFirst({
+            where: { tenantId, clientOrderId: payload.clientOrderId },
+            include: { receipts: true, payments: true },
+          })
+        : null;
+    return {
+      operationId,
+      status: operation.status,
+      lastError: operation.lastError,
+      attemptCount: operation.attemptCount,
+      order,
+    };
+  }
+
   async retry(tenantId: string, operationId: string) {
     const operation = await this.prisma.syncOperation.findFirst({
       where: { tenantId, operationId },
@@ -139,7 +185,12 @@ export class SyncService {
         typeof operation.payload === 'object' &&
         (operation.payload as { offline?: unknown }).offline === true
       )
-        await this.requireOfflinePolicy(device.id, device.storeId);
+        await this.requireOfflinePolicy(
+          device.id,
+          device.storeId,
+          operation.occurredAtDevice,
+          operation.payload,
+        );
       await this.applyOperation(tenantId, operation.employeeId, operation.deviceId, {
         operationId: operation.operationId,
         type: operation.type as SyncPushInput['operations'][number]['type'],
@@ -170,10 +221,25 @@ export class SyncService {
     }
   }
 
-  private async requireOfflinePolicy(deviceId: string, storeId: string) {
+  private async requireOfflinePolicy(
+    deviceId: string,
+    storeId: string,
+    occurredAt?: Date,
+    payload?: unknown,
+  ) {
     const device = await this.prisma.device.findUnique({ where: { id: deviceId } });
     if (!device || device.status !== 'ACTIVE') throw new ConflictException('DEVICE_REVOKED');
-    if (!device.offlineLeaseExpiresAt || device.offlineLeaseExpiresAt <= new Date())
+    const recordedLease =
+      payload &&
+      typeof payload === 'object' &&
+      typeof (payload as { offlineLeaseExpiresAt?: unknown }).offlineLeaseExpiresAt === 'string'
+        ? new Date((payload as { offlineLeaseExpiresAt: string }).offlineLeaseExpiresAt)
+        : null;
+    const leaseValidAtSale = recordedLease && occurredAt ? occurredAt <= recordedLease : false;
+    if (
+      (!device.offlineLeaseExpiresAt || device.offlineLeaseExpiresAt <= new Date()) &&
+      !leaseValidAtSale
+    )
       throw new ConflictException('OFFLINE_LEASE_EXPIRED');
     if ((await this.prisma.device.count({ where: { storeId, status: 'ACTIVE' } })) > 1)
       throw new ConflictException('MULTI_DEVICE_OFFLINE_FORBIDDEN');
@@ -189,7 +255,7 @@ export class SyncService {
       return this.orders.checkout(
         tenantId,
         employeeId,
-        { ...checkoutOrderSchema.parse(operation.payload), offline: true },
+        checkoutOrderSchema.parse(operation.payload),
         deviceId,
       );
     if (operation.type === 'OPEN_SHIFT')

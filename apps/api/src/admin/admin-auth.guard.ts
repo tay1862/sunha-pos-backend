@@ -1,4 +1,10 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { timingSafeEqual } from 'node:crypto';
 import type { FastifyRequest } from 'fastify';
 
@@ -13,6 +19,14 @@ export class AdminAuthGuard implements CanActivate {
       !matches(mfa, process.env.INTERNAL_ADMIN_MFA_TOKEN)
     )
       throw new UnauthorizedException('ADMIN_MFA_REQUIRED');
+    const role = (process.env.INTERNAL_ADMIN_ROLE ?? 'MANAGE').toUpperCase();
+    const actor = process.env.INTERNAL_ADMIN_ACTOR?.trim() || 'internal-admin';
+    (request as FastifyRequest & { adminRole?: string; adminActor?: string }).adminRole = role;
+    (request as FastifyRequest & { adminRole?: string; adminActor?: string }).adminActor = actor;
+    const required = Reflect.getMetadata('adminRole', context.getHandler()) as string | undefined;
+    if (required && role !== 'SUPER_ADMIN' && role !== required) {
+      throw new ForbiddenException('ADMIN_ROLE_FORBIDDEN');
+    }
     return true;
   }
 }

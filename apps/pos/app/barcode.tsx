@@ -1,7 +1,7 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, StyleSheet, Text, TextInput, View } from 'react-native';
 import { getCatalogSnapshot } from '../src/auth/auth-client';
 import { lightColors } from '../src/design/tokens';
 
@@ -12,16 +12,18 @@ export default function BarcodeScreen() {
   const [value, setValue] = useState('');
   const [matched, setMatched] = useState<string | null>(null);
   const [scanning, setScanning] = useState(true);
+  const [manual, setManual] = useState('');
   useEffect(() => {
     if (!value) return;
-    void getCatalogSnapshot()
+    const timer = setTimeout(() => void getCatalogSnapshot()
       .then((snapshot) => {
         const found = snapshot.items.find((item) =>
           item.units.some((unit) => unit.barcode === value || unit.sku === value),
         );
         setMatched(found ? found.name : null);
       })
-      .catch(() => setMatched(null));
+      .catch(() => setMatched(null)), 250);
+    return () => clearTimeout(timer);
   }, [value]);
   if (!permission)
     return (
@@ -55,6 +57,7 @@ export default function BarcodeScreen() {
         }
       />
       <View style={styles.result}>
+        <TextInput value={manual} onChangeText={(next) => { setManual(next); setValue(next.trim()); }} placeholder="ປ້ອນ Barcode/SKU ເອງ" placeholderTextColor="#9aa6b2" style={styles.input} autoCapitalize="none" />
         <Text style={styles.darkText}>{value ? `Barcode/SKU: ${value}` : 'ວາງ Barcode ໃນກອບ'}</Text>
         {value ? (
           <Text style={[styles.darkText, { color: matched ? colors.success : colors.warning }]}>
@@ -70,6 +73,7 @@ export default function BarcodeScreen() {
             setValue('');
             setMatched(null);
             setScanning(true);
+            setManual('');
           }}
         />
         <Button title="ປິດ" onPress={() => router.back()} />
@@ -91,4 +95,5 @@ const styles = StyleSheet.create({
   result: { padding: 20, gap: 12, backgroundColor: '#0f1720' },
   darkText: { color: '#fff', textAlign: 'center' },
   hint: { color: '#ffd7a8', textAlign: 'center', fontSize: 12 },
+  input: { backgroundColor: '#fff', borderRadius: 8, padding: 10, color: '#111827' },
 });

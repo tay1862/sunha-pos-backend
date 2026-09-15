@@ -27,6 +27,26 @@ export class AdminService {
     });
   }
 
+  async detail(tenantId: string) {
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: {
+        id: true,
+        businessName: true,
+        suspendedAt: true,
+        createdAt: true,
+        store: { select: { name: true } },
+      },
+    });
+    if (!tenant) throw new NotFoundException('TENANT_NOT_FOUND');
+    const [devices, sync, audit] = await Promise.all([
+      this.devices(tenantId),
+      this.sync(tenantId),
+      this.audit(tenantId),
+    ]);
+    return { ...tenant, devices, sync, audit };
+  }
+
   devices(tenantId: string) {
     return this.prisma.device.findMany({
       where: { tenantId },
@@ -78,7 +98,7 @@ export class AdminService {
     });
   }
 
-  async suspend(tenantId: string, reason: string) {
+  async suspend(tenantId: string, reason: string, actor = 'internal-admin') {
     const tenant = await this.prisma.tenant.findUnique({
       where: { id: tenantId },
       select: { id: true, suspendedAt: true },
@@ -95,10 +115,45 @@ export class AdminService {
           action: 'ADMIN_SUSPEND_STORE',
           entityType: 'TENANT',
           entityId: tenantId,
-          metadata: { reason, actor: 'internal-admin', serverTime: suspendedAt.toISOString() },
+          metadata: {
+            reason,
+            actor,
+            before: 'ACTIVE',
+            after: 'SUSPENDED',
+            serverTime: suspendedAt.toISOString(),
+          },
         },
       }),
     ]);
     return { tenantId, suspendedAt, alreadySuspended: false };
+  }
+
+  async unsuspend(tenantId: string, reason: string, actor: string) {
+    const tenant = await this.prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { id: true, suspendedAt: true },
+    });
+    if (!tenant) throw new NotFoundException('TENANT_NOT_FOUND');
+    if (!tenant.suspendedAt) return { tenantId, suspendedAt: null, alreadyActive: true };
+    const restoredAt = new Date();
+    await this.prisma.$transaction([
+      this.prisma.tenant.update({ where: { id: tenantId }, data: { suspendedAt: null } }),
+      this.prisma.auditEvent.create({
+        data: {
+          tenantId,
+          action: 'ADMIN_UNSUSPEND_STORE',
+          entityType: 'TENANT',
+          entityId: tenantId,
+          metadata: {
+            reason,
+            actor,
+            before: 'SUSPENDED',
+            after: 'ACTIVE',
+            serverTime: restoredAt.toISOString(),
+          },
+        },
+      }),
+    ]);
+    return { tenantId, suspendedAt: null, alreadyActive: false };
   }
 }

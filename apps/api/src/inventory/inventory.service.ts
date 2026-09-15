@@ -20,6 +20,8 @@ export class InventoryService {
     deviceId: string,
     input: InventoryAdjustmentInput,
   ) {
+    if (/^[-+]?0(?:\.0{1,3})?$/.test(input.quantityBase))
+      throw new ConflictException('ZERO_QUANTITY_NOT_ALLOWED');
     await verifyManager(this.prisma, tenantId, input.managerEmployeeId, input.managerPin);
     const actor = await this.prisma.employee.findFirst({
       where: { id: actorId, tenantId, active: true },

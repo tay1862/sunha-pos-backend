@@ -41,6 +41,7 @@ export type PaymentSumAggregateOutputType = {
 export type PaymentMinAggregateOutputType = {
   id: string | null
   orderId: string | null
+  shiftId: string | null
   type: $Enums.PaymentType | null
   amount: bigint | null
   tenderedAmount: bigint | null
@@ -53,6 +54,7 @@ export type PaymentMinAggregateOutputType = {
 export type PaymentMaxAggregateOutputType = {
   id: string | null
   orderId: string | null
+  shiftId: string | null
   type: $Enums.PaymentType | null
   amount: bigint | null
   tenderedAmount: bigint | null
@@ -65,6 +67,7 @@ export type PaymentMaxAggregateOutputType = {
 export type PaymentCountAggregateOutputType = {
   id: number
   orderId: number
+  shiftId: number
   type: number
   amount: number
   tenderedAmount: number
@@ -91,6 +94,7 @@ export type PaymentSumAggregateInputType = {
 export type PaymentMinAggregateInputType = {
   id?: true
   orderId?: true
+  shiftId?: true
   type?: true
   amount?: true
   tenderedAmount?: true
@@ -103,6 +107,7 @@ export type PaymentMinAggregateInputType = {
 export type PaymentMaxAggregateInputType = {
   id?: true
   orderId?: true
+  shiftId?: true
   type?: true
   amount?: true
   tenderedAmount?: true
@@ -115,6 +120,7 @@ export type PaymentMaxAggregateInputType = {
 export type PaymentCountAggregateInputType = {
   id?: true
   orderId?: true
+  shiftId?: true
   type?: true
   amount?: true
   tenderedAmount?: true
@@ -214,6 +220,7 @@ export type PaymentGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
 export type PaymentGroupByOutputType = {
   id: string
   orderId: string
+  shiftId: string | null
   type: $Enums.PaymentType
   amount: bigint
   tenderedAmount: bigint | null
@@ -249,6 +256,7 @@ export type PaymentWhereInput = {
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   id?: Prisma.UuidFilter<"Payment"> | string
   orderId?: Prisma.UuidFilter<"Payment"> | string
+  shiftId?: Prisma.UuidNullableFilter<"Payment"> | string | null
   type?: Prisma.EnumPaymentTypeFilter<"Payment"> | $Enums.PaymentType
   amount?: Prisma.BigIntFilter<"Payment"> | bigint | number
   tenderedAmount?: Prisma.BigIntNullableFilter<"Payment"> | bigint | number | null
@@ -257,11 +265,13 @@ export type PaymentWhereInput = {
   unverified?: Prisma.BoolFilter<"Payment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
+  shift?: Prisma.XOR<Prisma.ShiftNullableScalarRelationFilter, Prisma.ShiftWhereInput> | null
 }
 
 export type PaymentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   tenderedAmount?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -270,6 +280,7 @@ export type PaymentOrderByWithRelationInput = {
   unverified?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
+  shift?: Prisma.ShiftOrderByWithRelationInput
 }
 
 export type PaymentWhereUniqueInput = Prisma.AtLeast<{
@@ -278,6 +289,7 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   OR?: Prisma.PaymentWhereInput[]
   NOT?: Prisma.PaymentWhereInput | Prisma.PaymentWhereInput[]
   orderId?: Prisma.UuidFilter<"Payment"> | string
+  shiftId?: Prisma.UuidNullableFilter<"Payment"> | string | null
   type?: Prisma.EnumPaymentTypeFilter<"Payment"> | $Enums.PaymentType
   amount?: Prisma.BigIntFilter<"Payment"> | bigint | number
   tenderedAmount?: Prisma.BigIntNullableFilter<"Payment"> | bigint | number | null
@@ -286,11 +298,13 @@ export type PaymentWhereUniqueInput = Prisma.AtLeast<{
   unverified?: Prisma.BoolFilter<"Payment"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
+  shift?: Prisma.XOR<Prisma.ShiftNullableScalarRelationFilter, Prisma.ShiftWhereInput> | null
 }, "id">
 
 export type PaymentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrderInput | Prisma.SortOrder
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   tenderedAmount?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -311,6 +325,7 @@ export type PaymentScalarWhereWithAggregatesInput = {
   NOT?: Prisma.PaymentScalarWhereWithAggregatesInput | Prisma.PaymentScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Payment"> | string
   orderId?: Prisma.UuidWithAggregatesFilter<"Payment"> | string
+  shiftId?: Prisma.UuidNullableWithAggregatesFilter<"Payment"> | string | null
   type?: Prisma.EnumPaymentTypeWithAggregatesFilter<"Payment"> | $Enums.PaymentType
   amount?: Prisma.BigIntWithAggregatesFilter<"Payment"> | bigint | number
   tenderedAmount?: Prisma.BigIntNullableWithAggregatesFilter<"Payment"> | bigint | number | null
@@ -330,11 +345,13 @@ export type PaymentCreateInput = {
   unverified?: boolean
   createdAt?: Date | string
   order: Prisma.OrderCreateNestedOneWithoutPaymentsInput
+  shift?: Prisma.ShiftCreateNestedOneWithoutPaymentsInput
 }
 
 export type PaymentUncheckedCreateInput = {
   id?: string
   orderId: string
+  shiftId?: string | null
   type: $Enums.PaymentType
   amount: bigint | number
   tenderedAmount?: bigint | number | null
@@ -354,11 +371,13 @@ export type PaymentUpdateInput = {
   unverified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUpdateOneRequiredWithoutPaymentsNestedInput
+  shift?: Prisma.ShiftUpdateOneWithoutPaymentsNestedInput
 }
 
 export type PaymentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   tenderedAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -371,6 +390,7 @@ export type PaymentUncheckedUpdateInput = {
 export type PaymentCreateManyInput = {
   id?: string
   orderId: string
+  shiftId?: string | null
   type: $Enums.PaymentType
   amount: bigint | number
   tenderedAmount?: bigint | number | null
@@ -394,6 +414,7 @@ export type PaymentUpdateManyMutationInput = {
 export type PaymentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   tenderedAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -416,6 +437,7 @@ export type PaymentOrderByRelationAggregateInput = {
 export type PaymentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   tenderedAmount?: Prisma.SortOrder
@@ -434,6 +456,7 @@ export type PaymentAvgOrderByAggregateInput = {
 export type PaymentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   tenderedAmount?: Prisma.SortOrder
@@ -446,6 +469,7 @@ export type PaymentMaxOrderByAggregateInput = {
 export type PaymentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrder
   type?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   tenderedAmount?: Prisma.SortOrder
@@ -507,6 +531,48 @@ export type EnumPaymentTypeFieldUpdateOperationsInput = {
   set?: $Enums.PaymentType
 }
 
+export type PaymentCreateNestedManyWithoutShiftInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutShiftInput, Prisma.PaymentUncheckedCreateWithoutShiftInput> | Prisma.PaymentCreateWithoutShiftInput[] | Prisma.PaymentUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutShiftInput | Prisma.PaymentCreateOrConnectWithoutShiftInput[]
+  createMany?: Prisma.PaymentCreateManyShiftInputEnvelope
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+}
+
+export type PaymentUncheckedCreateNestedManyWithoutShiftInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutShiftInput, Prisma.PaymentUncheckedCreateWithoutShiftInput> | Prisma.PaymentCreateWithoutShiftInput[] | Prisma.PaymentUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutShiftInput | Prisma.PaymentCreateOrConnectWithoutShiftInput[]
+  createMany?: Prisma.PaymentCreateManyShiftInputEnvelope
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+}
+
+export type PaymentUpdateManyWithoutShiftNestedInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutShiftInput, Prisma.PaymentUncheckedCreateWithoutShiftInput> | Prisma.PaymentCreateWithoutShiftInput[] | Prisma.PaymentUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutShiftInput | Prisma.PaymentCreateOrConnectWithoutShiftInput[]
+  upsert?: Prisma.PaymentUpsertWithWhereUniqueWithoutShiftInput | Prisma.PaymentUpsertWithWhereUniqueWithoutShiftInput[]
+  createMany?: Prisma.PaymentCreateManyShiftInputEnvelope
+  set?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  disconnect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  delete?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  update?: Prisma.PaymentUpdateWithWhereUniqueWithoutShiftInput | Prisma.PaymentUpdateWithWhereUniqueWithoutShiftInput[]
+  updateMany?: Prisma.PaymentUpdateManyWithWhereWithoutShiftInput | Prisma.PaymentUpdateManyWithWhereWithoutShiftInput[]
+  deleteMany?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
+}
+
+export type PaymentUncheckedUpdateManyWithoutShiftNestedInput = {
+  create?: Prisma.XOR<Prisma.PaymentCreateWithoutShiftInput, Prisma.PaymentUncheckedCreateWithoutShiftInput> | Prisma.PaymentCreateWithoutShiftInput[] | Prisma.PaymentUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.PaymentCreateOrConnectWithoutShiftInput | Prisma.PaymentCreateOrConnectWithoutShiftInput[]
+  upsert?: Prisma.PaymentUpsertWithWhereUniqueWithoutShiftInput | Prisma.PaymentUpsertWithWhereUniqueWithoutShiftInput[]
+  createMany?: Prisma.PaymentCreateManyShiftInputEnvelope
+  set?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  disconnect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  delete?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  connect?: Prisma.PaymentWhereUniqueInput | Prisma.PaymentWhereUniqueInput[]
+  update?: Prisma.PaymentUpdateWithWhereUniqueWithoutShiftInput | Prisma.PaymentUpdateWithWhereUniqueWithoutShiftInput[]
+  updateMany?: Prisma.PaymentUpdateManyWithWhereWithoutShiftInput | Prisma.PaymentUpdateManyWithWhereWithoutShiftInput[]
+  deleteMany?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
+}
+
 export type PaymentCreateWithoutOrderInput = {
   id?: string
   type: $Enums.PaymentType
@@ -516,10 +582,12 @@ export type PaymentCreateWithoutOrderInput = {
   reference?: string | null
   unverified?: boolean
   createdAt?: Date | string
+  shift?: Prisma.ShiftCreateNestedOneWithoutPaymentsInput
 }
 
 export type PaymentUncheckedCreateWithoutOrderInput = {
   id?: string
+  shiftId?: string | null
   type: $Enums.PaymentType
   amount: bigint | number
   tenderedAmount?: bigint | number | null
@@ -561,6 +629,7 @@ export type PaymentScalarWhereInput = {
   NOT?: Prisma.PaymentScalarWhereInput | Prisma.PaymentScalarWhereInput[]
   id?: Prisma.UuidFilter<"Payment"> | string
   orderId?: Prisma.UuidFilter<"Payment"> | string
+  shiftId?: Prisma.UuidNullableFilter<"Payment"> | string | null
   type?: Prisma.EnumPaymentTypeFilter<"Payment"> | $Enums.PaymentType
   amount?: Prisma.BigIntFilter<"Payment"> | bigint | number
   tenderedAmount?: Prisma.BigIntNullableFilter<"Payment"> | bigint | number | null
@@ -570,8 +639,59 @@ export type PaymentScalarWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"Payment"> | Date | string
 }
 
+export type PaymentCreateWithoutShiftInput = {
+  id?: string
+  type: $Enums.PaymentType
+  amount: bigint | number
+  tenderedAmount?: bigint | number | null
+  changeAmount?: bigint | number | null
+  reference?: string | null
+  unverified?: boolean
+  createdAt?: Date | string
+  order: Prisma.OrderCreateNestedOneWithoutPaymentsInput
+}
+
+export type PaymentUncheckedCreateWithoutShiftInput = {
+  id?: string
+  orderId: string
+  type: $Enums.PaymentType
+  amount: bigint | number
+  tenderedAmount?: bigint | number | null
+  changeAmount?: bigint | number | null
+  reference?: string | null
+  unverified?: boolean
+  createdAt?: Date | string
+}
+
+export type PaymentCreateOrConnectWithoutShiftInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutShiftInput, Prisma.PaymentUncheckedCreateWithoutShiftInput>
+}
+
+export type PaymentCreateManyShiftInputEnvelope = {
+  data: Prisma.PaymentCreateManyShiftInput | Prisma.PaymentCreateManyShiftInput[]
+  skipDuplicates?: boolean
+}
+
+export type PaymentUpsertWithWhereUniqueWithoutShiftInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  update: Prisma.XOR<Prisma.PaymentUpdateWithoutShiftInput, Prisma.PaymentUncheckedUpdateWithoutShiftInput>
+  create: Prisma.XOR<Prisma.PaymentCreateWithoutShiftInput, Prisma.PaymentUncheckedCreateWithoutShiftInput>
+}
+
+export type PaymentUpdateWithWhereUniqueWithoutShiftInput = {
+  where: Prisma.PaymentWhereUniqueInput
+  data: Prisma.XOR<Prisma.PaymentUpdateWithoutShiftInput, Prisma.PaymentUncheckedUpdateWithoutShiftInput>
+}
+
+export type PaymentUpdateManyWithWhereWithoutShiftInput = {
+  where: Prisma.PaymentScalarWhereInput
+  data: Prisma.XOR<Prisma.PaymentUpdateManyMutationInput, Prisma.PaymentUncheckedUpdateManyWithoutShiftInput>
+}
+
 export type PaymentCreateManyOrderInput = {
   id?: string
+  shiftId?: string | null
   type: $Enums.PaymentType
   amount: bigint | number
   tenderedAmount?: bigint | number | null
@@ -590,10 +710,12 @@ export type PaymentUpdateWithoutOrderInput = {
   reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   unverified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  shift?: Prisma.ShiftUpdateOneWithoutPaymentsNestedInput
 }
 
 export type PaymentUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   type?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   tenderedAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -605,6 +727,55 @@ export type PaymentUncheckedUpdateWithoutOrderInput = {
 
 export type PaymentUncheckedUpdateManyWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  type?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  tenderedAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  changeAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unverified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PaymentCreateManyShiftInput = {
+  id?: string
+  orderId: string
+  type: $Enums.PaymentType
+  amount: bigint | number
+  tenderedAmount?: bigint | number | null
+  changeAmount?: bigint | number | null
+  reference?: string | null
+  unverified?: boolean
+  createdAt?: Date | string
+}
+
+export type PaymentUpdateWithoutShiftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  tenderedAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  changeAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unverified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  order?: Prisma.OrderUpdateOneRequiredWithoutPaymentsNestedInput
+}
+
+export type PaymentUncheckedUpdateWithoutShiftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  type?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  tenderedAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  changeAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  unverified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PaymentUncheckedUpdateManyWithoutShiftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
   type?: Prisma.EnumPaymentTypeFieldUpdateOperationsInput | $Enums.PaymentType
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   tenderedAmount?: Prisma.NullableBigIntFieldUpdateOperationsInput | bigint | number | null
@@ -619,6 +790,7 @@ export type PaymentUncheckedUpdateManyWithoutOrderInput = {
 export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   type?: boolean
   amount?: boolean
   tenderedAmount?: boolean
@@ -627,11 +799,13 @@ export type PaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   unverified?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Payment$shiftArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
 export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   type?: boolean
   amount?: boolean
   tenderedAmount?: boolean
@@ -640,11 +814,13 @@ export type PaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   unverified?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Payment$shiftArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
 export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   type?: boolean
   amount?: boolean
   tenderedAmount?: boolean
@@ -653,11 +829,13 @@ export type PaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   unverified?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Payment$shiftArgs<ExtArgs>
 }, ExtArgs["result"]["payment"]>
 
 export type PaymentSelectScalar = {
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   type?: boolean
   amount?: boolean
   tenderedAmount?: boolean
@@ -667,25 +845,30 @@ export type PaymentSelectScalar = {
   createdAt?: boolean
 }
 
-export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "type" | "amount" | "tenderedAmount" | "changeAmount" | "reference" | "unverified" | "createdAt", ExtArgs["result"]["payment"]>
+export type PaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "shiftId" | "type" | "amount" | "tenderedAmount" | "changeAmount" | "reference" | "unverified" | "createdAt", ExtArgs["result"]["payment"]>
 export type PaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Payment$shiftArgs<ExtArgs>
 }
 export type PaymentIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Payment$shiftArgs<ExtArgs>
 }
 export type PaymentIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Payment$shiftArgs<ExtArgs>
 }
 
 export type $PaymentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Payment"
   objects: {
     order: Prisma.$OrderPayload<ExtArgs>
+    shift: Prisma.$ShiftPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orderId: string
+    shiftId: string | null
     type: $Enums.PaymentType
     amount: bigint
     tenderedAmount: bigint | null
@@ -1088,6 +1271,7 @@ readonly fields: PaymentFieldRefs;
 export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   order<T extends Prisma.OrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderDefaultArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  shift<T extends Prisma.Payment$shiftArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Payment$shiftArgs<ExtArgs>>): Prisma.Prisma__ShiftClient<runtime.Types.Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1119,6 +1303,7 @@ export interface Prisma__PaymentClient<T, Null = never, ExtArgs extends runtime.
 export interface PaymentFieldRefs {
   readonly id: Prisma.FieldRef<"Payment", 'String'>
   readonly orderId: Prisma.FieldRef<"Payment", 'String'>
+  readonly shiftId: Prisma.FieldRef<"Payment", 'String'>
   readonly type: Prisma.FieldRef<"Payment", 'PaymentType'>
   readonly amount: Prisma.FieldRef<"Payment", 'BigInt'>
   readonly tenderedAmount: Prisma.FieldRef<"Payment", 'BigInt'>
@@ -1524,6 +1709,25 @@ export type PaymentDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Payments to delete.
    */
   limit?: number
+}
+
+/**
+ * Payment.shift
+ */
+export type Payment$shiftArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Shift
+   */
+  select?: Prisma.ShiftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Shift
+   */
+  omit?: Prisma.ShiftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShiftInclude<ExtArgs> | null
+  where?: Prisma.ShiftWhereInput
 }
 
 /**

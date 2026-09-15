@@ -11,9 +11,18 @@ import type {
 import { PrismaService } from '../database/prisma.service.js';
 import { Prisma } from '../generated/prisma/client.js';
 
+type VersionClient = { store: { update: (args: { where: { id: string }; data: { catalogVersion: { increment: number } } }) => Promise<unknown> } };
+
 @Injectable()
 export class CatalogService {
   constructor(private readonly prisma: PrismaService) {}
+
+  private async bumpVersion(
+    storeId: string,
+    client: VersionClient = this.prisma,
+  ) {
+    await client.store.update({ where: { id: storeId }, data: { catalogVersion: { increment: 1 } } });
+  }
 
   listCategories(tenantId: string) {
     return this.prisma.category.findMany({
@@ -33,7 +42,7 @@ export class CatalogService {
   async snapshot(tenantId: string) {
     const store = await this.prisma.store.findUnique({
       where: { tenantId },
-      select: { id: true, updatedAt: true },
+      select: { id: true, updatedAt: true, catalogVersion: true },
     });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
     const [categories, items, modifierGroups, taxes] = await Promise.all([
@@ -61,16 +70,25 @@ export class CatalogService {
         orderBy: { name: 'asc' },
       }),
     ]);
-    return { version: store.updatedAt.toISOString(), categories, items, modifierGroups, taxes };
+    return {
+      version: store.catalogVersion.toString(),
+      catalogVersion: store.catalogVersion.toString(),
+      categories,
+      items,
+      modifierGroups,
+      taxes,
+    };
   }
 
   async createCategory(tenantId: string, input: CreateCategoryInput) {
     const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
     try {
-      return await this.prisma.category.create({
+      const created = await this.prisma.category.create({
         data: { name: input.name, color: input.color, storeId: store.id },
       });
+      await this.bumpVersion(store.id);
+      return created;
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')
         throw new ConflictException('CATEGORY_NAME_ALREADY_EXISTS');
@@ -113,6 +131,7 @@ export class CatalogService {
         throw new ConflictException('SKU_OR_BARCODE_ALREADY_EXISTS');
       throw error;
     }
+    await this.bumpVersion(store.id);
     return { ...created, baseUnitName };
   }
 
@@ -124,6 +143,7 @@ export class CatalogService {
     if (!category) throw new NotFoundException('CATEGORY_NOT_FOUND');
     if (category._count.items > 0) throw new ConflictException('CATEGORY_HAS_ITEMS');
     await this.prisma.category.update({ where: { id }, data: { active: false } });
+    await this.bumpVersion(category.storeId);
     return { success: true };
   }
 
@@ -177,6 +197,7 @@ export class CatalogService {
             }
           }
         }
+        await this.bumpVersion(item.storeId, tx);
         return updated;
       });
     } catch (error) {
@@ -192,6 +213,7 @@ export class CatalogService {
     });
     if (!item) throw new NotFoundException('ITEM_NOT_FOUND');
     await this.prisma.item.update({ where: { id }, data: { active: false } });
+    await this.bumpVersion(item.storeId);
     return { success: true };
   }
 
@@ -208,7 +230,7 @@ export class CatalogService {
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
     if (input.minSelections > input.maxSelections)
       throw new ConflictException('INVALID_MODIFIER_LIMITS');
-    return this.prisma.modifierGroup.create({
+    const created = await this.prisma.modifierGroup.create({
       data: {
         storeId: store.id,
         name: input.name,
@@ -224,6 +246,8 @@ export class CatalogService {
       },
       include: { options: true },
     });
+    await this.bumpVersion(store.id);
+    return created;
   }
 
   async updateModifierGroup(tenantId: string, id: string, input: UpdateModifierGroupInput) {
@@ -266,6 +290,7 @@ export class CatalogService {
               },
             });
         }
+      await this.bumpVersion(group.storeId, tx);
       return updated;
     });
   }
@@ -279,6 +304,7 @@ export class CatalogService {
     if (group.options.some((option) => option.orderLineModifiers.length > 0))
       throw new ConflictException('MODIFIER_GROUP_HAS_HISTORY');
     await this.prisma.modifierGroup.delete({ where: { id } });
+    await this.bumpVersion(group.storeId);
     return { success: true };
   }
 
@@ -290,11 +316,13 @@ export class CatalogService {
       where: { id: groupId, store: { tenantId } },
     });
     if (!item || !group) throw new NotFoundException('ITEM_OR_MODIFIER_GROUP_NOT_FOUND');
-    return this.prisma.itemModifierGroup.upsert({
+    const assignment = await this.prisma.itemModifierGroup.upsert({
       where: { itemId_groupId: { itemId, groupId } },
       create: { itemId, groupId },
       update: {},
     });
+    await this.bumpVersion(item.storeId);
+    return assignment;
   }
 
   listTaxes(tenantId: string) {
@@ -307,7 +335,9 @@ export class CatalogService {
   async createTax(tenantId: string, input: CreateTaxInput) {
     const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
-    return this.prisma.tax.create({ data: { storeId: store.id, ...input } });
+    const created = await this.prisma.tax.create({ data: { storeId: store.id, ...input } });
+    await this.bumpVersion(store.id);
+    return created;
   }
 
   async updateTax(tenantId: string, id: string, input: UpdateTaxInput) {
@@ -315,7 +345,9 @@ export class CatalogService {
       where: { id, store: { tenantId }, active: true },
     });
     if (!tax) throw new NotFoundException('TAX_NOT_FOUND');
-    return this.prisma.tax.update({ where: { id }, data: input });
+    const updated = await this.prisma.tax.update({ where: { id }, data: input });
+    await this.bumpVersion(tax.storeId);
+    return updated;
   }
 
   async deleteTax(tenantId: string, id: string) {
@@ -324,6 +356,7 @@ export class CatalogService {
     });
     if (!tax) throw new NotFoundException('TAX_NOT_FOUND');
     await this.prisma.tax.update({ where: { id }, data: { active: false } });
+    await this.bumpVersion(tax.storeId);
     return { success: true };
   }
 }

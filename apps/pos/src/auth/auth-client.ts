@@ -14,7 +14,14 @@ import type {
   UpdateTaxInput,
 } from '@sunha/contracts';
 import { apiRequest } from '../api/client';
-import { getAccessToken, saveSessionContext, saveTokens } from './token-storage';
+import {
+  clearTokens,
+  getAccessToken,
+  getRefreshToken,
+  saveEmployeeSession,
+  saveSessionContext,
+  saveTokens,
+} from './token-storage';
 import { readCatalogSnapshot, saveCatalogSnapshot } from '../offline/catalog-cache';
 
 type AuthResponse = {
@@ -25,20 +32,35 @@ type AuthResponse = {
     store: { id: string; tenantId: string; name: string };
     ownerEmployeeId?: string;
     ownerDeviceId?: string;
+    employeeSessionToken?: string;
   };
 };
 
 export async function signUp(input: SignUpInput): Promise<AuthResponse['data']> {
   const result = await apiRequest<AuthResponse>('/auth/signup', { method: 'POST', body: input });
+  await clearTokens();
+  if (result.data.employeeSessionToken) await saveEmployeeSession(result.data.employeeSessionToken);
+  await saveSessionContext(
+    result.data.ownerEmployeeId,
+    result.data.ownerDeviceId,
+    result.data.user.tenantId,
+    result.data.store.id,
+  );
   await saveTokens(result.data.accessToken, result.data.refreshToken);
-  await saveSessionContext(result.data.ownerEmployeeId, result.data.ownerDeviceId);
   return result.data;
 }
 
 export async function login(input: LoginInput): Promise<AuthResponse['data']> {
   const result = await apiRequest<AuthResponse>('/auth/login', { method: 'POST', body: input });
+  await clearTokens();
+  if (result.data.employeeSessionToken) await saveEmployeeSession(result.data.employeeSessionToken);
+  await saveSessionContext(
+    result.data.ownerEmployeeId,
+    result.data.ownerDeviceId,
+    result.data.user.tenantId,
+    result.data.store.id,
+  );
   await saveTokens(result.data.accessToken, result.data.refreshToken);
-  await saveSessionContext(result.data.ownerEmployeeId, result.data.ownerDeviceId);
   return result.data;
 }
 
@@ -50,16 +72,54 @@ export async function updateStoreSettings(input: UpdateStoreSettingsInput): Prom
     accessToken: token ?? undefined,
   });
 }
+export async function getStoreSettings() {
+  const token = await getAccessToken();
+  return apiRequest<{
+    name: string;
+    address: string;
+    phone: string;
+    taxNumber: string;
+    currency: string;
+    timezone: string;
+    language: 'lo' | 'en';
+  }>('/setup/store', { accessToken: token ?? undefined });
+}
+export async function logout() {
+  const token = await getAccessToken();
+  const refresh = await getRefreshToken();
+  if (refresh)
+    await apiRequest('/auth/logout', {
+      method: 'POST',
+      body: { refreshToken: refresh },
+      accessToken: token ?? undefined,
+    }).catch(() => undefined);
+  await clearTokens();
+}
+
+export async function verifyEmployeePin(employeeId: string, pin: string) {
+  const token = await getAccessToken();
+  const result = await apiRequest<{ id: string; name: string; role: string; sessionToken: string }>(
+    '/employees/verify-pin',
+    { method: 'POST', body: { employeeId, pin }, accessToken: token ?? undefined },
+  );
+  await saveEmployeeSession(result.sessionToken);
+  await saveSessionContext(result.id);
+  return result;
+}
 
 export async function listCatalogItems(): Promise<
   Array<{
     id: string;
     name: string;
+    trackStock?: boolean;
     imageUrl?: string | null;
-    category?: { name: string; color?: string } | null;
+    category?: { id?: string; name: string; color?: string } | null;
     units: Array<{
       id: string;
       name: string;
+      required?: boolean;
+      minSelections?: number;
+      maxSelections?: number;
       multiplierToBase: string | number;
       priceAmount: string | number | bigint;
       sku?: string | null;
@@ -121,6 +181,9 @@ export async function listModifierGroups() {
     Array<{
       id: string;
       name: string;
+      required?: boolean;
+      minSelections?: number;
+      maxSelections?: number;
       options: Array<{ id: string; name: string; priceDeltaAmount: string | number }>;
     }>
   >('/catalog/modifier-groups', { accessToken: token ?? undefined });
@@ -201,10 +264,11 @@ export async function updateEmployee(
 export async function getCatalogSnapshot() {
   type Snapshot = {
     version: string;
+    catalogVersion?: string;
     categories: unknown[];
     items: Awaited<ReturnType<typeof listCatalogItems>>;
     modifierGroups: unknown[];
-    taxes: unknown[];
+    taxes: Array<{ rateBasisPoints: number; mode: 'INCLUSIVE' | 'EXCLUSIVE' }>;
   };
   const token = await getAccessToken();
   try {
@@ -221,10 +285,24 @@ export async function getCatalogSnapshot() {
 }
 
 export async function listInventory(): Promise<
-  Array<{ item: { name: string }; quantityBase: string | number | bigint }>
+  Array<{ item: { id: string; name: string }; quantityBase: string | number | bigint }>
 > {
   const token = await getAccessToken();
   return apiRequest('/inventory/levels', { accessToken: token ?? undefined });
+}
+export async function adjustInventory(input: {
+  itemId: string;
+  quantityBase: string;
+  reason: string;
+  managerEmployeeId: string;
+  managerPin: string;
+}) {
+  const token = await getAccessToken();
+  return apiRequest('/inventory/adjustments', {
+    method: 'POST',
+    body: input,
+    accessToken: token ?? undefined,
+  });
 }
 
 export async function checkoutOrder(input: CheckoutOrderInput) {
@@ -295,9 +373,29 @@ export async function closeShift(closingAmount: string) {
 }
 export async function getReport(
   kind: 'sales' | 'payments' | 'discounts' | 'refunds' | 'shifts' | 'stock' | 'audit',
+  from?: string,
+  to?: string,
 ) {
   const token = await getAccessToken();
-  return apiRequest(`/reports/${kind}`, { accessToken: token ?? undefined });
+  const params = new URLSearchParams();
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  return apiRequest(`/reports/${kind}${params.toString() ? `?${params.toString()}` : ''}`, {
+    accessToken: token ?? undefined,
+  });
+}
+export async function exportReportCsv(
+  kind: 'sales' | 'payments' | 'refunds',
+  from?: string,
+  to?: string,
+) {
+  const token = await getAccessToken();
+  const params = new URLSearchParams({ kind });
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  return apiRequest<string>(`/reports/export.csv?${params.toString()}`, {
+    accessToken: token ?? undefined,
+  });
 }
 export async function listSyncOperations(status?: 'PENDING' | 'ACKED' | 'FAILED_REVIEW') {
   const token = await getAccessToken();
@@ -318,6 +416,13 @@ export async function retrySyncOperation(operationId: string) {
     method: 'POST',
     accessToken: token ?? undefined,
   });
+}
+export async function reconcileSyncOperation(operationId: string) {
+  const token = await getAccessToken();
+  return apiRequest<{ order: { id: string } | null; status: string }>(
+    `/sync/operations/${operationId}/reconcile`,
+    { accessToken: token ?? undefined },
+  );
 }
 export async function listDevices() {
   const token = await getAccessToken();

@@ -212,6 +212,13 @@ export const checkoutOrderSchema = z.object({
   paymentReference: z.string().trim().max(160).optional(),
   taxRateBasisPoints: z.number().int().min(0).max(10_000).default(0),
   offline: z.boolean().default(false),
+  catalogVersion: z.string().regex(/^\d+$/).optional(),
+});
+
+export const orderQuoteSchema = checkoutOrderSchema.pick({
+  lines: true,
+  discount: true,
+  catalogVersion: true,
 });
 
 export const createTaxSchema = z.object({
@@ -269,6 +276,7 @@ export type CreateModifierGroupInput = z.infer<typeof createModifierGroupSchema>
 export type UpdateModifierGroupInput = z.infer<typeof updateModifierGroupSchema>;
 export type AssignModifierGroupInput = z.infer<typeof assignModifierGroupSchema>;
 export type CheckoutOrderInput = z.infer<typeof checkoutOrderSchema>;
+export type OrderQuoteInput = z.infer<typeof orderQuoteSchema>;
 export type CreateTaxInput = z.infer<typeof createTaxSchema>;
 export type UpdateTaxInput = z.infer<typeof updateTaxSchema>;
 export type OpenShiftInput = z.infer<typeof openShiftSchema>;

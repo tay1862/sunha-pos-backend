@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import argon2 from 'argon2';
 import type { CashMovementInput, CloseShiftInput, OpenShiftInput } from '@sunha/contracts';
+import type { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../database/prisma.service.js';
 
 @Injectable()
@@ -13,85 +14,104 @@ export class ShiftService {
   constructor(private readonly prisma: PrismaService) {}
 
   async open(tenantId: string, employeeId: string, deviceId: string, input: OpenShiftInput) {
-    const store = await this.prisma.store.findUnique({ where: { tenantId } });
-    if (!store) throw new NotFoundException('STORE_NOT_FOUND');
-    const open = await this.prisma.shift.findFirst({
-      where: { storeId: store.id, isOpen: true },
+    return this.prisma.$transaction(async (tx) => {
+      await this.lockStore(tx, tenantId);
+      const store = await tx.store.findUnique({ where: { tenantId } });
+      if (!store) throw new NotFoundException('STORE_NOT_FOUND');
+      const open = await tx.shift.findFirst({
+        where: { storeId: store.id, isOpen: true },
+      });
+      if (open) throw new ConflictException('SHIFT_ALREADY_OPEN');
+      const shift = await tx.shift.create({
+        data: { storeId: store.id, employeeId, openingAmount: BigInt(input.openingAmount) },
+      });
+      await this.audit(tx, tenantId, employeeId, deviceId, 'OPEN_SHIFT', shift.id, {
+        openingAmount: input.openingAmount,
+      });
+      return shift;
     });
-    if (open) throw new ConflictException('SHIFT_ALREADY_OPEN');
-    const shift = await this.prisma.shift.create({
-      data: { storeId: store.id, employeeId, openingAmount: BigInt(input.openingAmount) },
-    });
-    await this.audit(tenantId, employeeId, deviceId, 'OPEN_SHIFT', shift.id, {
-      openingAmount: input.openingAmount,
-    });
-    return shift;
   }
 
   async movement(tenantId: string, employeeId: string, deviceId: string, input: CashMovementInput) {
-    const shift = await this.current(tenantId);
-    const movement = await this.prisma.cashMovement.create({
-      data: {
-        shiftId: shift.id,
-        employeeId,
-        amount: BigInt(input.amount),
-        type: input.type,
+    return this.prisma.$transaction(async (tx) => {
+      await this.lockStore(tx, tenantId);
+      const shift = await this.current(tx, tenantId);
+      const movement = await tx.cashMovement.create({
+        data: {
+          shiftId: shift.id,
+          employeeId,
+          amount: cashMovementAmount(input),
+          type: input.type,
+          reason: input.reason,
+        },
+      });
+      await this.audit(tx, tenantId, employeeId, deviceId, input.type, movement.id, {
+        amount: input.amount,
         reason: input.reason,
-      },
+      });
+      return movement;
     });
-    await this.audit(tenantId, employeeId, deviceId, input.type, movement.id, {
-      amount: input.amount,
-      reason: input.reason,
-    });
-    return movement;
   }
 
   async close(tenantId: string, employeeId: string, deviceId: string, input: CloseShiftInput) {
-    const shift = await this.current(tenantId);
-    const pending = await this.prisma.syncOperation.count({
-      where: { tenantId, status: 'PENDING' },
+    return this.prisma.$transaction(async (tx) => {
+      await this.lockStore(tx, tenantId);
+      const shift = await this.current(tx, tenantId);
+      const pending = await tx.syncOperation.count({
+        where: { tenantId, status: 'PENDING' },
+      });
+      if (pending > 0) throw new ConflictException('PENDING_OPERATIONS');
+      const expected = await this.expectedCash(tx, shift);
+      const closed = await tx.shift.update({
+        where: { id: shift.id },
+        data: { closingAmount: BigInt(input.closingAmount), closedAt: new Date(), isOpen: false },
+      });
+      await this.audit(tx, tenantId, employeeId, deviceId, 'CLOSE_SHIFT', shift.id, {
+        expected: expected.toString(),
+        actual: input.closingAmount,
+        variance: (BigInt(input.closingAmount) - expected).toString(),
+      });
+      return {
+        ...closed,
+        expectedAmount: expected.toString(),
+        variance: (BigInt(input.closingAmount) - expected).toString(),
+      };
     });
-    if (pending > 0) throw new ConflictException('PENDING_OPERATIONS');
-    const expected = await this.expectedCash(shift);
-    const closed = await this.prisma.shift.update({
-      where: { id: shift.id },
-      data: { closingAmount: BigInt(input.closingAmount), closedAt: new Date(), isOpen: false },
-    });
-    await this.audit(tenantId, employeeId, deviceId, 'CLOSE_SHIFT', shift.id, {
-      expected: expected.toString(),
-      actual: input.closingAmount,
-      variance: (BigInt(input.closingAmount) - expected).toString(),
-    });
-    return {
-      ...closed,
-      expectedAmount: expected.toString(),
-      variance: (BigInt(input.closingAmount) - expected).toString(),
-    };
   }
 
-  private async current(tenantId: string) {
-    const store = await this.prisma.store.findUnique({ where: { tenantId }, select: { id: true } });
+  private async lockStore(tx: Prisma.TransactionClient, tenantId: string) {
+    const stores = await tx.$queryRaw<
+      Array<{ id: string }>
+    >`SELECT id FROM "Store" WHERE "tenantId" = ${tenantId}::uuid FOR UPDATE`;
+    if (!stores.length) throw new NotFoundException('STORE_NOT_FOUND');
+  }
+
+  private async current(tx: Prisma.TransactionClient, tenantId: string) {
+    const store = await tx.store.findUnique({ where: { tenantId }, select: { id: true } });
     const shift = store
-      ? await this.prisma.shift.findFirst({ where: { storeId: store.id, isOpen: true } })
+      ? await tx.shift.findFirst({ where: { storeId: store.id, isOpen: true } })
       : null;
     if (!shift) throw new ConflictException('NO_OPEN_SHIFT');
     return shift;
   }
 
-  private async expectedCash(shift: {
-    id: string;
-    storeId: string;
-    openingAmount: bigint;
-    openedAt: Date;
-  }) {
-    const payments = await this.prisma.payment.aggregate({
+  private async expectedCash(
+    tx: Prisma.TransactionClient,
+    shift: {
+      id: string;
+      storeId: string;
+      openingAmount: bigint;
+      openedAt: Date;
+    },
+  ) {
+    const payments = await tx.payment.aggregate({
       _sum: { amount: true },
       where: {
         type: 'CASH',
-        order: { storeId: shift.storeId, createdAt: { gte: shift.openedAt } },
+        shiftId: shift.id,
       },
     });
-    const movements = await this.prisma.cashMovement.aggregate({
+    const movements = await tx.cashMovement.aggregate({
       _sum: { amount: true },
       where: { shiftId: shift.id },
     });
@@ -99,6 +119,7 @@ export class ShiftService {
   }
 
   private audit(
+    tx: Prisma.TransactionClient,
     tenantId: string,
     employeeId: string,
     deviceId: string,
@@ -106,7 +127,7 @@ export class ShiftService {
     entityId: string,
     metadata: Record<string, string>,
   ) {
-    return this.prisma.auditEvent
+    return tx.auditEvent
       .create({
         data: {
           tenantId,
@@ -138,4 +159,13 @@ export async function verifyManager(
   });
   if (!employee || employee.role === 'CASHIER' || !(await argon2.verify(employee.pinHash, pin)))
     throw new UnauthorizedException('MANAGER_APPROVAL_REQUIRED');
+}
+
+export function cashMovementAmount(input: CashMovementInput): bigint {
+  if (!/^-?\d+$/.test(input.amount)) throw new ConflictException('INVALID_CASH_MOVEMENT_AMOUNT');
+  const amount = BigInt(input.amount);
+  // Preserve the existing signed API contract; reject contradictory directions.
+  if ((input.type === 'CASH_IN' && amount <= 0n) || (input.type === 'CASH_OUT' && amount >= 0n))
+    throw new ConflictException('INVALID_CASH_MOVEMENT_AMOUNT');
+  return amount;
 }

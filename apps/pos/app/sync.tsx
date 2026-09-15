@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, RefreshCw } from 'lucide-react-native';
-import { listSyncOperations, retrySyncOperation } from '../src/auth/auth-client';
+import { listSyncOperations, reconcileSyncOperation, retrySyncOperation } from '../src/auth/auth-client';
 import { darkColors, lightColors } from '../src/design/tokens';
 
 type Operation = Awaited<ReturnType<typeof listSyncOperations>>[number];
@@ -39,6 +39,15 @@ export default function SyncScreen() {
       await load();
     } catch (error) {
       Alert.alert('Sync', error instanceof Error ? error.message : 'ກູ້ຄືນບໍ່ສຳເລັດ');
+    }
+  };
+  const reconcile = async (id: string) => {
+    try {
+      const result = await reconcileSyncOperation(id);
+      Alert.alert('Reconcile', result.order ? 'พบ order ที่ server แล้ว' : 'ยังไม่พบ order ที่ server');
+      await load();
+    } catch (error) {
+      Alert.alert('Reconcile', error instanceof Error ? error.message : 'ตรวจสอบไม่สำเร็จ');
     }
   };
   return (
@@ -73,12 +82,14 @@ export default function SyncScreen() {
                 ) : null}
               </View>
               {op.status === 'FAILED_REVIEW' || op.status === 'PENDING' ? (
-                <Pressable
-                  onPress={() => retry(op.operationId)}
-                  style={[styles.retry, { borderColor: colors.primary }]}
-                >
-                  <Text style={{ color: colors.primary }}>Retry</Text>
-                </Pressable>
+                <View style={{ gap: 6 }}>
+                  <Pressable onPress={() => retry(op.operationId)} style={[styles.retry, { borderColor: colors.primary }]}>
+                    <Text style={{ color: colors.primary }}>Retry</Text>
+                  </Pressable>
+                  <Pressable onPress={() => reconcile(op.operationId)} style={[styles.retry, { borderColor: colors.textMuted }]}>
+                    <Text style={{ color: colors.textMuted }}>Reconcile</Text>
+                  </Pressable>
+                </View>
               ) : null}
             </View>
           ))

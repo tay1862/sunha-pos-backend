@@ -8,17 +8,19 @@ export default function TaxesScreen() {
   const [name, setName] = useState('VAT');
   const [rate, setRate] = useState('700');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [mode, setMode] = useState<'EXCLUSIVE' | 'INCLUSIVE'>('EXCLUSIVE');
   const reload = () => listTaxes().then(setTaxes);
   useEffect(() => {
     void reload();
   }, []);
   const save = async () => {
-    const input = { name, rateBasisPoints: Number(rate), mode: 'EXCLUSIVE' as const };
+    const input = { name, rateBasisPoints: Number(rate), mode };
     if (editingId) await updateTax(editingId, input);
     else await createTax(input);
     setEditingId(null);
     setName('VAT');
     setRate('700');
+    setMode('EXCLUSIVE');
     await reload();
   };
   return (
@@ -33,6 +35,7 @@ export default function TaxesScreen() {
           keyboardType="number-pad"
           style={styles.input}
         />
+        <Text onPress={() => setMode((value) => value === 'EXCLUSIVE' ? 'INCLUSIVE' : 'EXCLUSIVE')} style={styles.meta}>ໂໝດພາສີ: {mode} (ແຕະເພື່ອປ່ຽນ)</Text>
         <Text style={styles.button} onPress={() => void save()}>
           {editingId ? 'ອັບເດດພາສີ' : '+ ເພີ່ມພາສີ'}
         </Text>
@@ -49,6 +52,7 @@ export default function TaxesScreen() {
               setEditingId(tax.id);
               setName(tax.name);
               setRate(String(tax.rateBasisPoints));
+              setMode(tax.mode === 'INCLUSIVE' ? 'INCLUSIVE' : 'EXCLUSIVE');
             }}
           >
             ແກ້ໄຂ

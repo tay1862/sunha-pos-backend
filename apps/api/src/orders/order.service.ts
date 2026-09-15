@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
-import type { CheckoutOrderInput } from '@sunha/contracts';
+import { createHash } from 'node:crypto';
+import type { CheckoutOrderInput, OrderQuoteInput } from '@sunha/contracts';
 import { calculateOrderTotals, toBaseQuantity } from '@sunha/domain';
 import { PrismaService } from '../database/prisma.service.js';
 import { Prisma } from '../generated/prisma/client.js';
@@ -19,10 +20,14 @@ export class OrderService {
     });
     if (existing) {
       if (existing.tenantId !== tenantId) throw new ConflictException('ORDER_ID_ALREADY_USED');
+      if (existing.requestHash && existing.requestHash !== checkoutRequestHash(input))
+        throw new ConflictException('CHECKOUT_PAYLOAD_CONFLICT');
       return existing;
     }
     const store = await this.prisma.store.findUnique({ where: { tenantId } });
     if (!store) throw new NotFoundException('STORE_NOT_FOUND');
+    if (input.catalogVersion && input.catalogVersion !== store.catalogVersion.toString())
+      throw new ConflictException('CATALOG_VERSION_MISMATCH');
     if (input.offline) {
       if (!deviceId) throw new ConflictException('OFFLINE_DEVICE_REQUIRED');
       const device = await this.prisma.device.findFirst({
@@ -48,7 +53,11 @@ export class OrderService {
     const effectiveTaxRate = taxes.reduce((sum, tax) => sum + tax.rateBasisPoints, 0);
     const effectiveTaxMode = taxes[0]?.mode === 'INCLUSIVE' ? 'INCLUSIVE' : 'EXCLUSIVE';
     const units = await this.prisma.itemUnit.findMany({
-      where: { id: { in: input.lines.map((line) => line.unitId) }, item: { store: { tenantId } } },
+      where: {
+        id: { in: input.lines.map((line) => line.unitId) },
+        active: true,
+        item: { active: true, store: { tenantId } },
+      },
       include: { item: { include: { modifierGroups: { include: { group: true } } } } },
     });
     const byId = new Map(units.map((unit) => [unit.id, unit]));
@@ -113,6 +122,14 @@ export class OrderService {
     const receiptNumber = `SUNHA-${input.clientOrderId}`;
     try {
       return await this.prisma.$transaction(async (tx) => {
+        // Serialize checkout with closing a shift. The store row is the lock
+        // representing the one shared cash drawer for this store.
+        await tx.$queryRaw`SELECT id FROM "Store" WHERE id = ${store.id}::uuid FOR UPDATE`;
+        const activeShift = await tx.shift.findFirst({
+          where: { storeId: store.id, isOpen: true },
+          select: { id: true },
+        });
+        if (!activeShift) throw new ConflictException('NO_OPEN_SHIFT');
         for (const { line, unit } of resolvedWithModifiers) {
           if (!unit.item.trackStock) continue;
           const required = baseQuantity(line.quantity, unit.multiplierToBase.toString());
@@ -128,10 +145,12 @@ export class OrderService {
         return tx.order.create({
           data: {
             clientOrderId: input.clientOrderId,
+            requestHash: checkoutRequestHash(input),
             tenantId,
             storeId: store.id,
             employeeId,
             deviceId,
+            shiftId: activeShift?.id,
             status: 'COMPLETED',
             subtotalAmount: BigInt(totals.subtotal),
             discountAmount: BigInt(totals.discount),
@@ -168,6 +187,7 @@ export class OrderService {
             payments: {
               create: {
                 type: input.paymentType,
+                shiftId: activeShift?.id,
                 amount: BigInt(totals.total),
                 tenderedAmount: payment.tenderedAmount,
                 changeAmount: payment.changeAmount,
@@ -191,6 +211,51 @@ export class OrderService {
       }
       throw error;
     }
+  }
+
+  async quote(tenantId: string, input: OrderQuoteInput) {
+    const store = await this.prisma.store.findUnique({ where: { tenantId } });
+    if (!store) throw new NotFoundException('STORE_NOT_FOUND');
+    if (input.catalogVersion && input.catalogVersion !== store.catalogVersion.toString())
+      throw new ConflictException('CATALOG_VERSION_MISMATCH');
+    const units = await this.prisma.itemUnit.findMany({
+      where: {
+        id: { in: input.lines.map((line) => line.unitId) },
+        active: true,
+        item: { active: true, storeId: store.id },
+      },
+    });
+    const byId = new Map(units.map((unit) => [unit.id, unit]));
+    const optionIds = [...new Set(input.lines.flatMap((line) => line.modifierOptionIds))];
+    const options = optionIds.length
+      ? await this.prisma.modifierOption.findMany({
+          where: { id: { in: optionIds }, group: { storeId: store.id } },
+        })
+      : [];
+    if (options.length !== optionIds.length) throw new ConflictException('INVALID_MODIFIERS');
+    const optionsById = new Map(options.map((option) => [option.id, option]));
+    const lines = input.lines.map((line) => {
+      const unit = byId.get(line.unitId);
+      if (!unit || unit.itemId !== line.itemId) throw new ConflictException('INVALID_ORDER_LINE');
+      const modifierTotal = line.modifierOptionIds.reduce(
+        (sum, id) => sum + (optionsById.get(id)?.priceDeltaAmount ?? 0n),
+        0n,
+      );
+      return { unitPrice: (unit.priceAmount + modifierTotal).toString(), quantity: line.quantity };
+    });
+    const taxes = await this.prisma.tax.findMany({
+      where: { storeId: store.id, active: true },
+      select: { rateBasisPoints: true, mode: true },
+    });
+    const modes = new Set(taxes.map((tax) => tax.mode));
+    if (modes.size > 1) throw new ConflictException('MIXED_TAX_MODES_NOT_SUPPORTED');
+    const totals = calculateTotals({
+      lines,
+      discount: input.discount,
+      taxRateBasisPoints: taxes.reduce((sum, tax) => sum + tax.rateBasisPoints, 0),
+      taxMode: taxes[0]?.mode as 'INCLUSIVE' | 'EXCLUSIVE' | undefined,
+    });
+    return { catalogVersion: store.catalogVersion.toString(), ...totals };
   }
 }
 
@@ -236,3 +301,16 @@ function modifierUnitPrice(basePrice: string, deltas: string[]): bigint {
 }
 
 export { modifierUnitPrice };
+
+export function checkoutRequestHash(input: CheckoutOrderInput): string {
+  return createHash('sha256')
+    .update(
+      JSON.stringify(input, (_key, value: unknown) => {
+        if (value && typeof value === 'object' && !Array.isArray(value)) {
+          return Object.fromEntries(Object.entries(value).sort(([a], [b]) => a.localeCompare(b)));
+        }
+        return value;
+      }),
+    )
+    .digest('hex');
+}

@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { checkoutOrderSchema } from '@sunha/contracts';
+import { checkoutOrderSchema, orderQuoteSchema } from '@sunha/contracts';
 import type { FastifyRequest } from 'fastify';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { PermissionGuard, RequirePermission } from '../auth/permission.guard.js';
@@ -20,5 +20,13 @@ export class OrderController {
     const deviceId = request.headers['x-device-id'];
     if (typeof deviceId !== 'string') throw new BadRequestException('DEVICE_REQUIRED');
     return this.orders.checkout(request.user.tenantId, employeeId, parsed.data, deviceId);
+  }
+
+  @Post('quote')
+  @RequirePermission('SELL')
+  quote(@Req() request: AuthRequest, @Body() body: unknown) {
+    const parsed = orderQuoteSchema.safeParse(body);
+    if (!parsed.success) throw new BadRequestException('INVALID_ORDER_QUOTE');
+    return this.orders.quote(request.user.tenantId, parsed.data);
   }
 }

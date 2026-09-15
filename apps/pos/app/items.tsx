@@ -23,6 +23,8 @@ export default function ItemsScreen() {
   const [unitName, setUnitName] = useState('ອັນ');
   const [multiplier, setMultiplier] = useState('1');
   const [sku, setSku] = useState('');
+  const [categoryId, setCategoryId] = useState<string | undefined>();
+  const [trackStock, setTrackStock] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [categoryName, setCategoryName] = useState('');
   const [message, setMessage] = useState('');
@@ -40,6 +42,7 @@ export default function ItemsScreen() {
   const createItem = async () => {
     setMessage('');
     try {
+      if (!name.trim() || !/^\d+$/.test(price) || !/^\d+(?:\.\d{1,3})?$/.test(multiplier)) { setMessage('ກວດຊື່, ລາຄາ ແລະ conversion'); return; }
       const unit = {
         name: unitName || 'ອັນ',
         multiplierToBase: multiplier || '1',
@@ -49,14 +52,14 @@ export default function ItemsScreen() {
       };
       if (editingId)
         await updateCatalogItem(editingId, {
-          name,
+          name: name.trim(), categoryId, trackStock,
           units: [{ ...unit, id: items.find((item) => item.id === editingId)?.units[0]?.id }],
         });
       else
         await createCatalogItem({
-          name,
+          name: name.trim(), categoryId,
+          trackStock,
           baseUnitName: unit.name,
-          trackStock: false,
           units: [unit],
         });
       setItems(await listCatalogItems());
@@ -66,7 +69,8 @@ export default function ItemsScreen() {
       setMessage('ສ້າງສິນຄ້າສຳເລັດ');
       setUnitName('ອັນ');
       setMultiplier('1');
-      setSku('');
+    setSku('');
+    setCategoryId(undefined); setTrackStock(false);
       setEditingId(null);
     } catch {
       setMessage('ສ້າງສິນຄ້າບໍ່ສຳເລັດ');
@@ -82,6 +86,7 @@ export default function ItemsScreen() {
     setMultiplier(String(unit?.multiplierToBase ?? '1'));
     setSku(unit?.sku ?? '');
     setBarcode(unit?.barcode ?? '');
+    setCategoryId(item.category?.id); setTrackStock(Boolean(item.trackStock));
   };
   const removeItem = async (id: string) => {
     try {
@@ -138,6 +143,9 @@ export default function ItemsScreen() {
             onChangeText={setName}
             style={styles.input}
           />
+          <Text style={styles.meta}>ໝວດໝູ່</Text>
+          <View style={styles.categoryRow}>{categories.map((category) => <Text key={category.id} onPress={() => setCategoryId(category.id)} style={[styles.smallButton, categoryId === category.id && { backgroundColor: lightColors.primary, color: '#fff' }]}>{category.name}</Text>)}</View>
+          <Text onPress={() => setTrackStock((value) => !value)} style={styles.meta}>ຕິດຕາມ stock: {trackStock ? 'ເປີດ' : 'ປິດ'}</Text>
           <TextInput
             placeholder="ຊື່ໜ່ວຍ (ເຊັ່ນ ອັນ/ແພັກ)"
             value={unitName}

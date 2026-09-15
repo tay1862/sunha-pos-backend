@@ -1,9 +1,9 @@
 import { BarChart3 } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Alert, Share, StyleSheet, Text, TextInput, View, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { lightColors } from '../src/design/tokens';
-import { getReport } from '../src/auth/auth-client';
+import { exportReportCsv, getReport } from '../src/auth/auth-client';
 export default function ReportsScreen() {
   const router = useRouter();
   const [sales, setSales] = useState<{
@@ -14,14 +14,12 @@ export default function ReportsScreen() {
   const [payments, setPayments] = useState<
     Array<{ type: string; amount: string; count: number; unverified: number }>
   >([]);
+  const [from, setFrom] = useState(''); const [to, setTo] = useState(''); const [error, setError] = useState('');
+  const load = () => { setError(''); void Promise.all([getReport('sales', from || undefined, to || undefined), getReport('payments', from || undefined, to || undefined)]).then(([sale, payment]) => { setSales(sale as typeof sales); setPayments(payment as typeof payments); }).catch((cause) => setError(cause instanceof Error ? cause.message : 'ໂຫຼດບໍ່ສຳເລັດ')); };
   useEffect(() => {
-    void Promise.all([getReport('sales'), getReport('payments')])
-      .then(([sale, payment]) => {
-        setSales(sale as typeof sales);
-        setPayments(payment as typeof payments);
-      })
-      .catch(() => undefined);
+    load();
   }, []);
+  const exportCsv = async () => { try { const csv = await exportReportCsv('sales', from || undefined, to || undefined); await Share.share({ message: csv }); } catch (cause) { Alert.alert('Export', cause instanceof Error ? cause.message : 'Export ບໍ່ສຳເລັດ'); } };
   return (
     <View style={styles.page}>
       <Text onPress={() => router.replace('/')} style={styles.back}>
@@ -31,6 +29,8 @@ export default function ReportsScreen() {
         <BarChart3 color={lightColors.primary} size={25} />
         <Text style={styles.title}>ລາຍງານ</Text>
       </View>
+      <View style={styles.filters}><TextInput value={from} onChangeText={setFrom} placeholder="From ISO datetime" style={styles.input} /><TextInput value={to} onChangeText={setTo} placeholder="To ISO datetime" style={styles.input} /><Pressable onPress={load} style={styles.filterButton}><Text style={{ color: '#fff' }}>ໂຫຼດ</Text></Pressable><Pressable onPress={() => void exportCsv()} style={styles.filterButton}><Text style={{ color: '#fff' }}>CSV</Text></Pressable></View>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
       {!sales ? (
         <ActivityIndicator color={lightColors.primary} />
       ) : (
@@ -88,4 +88,5 @@ const styles = StyleSheet.create({
   },
   name: { color: lightColors.text, fontFamily: 'NotoSansLao_700Bold', fontSize: 12 },
   amount: { color: lightColors.primary, fontFamily: 'NotoSansLao_700Bold', fontSize: 12 },
+  filters: { gap: 8, marginBottom: 14 }, input: { borderWidth: 1, borderColor: lightColors.border, borderRadius: 8, padding: 10, color: lightColors.text }, filterButton: { backgroundColor: lightColors.primary, padding: 10, borderRadius: 8, alignItems: 'center' }, error: { color: '#B42318', marginBottom: 8 },
 });

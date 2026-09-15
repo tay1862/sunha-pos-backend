@@ -25,6 +25,11 @@ export class SyncController {
   push(@Req() r: AuthRequest, @Body() body: unknown) {
     const p = syncPushSchema.safeParse(body);
     if (!p.success) throw new BadRequestException('INVALID_SYNC_BATCH');
+    if (
+      p.data.deviceId !== r.headers['x-device-id'] ||
+      p.data.employeeId !== r.headers['x-employee-id']
+    )
+      throw new BadRequestException('SYNC_ACTOR_MISMATCH');
     return this.sync.push(r.user.tenantId, p.data);
   }
   @RequirePermission('SELL')
@@ -46,5 +51,11 @@ export class SyncController {
   @Post('operations/:operationId/retry')
   retry(@Req() r: AuthRequest, @Param('operationId') operationId: string) {
     return this.sync.retry(r.user.tenantId, operationId);
+  }
+
+  @RequirePermission('VIEW_REPORTS')
+  @Get('operations/:operationId/reconcile')
+  reconcile(@Req() r: AuthRequest, @Param('operationId') operationId: string) {
+    return this.sync.reconcile(r.user.tenantId, operationId);
   }
 }

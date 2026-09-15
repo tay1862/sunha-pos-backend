@@ -1,0 +1,12 @@
+{
+  "batch-01-build.log": "6c3dc9d58c3ac86ea0b0df525da8c6643d58dfae5c40da9960a1824e424cf4ac",
+  "batch-01-checks.log": "3ea8535a196b92bc327b982e6976c7a8c7730fa4b22b2b7a6b20a4a52904f86e",
+  "batch-01-final.log": "d2d0d6609f9465610718beeeceb5c39d3bf09cb770c61a19e754f150d46bcbce",
+  "batch-01-integration.log": "69c34904e6496a4283f7b359749e8e0e8ef0bd31257140cb1234b13d607a77bf",
+  "batch-01-migrate.log": "7e9deee5eba4d610b850ccca3ddbb399b1ec17d2ae59fda4fba8ef116cdfc53e",
+  "probe-local.log": "66db32375ce30c8ade6b6b5ab2296a62c2c1b1779c331a029665ab49a4416413",
+  "sunha-audit-build.log": "1ae0f7d60c6d4677dae84c1f6c7ac597fdfb02f0a78684791a4092f4aa725f8c",
+  "sunha-audit-checks.log": "f6f1ed4c251e20adc19868039f1ca914479608ecfea35eb168667d400663c3a5",
+  "sunha-audit-integration.log": "e084f4087b1613ddff7fa9aee4558ecf292f1c98d90f996097e5162c052ea2ae",
+  "sunha-audit-migrate.log": "e4d7e4afd4f39170e1181ff1ad7a229ed90979a6ee16b128b5c9ad917ef322c6"
+}

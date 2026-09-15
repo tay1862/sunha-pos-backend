@@ -37,6 +37,7 @@ export type RefundSumAggregateOutputType = {
 export type RefundMinAggregateOutputType = {
   id: string | null
   orderId: string | null
+  shiftId: string | null
   managerEmployeeId: string | null
   amount: bigint | null
   reason: string | null
@@ -46,6 +47,7 @@ export type RefundMinAggregateOutputType = {
 export type RefundMaxAggregateOutputType = {
   id: string | null
   orderId: string | null
+  shiftId: string | null
   managerEmployeeId: string | null
   amount: bigint | null
   reason: string | null
@@ -55,6 +57,7 @@ export type RefundMaxAggregateOutputType = {
 export type RefundCountAggregateOutputType = {
   id: number
   orderId: number
+  shiftId: number
   managerEmployeeId: number
   amount: number
   reason: number
@@ -74,6 +77,7 @@ export type RefundSumAggregateInputType = {
 export type RefundMinAggregateInputType = {
   id?: true
   orderId?: true
+  shiftId?: true
   managerEmployeeId?: true
   amount?: true
   reason?: true
@@ -83,6 +87,7 @@ export type RefundMinAggregateInputType = {
 export type RefundMaxAggregateInputType = {
   id?: true
   orderId?: true
+  shiftId?: true
   managerEmployeeId?: true
   amount?: true
   reason?: true
@@ -92,6 +97,7 @@ export type RefundMaxAggregateInputType = {
 export type RefundCountAggregateInputType = {
   id?: true
   orderId?: true
+  shiftId?: true
   managerEmployeeId?: true
   amount?: true
   reason?: true
@@ -188,6 +194,7 @@ export type RefundGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 export type RefundGroupByOutputType = {
   id: string
   orderId: string
+  shiftId: string | null
   managerEmployeeId: string
   amount: bigint
   reason: string
@@ -220,23 +227,27 @@ export type RefundWhereInput = {
   NOT?: Prisma.RefundWhereInput | Prisma.RefundWhereInput[]
   id?: Prisma.UuidFilter<"Refund"> | string
   orderId?: Prisma.UuidFilter<"Refund"> | string
+  shiftId?: Prisma.UuidNullableFilter<"Refund"> | string | null
   managerEmployeeId?: Prisma.UuidFilter<"Refund"> | string
   amount?: Prisma.BigIntFilter<"Refund"> | bigint | number
   reason?: Prisma.StringFilter<"Refund"> | string
   createdAt?: Prisma.DateTimeFilter<"Refund"> | Date | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
   manager?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  shift?: Prisma.XOR<Prisma.ShiftNullableScalarRelationFilter, Prisma.ShiftWhereInput> | null
 }
 
 export type RefundOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrderInput | Prisma.SortOrder
   managerEmployeeId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   order?: Prisma.OrderOrderByWithRelationInput
   manager?: Prisma.EmployeeOrderByWithRelationInput
+  shift?: Prisma.ShiftOrderByWithRelationInput
 }
 
 export type RefundWhereUniqueInput = Prisma.AtLeast<{
@@ -245,17 +256,20 @@ export type RefundWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.RefundWhereInput | Prisma.RefundWhereInput[]
   OR?: Prisma.RefundWhereInput[]
   NOT?: Prisma.RefundWhereInput | Prisma.RefundWhereInput[]
+  shiftId?: Prisma.UuidNullableFilter<"Refund"> | string | null
   managerEmployeeId?: Prisma.UuidFilter<"Refund"> | string
   amount?: Prisma.BigIntFilter<"Refund"> | bigint | number
   reason?: Prisma.StringFilter<"Refund"> | string
   createdAt?: Prisma.DateTimeFilter<"Refund"> | Date | string
   order?: Prisma.XOR<Prisma.OrderScalarRelationFilter, Prisma.OrderWhereInput>
   manager?: Prisma.XOR<Prisma.EmployeeScalarRelationFilter, Prisma.EmployeeWhereInput>
+  shift?: Prisma.XOR<Prisma.ShiftNullableScalarRelationFilter, Prisma.ShiftWhereInput> | null
 }, "id" | "orderId">
 
 export type RefundOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrderInput | Prisma.SortOrder
   managerEmployeeId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -273,6 +287,7 @@ export type RefundScalarWhereWithAggregatesInput = {
   NOT?: Prisma.RefundScalarWhereWithAggregatesInput | Prisma.RefundScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Refund"> | string
   orderId?: Prisma.UuidWithAggregatesFilter<"Refund"> | string
+  shiftId?: Prisma.UuidNullableWithAggregatesFilter<"Refund"> | string | null
   managerEmployeeId?: Prisma.UuidWithAggregatesFilter<"Refund"> | string
   amount?: Prisma.BigIntWithAggregatesFilter<"Refund"> | bigint | number
   reason?: Prisma.StringWithAggregatesFilter<"Refund"> | string
@@ -286,11 +301,13 @@ export type RefundCreateInput = {
   createdAt?: Date | string
   order: Prisma.OrderCreateNestedOneWithoutRefundsInput
   manager: Prisma.EmployeeCreateNestedOneWithoutRefundsInput
+  shift?: Prisma.ShiftCreateNestedOneWithoutRefundsInput
 }
 
 export type RefundUncheckedCreateInput = {
   id?: string
   orderId: string
+  shiftId?: string | null
   managerEmployeeId: string
   amount: bigint | number
   reason: string
@@ -304,11 +321,13 @@ export type RefundUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUpdateOneRequiredWithoutRefundsNestedInput
   manager?: Prisma.EmployeeUpdateOneRequiredWithoutRefundsNestedInput
+  shift?: Prisma.ShiftUpdateOneWithoutRefundsNestedInput
 }
 
 export type RefundUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   reason?: Prisma.StringFieldUpdateOperationsInput | string
@@ -318,6 +337,7 @@ export type RefundUncheckedUpdateInput = {
 export type RefundCreateManyInput = {
   id?: string
   orderId: string
+  shiftId?: string | null
   managerEmployeeId: string
   amount: bigint | number
   reason: string
@@ -334,6 +354,7 @@ export type RefundUpdateManyMutationInput = {
 export type RefundUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   reason?: Prisma.StringFieldUpdateOperationsInput | string
@@ -353,6 +374,7 @@ export type RefundOrderByRelationAggregateInput = {
 export type RefundCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrder
   managerEmployeeId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -366,6 +388,7 @@ export type RefundAvgOrderByAggregateInput = {
 export type RefundMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrder
   managerEmployeeId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -375,6 +398,7 @@ export type RefundMaxOrderByAggregateInput = {
 export type RefundMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   orderId?: Prisma.SortOrder
+  shiftId?: Prisma.SortOrder
   managerEmployeeId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   reason?: Prisma.SortOrder
@@ -469,17 +493,61 @@ export type RefundUncheckedUpdateManyWithoutOrderNestedInput = {
   deleteMany?: Prisma.RefundScalarWhereInput | Prisma.RefundScalarWhereInput[]
 }
 
+export type RefundCreateNestedManyWithoutShiftInput = {
+  create?: Prisma.XOR<Prisma.RefundCreateWithoutShiftInput, Prisma.RefundUncheckedCreateWithoutShiftInput> | Prisma.RefundCreateWithoutShiftInput[] | Prisma.RefundUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.RefundCreateOrConnectWithoutShiftInput | Prisma.RefundCreateOrConnectWithoutShiftInput[]
+  createMany?: Prisma.RefundCreateManyShiftInputEnvelope
+  connect?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+}
+
+export type RefundUncheckedCreateNestedManyWithoutShiftInput = {
+  create?: Prisma.XOR<Prisma.RefundCreateWithoutShiftInput, Prisma.RefundUncheckedCreateWithoutShiftInput> | Prisma.RefundCreateWithoutShiftInput[] | Prisma.RefundUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.RefundCreateOrConnectWithoutShiftInput | Prisma.RefundCreateOrConnectWithoutShiftInput[]
+  createMany?: Prisma.RefundCreateManyShiftInputEnvelope
+  connect?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+}
+
+export type RefundUpdateManyWithoutShiftNestedInput = {
+  create?: Prisma.XOR<Prisma.RefundCreateWithoutShiftInput, Prisma.RefundUncheckedCreateWithoutShiftInput> | Prisma.RefundCreateWithoutShiftInput[] | Prisma.RefundUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.RefundCreateOrConnectWithoutShiftInput | Prisma.RefundCreateOrConnectWithoutShiftInput[]
+  upsert?: Prisma.RefundUpsertWithWhereUniqueWithoutShiftInput | Prisma.RefundUpsertWithWhereUniqueWithoutShiftInput[]
+  createMany?: Prisma.RefundCreateManyShiftInputEnvelope
+  set?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  disconnect?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  delete?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  connect?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  update?: Prisma.RefundUpdateWithWhereUniqueWithoutShiftInput | Prisma.RefundUpdateWithWhereUniqueWithoutShiftInput[]
+  updateMany?: Prisma.RefundUpdateManyWithWhereWithoutShiftInput | Prisma.RefundUpdateManyWithWhereWithoutShiftInput[]
+  deleteMany?: Prisma.RefundScalarWhereInput | Prisma.RefundScalarWhereInput[]
+}
+
+export type RefundUncheckedUpdateManyWithoutShiftNestedInput = {
+  create?: Prisma.XOR<Prisma.RefundCreateWithoutShiftInput, Prisma.RefundUncheckedCreateWithoutShiftInput> | Prisma.RefundCreateWithoutShiftInput[] | Prisma.RefundUncheckedCreateWithoutShiftInput[]
+  connectOrCreate?: Prisma.RefundCreateOrConnectWithoutShiftInput | Prisma.RefundCreateOrConnectWithoutShiftInput[]
+  upsert?: Prisma.RefundUpsertWithWhereUniqueWithoutShiftInput | Prisma.RefundUpsertWithWhereUniqueWithoutShiftInput[]
+  createMany?: Prisma.RefundCreateManyShiftInputEnvelope
+  set?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  disconnect?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  delete?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  connect?: Prisma.RefundWhereUniqueInput | Prisma.RefundWhereUniqueInput[]
+  update?: Prisma.RefundUpdateWithWhereUniqueWithoutShiftInput | Prisma.RefundUpdateWithWhereUniqueWithoutShiftInput[]
+  updateMany?: Prisma.RefundUpdateManyWithWhereWithoutShiftInput | Prisma.RefundUpdateManyWithWhereWithoutShiftInput[]
+  deleteMany?: Prisma.RefundScalarWhereInput | Prisma.RefundScalarWhereInput[]
+}
+
 export type RefundCreateWithoutManagerInput = {
   id?: string
   amount: bigint | number
   reason: string
   createdAt?: Date | string
   order: Prisma.OrderCreateNestedOneWithoutRefundsInput
+  shift?: Prisma.ShiftCreateNestedOneWithoutRefundsInput
 }
 
 export type RefundUncheckedCreateWithoutManagerInput = {
   id?: string
   orderId: string
+  shiftId?: string | null
   amount: bigint | number
   reason: string
   createdAt?: Date | string
@@ -517,6 +585,7 @@ export type RefundScalarWhereInput = {
   NOT?: Prisma.RefundScalarWhereInput | Prisma.RefundScalarWhereInput[]
   id?: Prisma.UuidFilter<"Refund"> | string
   orderId?: Prisma.UuidFilter<"Refund"> | string
+  shiftId?: Prisma.UuidNullableFilter<"Refund"> | string | null
   managerEmployeeId?: Prisma.UuidFilter<"Refund"> | string
   amount?: Prisma.BigIntFilter<"Refund"> | bigint | number
   reason?: Prisma.StringFilter<"Refund"> | string
@@ -529,10 +598,12 @@ export type RefundCreateWithoutOrderInput = {
   reason: string
   createdAt?: Date | string
   manager: Prisma.EmployeeCreateNestedOneWithoutRefundsInput
+  shift?: Prisma.ShiftCreateNestedOneWithoutRefundsInput
 }
 
 export type RefundUncheckedCreateWithoutOrderInput = {
   id?: string
+  shiftId?: string | null
   managerEmployeeId: string
   amount: bigint | number
   reason: string
@@ -565,9 +636,54 @@ export type RefundUpdateManyWithWhereWithoutOrderInput = {
   data: Prisma.XOR<Prisma.RefundUpdateManyMutationInput, Prisma.RefundUncheckedUpdateManyWithoutOrderInput>
 }
 
+export type RefundCreateWithoutShiftInput = {
+  id?: string
+  amount: bigint | number
+  reason: string
+  createdAt?: Date | string
+  order: Prisma.OrderCreateNestedOneWithoutRefundsInput
+  manager: Prisma.EmployeeCreateNestedOneWithoutRefundsInput
+}
+
+export type RefundUncheckedCreateWithoutShiftInput = {
+  id?: string
+  orderId: string
+  managerEmployeeId: string
+  amount: bigint | number
+  reason: string
+  createdAt?: Date | string
+}
+
+export type RefundCreateOrConnectWithoutShiftInput = {
+  where: Prisma.RefundWhereUniqueInput
+  create: Prisma.XOR<Prisma.RefundCreateWithoutShiftInput, Prisma.RefundUncheckedCreateWithoutShiftInput>
+}
+
+export type RefundCreateManyShiftInputEnvelope = {
+  data: Prisma.RefundCreateManyShiftInput | Prisma.RefundCreateManyShiftInput[]
+  skipDuplicates?: boolean
+}
+
+export type RefundUpsertWithWhereUniqueWithoutShiftInput = {
+  where: Prisma.RefundWhereUniqueInput
+  update: Prisma.XOR<Prisma.RefundUpdateWithoutShiftInput, Prisma.RefundUncheckedUpdateWithoutShiftInput>
+  create: Prisma.XOR<Prisma.RefundCreateWithoutShiftInput, Prisma.RefundUncheckedCreateWithoutShiftInput>
+}
+
+export type RefundUpdateWithWhereUniqueWithoutShiftInput = {
+  where: Prisma.RefundWhereUniqueInput
+  data: Prisma.XOR<Prisma.RefundUpdateWithoutShiftInput, Prisma.RefundUncheckedUpdateWithoutShiftInput>
+}
+
+export type RefundUpdateManyWithWhereWithoutShiftInput = {
+  where: Prisma.RefundScalarWhereInput
+  data: Prisma.XOR<Prisma.RefundUpdateManyMutationInput, Prisma.RefundUncheckedUpdateManyWithoutShiftInput>
+}
+
 export type RefundCreateManyManagerInput = {
   id?: string
   orderId: string
+  shiftId?: string | null
   amount: bigint | number
   reason: string
   createdAt?: Date | string
@@ -579,11 +695,13 @@ export type RefundUpdateWithoutManagerInput = {
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderUpdateOneRequiredWithoutRefundsNestedInput
+  shift?: Prisma.ShiftUpdateOneWithoutRefundsNestedInput
 }
 
 export type RefundUncheckedUpdateWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,6 +710,7 @@ export type RefundUncheckedUpdateWithoutManagerInput = {
 export type RefundUncheckedUpdateManyWithoutManagerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -599,6 +718,7 @@ export type RefundUncheckedUpdateManyWithoutManagerInput = {
 
 export type RefundCreateManyOrderInput = {
   id?: string
+  shiftId?: string | null
   managerEmployeeId: string
   amount: bigint | number
   reason: string
@@ -611,10 +731,12 @@ export type RefundUpdateWithoutOrderInput = {
   reason?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   manager?: Prisma.EmployeeUpdateOneRequiredWithoutRefundsNestedInput
+  shift?: Prisma.ShiftUpdateOneWithoutRefundsNestedInput
 }
 
 export type RefundUncheckedUpdateWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   managerEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   reason?: Prisma.StringFieldUpdateOperationsInput | string
@@ -623,6 +745,43 @@ export type RefundUncheckedUpdateWithoutOrderInput = {
 
 export type RefundUncheckedUpdateManyWithoutOrderInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  shiftId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  managerEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RefundCreateManyShiftInput = {
+  id?: string
+  orderId: string
+  managerEmployeeId: string
+  amount: bigint | number
+  reason: string
+  createdAt?: Date | string
+}
+
+export type RefundUpdateWithoutShiftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  order?: Prisma.OrderUpdateOneRequiredWithoutRefundsNestedInput
+  manager?: Prisma.EmployeeUpdateOneRequiredWithoutRefundsNestedInput
+}
+
+export type RefundUncheckedUpdateWithoutShiftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
+  managerEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
+  amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
+  reason?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type RefundUncheckedUpdateManyWithoutShiftInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  orderId?: Prisma.StringFieldUpdateOperationsInput | string
   managerEmployeeId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.BigIntFieldUpdateOperationsInput | bigint | number
   reason?: Prisma.StringFieldUpdateOperationsInput | string
@@ -634,57 +793,67 @@ export type RefundUncheckedUpdateManyWithoutOrderInput = {
 export type RefundSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   managerEmployeeId?: boolean
   amount?: boolean
   reason?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Refund$shiftArgs<ExtArgs>
 }, ExtArgs["result"]["refund"]>
 
 export type RefundSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   managerEmployeeId?: boolean
   amount?: boolean
   reason?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Refund$shiftArgs<ExtArgs>
 }, ExtArgs["result"]["refund"]>
 
 export type RefundSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   managerEmployeeId?: boolean
   amount?: boolean
   reason?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Refund$shiftArgs<ExtArgs>
 }, ExtArgs["result"]["refund"]>
 
 export type RefundSelectScalar = {
   id?: boolean
   orderId?: boolean
+  shiftId?: boolean
   managerEmployeeId?: boolean
   amount?: boolean
   reason?: boolean
   createdAt?: boolean
 }
 
-export type RefundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "managerEmployeeId" | "amount" | "reason" | "createdAt", ExtArgs["result"]["refund"]>
+export type RefundOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "orderId" | "shiftId" | "managerEmployeeId" | "amount" | "reason" | "createdAt", ExtArgs["result"]["refund"]>
 export type RefundInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Refund$shiftArgs<ExtArgs>
 }
 export type RefundIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Refund$shiftArgs<ExtArgs>
 }
 export type RefundIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.OrderDefaultArgs<ExtArgs>
   manager?: boolean | Prisma.EmployeeDefaultArgs<ExtArgs>
+  shift?: boolean | Prisma.Refund$shiftArgs<ExtArgs>
 }
 
 export type $RefundPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -692,10 +861,12 @@ export type $RefundPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     order: Prisma.$OrderPayload<ExtArgs>
     manager: Prisma.$EmployeePayload<ExtArgs>
+    shift: Prisma.$ShiftPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     orderId: string
+    shiftId: string | null
     managerEmployeeId: string
     amount: bigint
     reason: string
@@ -1096,6 +1267,7 @@ export interface Prisma__RefundClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   order<T extends Prisma.OrderDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.OrderDefaultArgs<ExtArgs>>): Prisma.Prisma__OrderClient<runtime.Types.Result.GetResult<Prisma.$OrderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   manager<T extends Prisma.EmployeeDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.EmployeeDefaultArgs<ExtArgs>>): Prisma.Prisma__EmployeeClient<runtime.Types.Result.GetResult<Prisma.$EmployeePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  shift<T extends Prisma.Refund$shiftArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Refund$shiftArgs<ExtArgs>>): Prisma.Prisma__ShiftClient<runtime.Types.Result.GetResult<Prisma.$ShiftPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1127,6 +1299,7 @@ export interface Prisma__RefundClient<T, Null = never, ExtArgs extends runtime.T
 export interface RefundFieldRefs {
   readonly id: Prisma.FieldRef<"Refund", 'String'>
   readonly orderId: Prisma.FieldRef<"Refund", 'String'>
+  readonly shiftId: Prisma.FieldRef<"Refund", 'String'>
   readonly managerEmployeeId: Prisma.FieldRef<"Refund", 'String'>
   readonly amount: Prisma.FieldRef<"Refund", 'BigInt'>
   readonly reason: Prisma.FieldRef<"Refund", 'String'>
@@ -1529,6 +1702,25 @@ export type RefundDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Intern
    * Limit how many Refunds to delete.
    */
   limit?: number
+}
+
+/**
+ * Refund.shift
+ */
+export type Refund$shiftArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Shift
+   */
+  select?: Prisma.ShiftSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Shift
+   */
+  omit?: Prisma.ShiftOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ShiftInclude<ExtArgs> | null
+  where?: Prisma.ShiftWhereInput
 }
 
 /**

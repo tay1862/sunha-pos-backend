@@ -3,7 +3,9 @@ import {
   NotoSansLao_700Bold,
   useFonts,
 } from '@expo-google-fonts/noto-sans-lao';
-import { Stack } from 'expo-router';
+import { Stack, usePathname } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { getAccessToken, subscribeAuth } from '../src/auth/token-storage';
 import { ActivityIndicator, useColorScheme, View } from 'react-native';
 import { TamaguiProvider } from 'tamagui';
 import tamaguiConfig from '../tamagui.config';
@@ -24,8 +26,24 @@ Sentry.init({
 export default Sentry.wrap(function RootLayout() {
   const [loaded] = useFonts({ NotoSansLao_400Regular, NotoSansLao_700Bold });
   const colorScheme = useColorScheme();
+  const path = usePathname();
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+  useEffect(() => subscribeAuth(setAuthenticated), []);
+  useEffect(() => {
+    let active = true;
+    getAccessToken()
+      .then((token) => {
+        if (active) setAuthenticated(Boolean(token));
+      })
+      .catch(() => {
+        if (active) setAuthenticated(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [path]);
 
-  if (!loaded) {
+  if (!loaded || authenticated === null) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
         <ActivityIndicator />
@@ -38,7 +56,31 @@ export default Sentry.wrap(function RootLayout() {
       config={tamaguiConfig}
       defaultTheme={colorScheme === 'dark' ? 'sunhaDark' : 'sunhaLight'}
     >
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="login" />
+        <Stack.Screen name="create-account" />
+        <Stack.Protected guard={authenticated}>
+          {[
+            'index',
+            'setup-store',
+            'employee-pin',
+            'items',
+            'employees',
+            'modifiers',
+            'taxes',
+            'stock',
+            'shifts',
+            'receipts',
+            'reports',
+            'settings',
+            'printers',
+            'barcode',
+            'sync',
+          ].map((name) => (
+            <Stack.Screen key={name} name={name} />
+          ))}
+        </Stack.Protected>
+      </Stack>
     </TamaguiProvider>
   );
 });

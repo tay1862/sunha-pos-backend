@@ -1,24 +1,66 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'expo-router';
 import { FormButton, FormScreen } from '../src/ui/form-screen';
 import { StyleSheet, Text, View } from 'react-native';
+import { verifyEmployeePin } from '../src/auth/auth-client';
+import { apiRequest } from '../src/api/client';
+import { getAccessToken, getSessionContext } from '../src/auth/token-storage';
 
 export default function EmployeePinScreen() {
   const router = useRouter();
   const [pin, setPin] = useState('');
+  const [employees, setEmployees] = useState<Array<{ id: string; name: string }>>([]);
+  const [selected, setSelected] = useState('');
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  useEffect(() => {
+    void (async () => {
+      const token = await getAccessToken();
+      const context = await getSessionContext();
+      setSelected(context.employeeId ?? '');
+      setEmployees(await apiRequest('/employees/selectable', { accessToken: token ?? undefined }));
+    })().catch(() => setError('ໂຫຼດພະນັກງານບໍ່ສຳເລັດ'));
+  }, []);
+  async function confirm() {
+    setBusy(true);
+    setError('');
+    try {
+      await verifyEmployeePin(selected, pin);
+      router.replace('/');
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : 'PIN ບໍ່ຖືກຕ້ອງ');
+      setPin('');
+    } finally {
+      setBusy(false);
+    }
+  }
   return (
     <FormScreen
       title="ໃສ່ PIN ພະນັກງານ"
       subtitle="ສຳລັບສະຫຼັບຜູ້ໃຊ້ໃນໜ້າຂາຍ"
       onBack={() => router.replace('/')}
     >
+      {employees.map((employee) => (
+        <FormButton
+          key={employee.id}
+          disabled={busy}
+          onPress={() => {
+            setSelected(employee.id);
+            setPin('');
+          }}
+        >{`${selected === employee.id ? '✓ ' : ''}${employee.name}`}</FormButton>
+      ))}
       <View style={styles.pinDots}>
         {[0, 1, 2, 3, 4, 5].map((index) => (
           <View key={index} style={[styles.dot, index < pin.length && styles.dotFilled]} />
         ))}
       </View>
-      <Text style={styles.hint}>ຕົວຢ່າງ PIN 6 ຫຼັກ</Text>
-      <FormButton disabled={pin.length !== 6} onPress={() => router.replace('/')}>
+      <Text style={styles.hint}>{error || 'PIN 6 ຫຼັກ'}</Text>
+      <FormButton
+        disabled={pin.length !== 6 || !selected || busy}
+        loading={busy}
+        onPress={() => void confirm()}
+      >
         ຢືນຢັນ
       </FormButton>
       <View style={styles.keypad}>

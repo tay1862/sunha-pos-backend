@@ -77,6 +77,18 @@ export default function HomePage() {
     }
   }
 
+  async function unsuspend(tenantId: string) {
+    const reason = window.prompt('ເຫດຜົນການຍົກເລີກ suspend');
+    if (!reason?.trim()) return;
+    try {
+      await request(`/stores/${tenantId}/unsuspend`, { method: 'PATCH', body: JSON.stringify({ reason }) });
+      setMessage('ຍົກເລີກ suspend ສຳເລັດ ແລະບັນທຶກ audit ແລ້ວ');
+      await load();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : 'Unsuspend ບໍ່ສຳເລັດ');
+    }
+  }
+
   return (
     <main className="min-h-screen p-6 md:p-10">
       <div className="mx-auto max-w-6xl">
@@ -85,7 +97,7 @@ export default function HomePage() {
             Sunha POS
           </p>
           <h1 className="mt-2 text-3xl font-semibold">Internal Admin</h1>
-          <p className="mt-2 text-[var(--muted)]">ระบบดูแลภายใน · ไม่สามารถแก้ไขใบเสร็จได้</p>
+          <p className="mt-2 text-[var(--muted)]">ระบบดูแลภายใน · ทุก action มี actor/time/reason ใน audit</p>
         </header>
         <section className="mb-8 rounded-2xl border border-slate-200 bg-[var(--surface)] p-5 shadow-sm">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto]">
@@ -151,7 +163,14 @@ export default function HomePage() {
                     >
                       Suspend
                     </button>
-                  ) : null}
+                  ) : (
+                    <button
+                      onClick={() => void unsuspend(store.id)}
+                      className="rounded-lg border border-emerald-200 px-3 py-2 text-sm text-emerald-700"
+                    >
+                      Unsuspend
+                    </button>
+                  )}
                 </div>
               ))}
             </div>

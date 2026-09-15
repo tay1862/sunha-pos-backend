@@ -1,0 +1,48 @@
+name: Release candidate
+
+on:
+  push:
+    tags: ['v*.*.*']
+  workflow_dispatch:
+
+jobs:
+  release-candidate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sunha
+          POSTGRES_PASSWORD: sunha
+          POSTGRES_DB: sunha_release_test
+        ports: ['5432:5432']
+        options: --health-cmd "pg_isready -U sunha -d sunha_release_test" --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      DATABASE_URL: postgresql://sunha:sunha@localhost:5432/sunha_release_test
+      SUNHA_AUDIT_DISPOSABLE: 'yes'
+    steps:
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: ./ops/release-verify.sh
+      - run: pnpm --filter @sunha/api exec prisma validate
+      - run: docker build --file Dockerfile.api --tag sunha-api:${GITHUB_SHA} .
+      - run: pnpm --filter @sunha/admin build
+      - name: Create release manifest
+        run: |
+          mkdir -p release-artifacts
+          git rev-parse HEAD > release-artifacts/commit.txt
+          find apps/api/prisma/migrations -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort > release-artifacts/migrations.txt
+          sha256sum Dockerfile.api apps/api/package.json apps/admin/package.json > release-artifacts/sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ github.sha }}
+          path: release-artifacts

@@ -7,6 +7,7 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
+import { createHash, randomBytes } from 'node:crypto';
 import argon2 from 'argon2';
 import type {
   CreateEmployeeInput,
@@ -42,7 +43,8 @@ export class EmployeeService {
     await this.requireManager(tenantId, actorId);
     const employee = await this.prisma.employee.findFirst({ where: { id, tenantId } });
     if (!employee) throw new NotFoundException('EMPLOYEE_NOT_FOUND');
-    if (employee.role === 'OWNER') throw new ForbiddenException('OWNER_CANNOT_BE_MODIFIED');
+    if (employee.role === 'OWNER' && (actorId !== id || input.role || input.active !== undefined))
+      throw new ForbiddenException('OWNER_CANNOT_BE_MODIFIED');
     if (input.active === false) {
       const activeManagers = await this.prisma.employee.count({
         where: { tenantId, role: 'MANAGER', active: true, id: { not: id } },
@@ -58,11 +60,12 @@ export class EmployeeService {
     });
   }
 
-  async verifyPin(tenantId: string, input: VerifyEmployeePinInput) {
+  async verifyPin(tenantId: string, input: VerifyEmployeePinInput, deviceId: string) {
     const employee = await this.prisma.employee.findFirst({
       where: { id: input.employeeId, tenantId, active: true },
       select: {
         id: true,
+        storeId: true,
         name: true,
         role: true,
         pinHash: true,
@@ -71,6 +74,10 @@ export class EmployeeService {
       },
     });
     if (!employee) throw new UnauthorizedException('INVALID_EMPLOYEE_PIN');
+    const device = await this.prisma.device.findFirst({
+      where: { id: deviceId, tenantId, storeId: employee.storeId, status: 'ACTIVE' },
+    });
+    if (!device) throw new UnauthorizedException('DEVICE_NOT_ENROLLED');
     if (employee.pinLockedUntil && employee.pinLockedUntil > new Date())
       throw new HttpException('EMPLOYEE_PIN_LOCKED', HttpStatus.TOO_MANY_REQUESTS);
     if (!(await argon2.verify(employee.pinHash, input.pin))) {
@@ -89,7 +96,22 @@ export class EmployeeService {
       where: { id: employee.id },
       data: { pinFailedAttempts: 0, pinLockedUntil: null },
     });
-    return { id: employee.id, name: employee.name, role: employee.role };
+    const sessionToken = randomBytes(32).toString('base64url');
+    await this.prisma.employeeSession.create({
+      data: {
+        employeeId: employee.id,
+        deviceId,
+        tokenHash: createHash('sha256').update(sessionToken).digest('hex'),
+        expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000),
+      },
+    });
+    return {
+      id: employee.id,
+      name: employee.name,
+      role: employee.role,
+      sessionToken,
+      expiresIn: 43200,
+    };
   }
 
   private async requireManager(tenantId: string, actorId: string) {

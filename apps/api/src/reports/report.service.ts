@@ -1,19 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service.js';
 
 @Injectable()
 export class ReportService {
   constructor(private readonly prisma: PrismaService) {}
   private range(from?: string, to?: string) {
-    return { gte: from ? new Date(from) : new Date(0), lte: to ? new Date(to) : new Date() };
+    const start = from ? new Date(from) : new Date(0);
+    const end = to ? new Date(to) : new Date();
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) || start >= end)
+      throw new BadRequestException('INVALID_REPORT_RANGE');
+    return { gte: start, lt: end };
   }
   async sales(tenantId: string, from?: string, to?: string) {
+    const dateRange = this.range(from, to);
     const orders = await this.prisma.order.findMany({
       where: {
         tenantId,
         status: { in: ['COMPLETED', 'REFUNDED'] },
         createdAt: {
-          ...this.range(from, to),
+          ...dateRange,
         },
       },
       select: {
@@ -27,7 +32,7 @@ export class ReportService {
       },
     });
     const refunds = await this.prisma.refund.findMany({
-      where: { order: { tenantId }, createdAt: this.range(from, to) },
+      where: { order: { tenantId }, createdAt: dateRange },
       select: { amount: true, orderId: true },
     });
     const total = calculateNetSales(orders, refunds);
@@ -110,13 +115,22 @@ export class ReportService {
   }
 
   async csv(tenantId: string, kind: string, from?: string, to?: string) {
-    const rows =
+    const rawRows =
       kind === 'payments'
         ? await this.payments(tenantId, from, to)
         : kind === 'refunds'
           ? await this.refunds(tenantId, from, to)
           : await this.sales(tenantId, from, to).then((value) => [value]);
-    const first = rows[0] as Record<string, unknown> | undefined;
+    const rows = rawRows.map((row) => {
+      const value = row as Record<string, unknown>;
+      if (kind === 'refunds') {
+        const order = value.order as Record<string, unknown> | undefined;
+        const manager = value.manager as Record<string, unknown> | undefined;
+        return { id: value.id, orderId: value.orderId, amount: value.amount, reason: value.reason, createdAt: value.createdAt, orderTotal: order?.totalAmount, cashierId: order?.employeeId, managerId: manager?.id, managerName: manager?.name };
+      }
+      return value;
+    });
+    const first = rows[0];
     if (!first) return '';
     const columns = Object.keys(first);
     const escape = (value: unknown) => {
@@ -136,10 +150,9 @@ export class ReportService {
                   : (JSON.stringify(value) ?? '');
       return `"${text.replaceAll('"', '""')}"`;
     };
-    return [
-      columns.join(','),
+    return ['\ufeff' + columns.join(','),
       ...rows.map((row) =>
-        columns.map((column) => escape((row as Record<string, unknown>)[column])).join(','),
+        columns.map((column) => escape(row[column])).join(','),
       ),
     ].join('\n');
   }

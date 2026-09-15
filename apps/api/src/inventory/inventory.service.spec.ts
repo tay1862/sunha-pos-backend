@@ -48,4 +48,10 @@ describe('inventory adjustment policy', () => {
       }),
     ).rejects.toThrow('TRACK_STOCK_DISABLED');
   });
+
+  it('rejects zero quantity adjustments', async () => {
+    const prisma = { employee: { findFirst: vi.fn() } } as never;
+    const service = new InventoryService(prisma);
+    await expect(service.adjust('tenant-1', 'owner-1', 'device-1', { itemId: 'item-1', quantityBase: '0', reason: 'count', managerEmployeeId: 'manager-1', managerPin: '123456' })).rejects.toThrow('ZERO_QUANTITY_NOT_ALLOWED');
+  });
 });

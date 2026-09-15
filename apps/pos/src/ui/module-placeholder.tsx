@@ -36,7 +36,7 @@ export function ModulePlaceholder({
           style={[styles.notice, { borderColor: colors.border, backgroundColor: colors.surface }]}
         >
           <Text style={[styles.noticeText, { color: colors.textMuted }]}>
-            ໜ້ານີ້ຈະເຊື່ອມກັບ API ໃນ Phase ຕໍ່ໄປ
+            ຟັງຊັນນີ້ກຳລັງຢູ່ໃນຂັ້ນຕອນກຽມໃຊ້ງານ
           </Text>
         </View>
       </View>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, alignItems: 'center', padding: 22 },
   back: {
     alignSelf: 'flex-start',
-    minHeight: 40,
+    minHeight: 48,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,

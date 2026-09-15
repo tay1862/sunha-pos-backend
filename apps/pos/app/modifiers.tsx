@@ -14,6 +14,9 @@ export default function ModifiersScreen() {
   const [option, setOption] = useState('');
   const [price, setPrice] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [required, setRequired] = useState(false);
+  const [minSelections, setMinSelections] = useState('0');
+  const [maxSelections, setMaxSelections] = useState('1');
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState('');
   const reload = () =>
@@ -29,9 +32,9 @@ export default function ModifiersScreen() {
       const current = groups.find((group) => group.id === editingId);
       const input = {
         name,
-        required: false,
-        minSelections: 0,
-        maxSelections: 1,
+        required,
+        minSelections: Number(minSelections),
+        maxSelections: Number(maxSelections),
         options: [
           {
             id: current?.options[0]?.id,
@@ -46,6 +49,7 @@ export default function ModifiersScreen() {
       setOption('');
       setPrice('');
       setEditingId(null);
+      setRequired(false); setMinSelections('0'); setMaxSelections('1');
       setMessage('ບັນທຶກສຳເລັດ');
       await reload();
     } catch {
@@ -62,6 +66,9 @@ export default function ModifiersScreen() {
           onChangeText={setName}
           style={styles.input}
         />
+        <Text onPress={() => setRequired((value) => !value)} style={styles.meta}>ຈຳເປັນ: {required ? 'ໃຊ່' : 'ບໍ່'}</Text>
+        <TextInput value={minSelections} onChangeText={setMinSelections} keyboardType="number-pad" placeholder="ຈຳນວນຂັ້ນຕ່ຳ" style={styles.input} />
+        <TextInput value={maxSelections} onChangeText={setMaxSelections} keyboardType="number-pad" placeholder="ຈຳນວນສູງສຸດ" style={styles.input} />
         <TextInput
           placeholder="ຕົວເລືອກ"
           value={option}
@@ -94,6 +101,7 @@ export default function ModifiersScreen() {
                 setName(group.name);
                 setOption(group.options[0]?.name ?? '');
                 setPrice(String(group.options[0]?.priceDeltaAmount ?? '0'));
+                setRequired(group.required ?? false); setMinSelections(String(group.minSelections ?? 0)); setMaxSelections(String(group.maxSelections ?? 1));
               }}
             >
               ແກ້ໄຂ
